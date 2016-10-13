@@ -1,0 +1,31 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 991px) {
+.sign-in-col-left{
+  margin-right: 0;
+  margin-bottom: 3rem;
+}
+.sign-in-col-right{
+  margin-left: 0;
+}
+.section-access-order-area {
+  margin-bottom: 14rem;
+}
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 479px) {
+.signin-inner{
+  margin: 0;
+}
+.sign-in-col input{
+  max-width: 100%;
+}
+.section-access-order-area {
+  margin-bottom: 8rem;
+}
+}
+

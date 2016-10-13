@@ -1,0 +1,47 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.section-submit .page-pointer {
+  margin-left: 451px;
+}
+.common-section-body, .submit-section-body{
+  border-top: .1rem solid #000;
+}
+
+}
+@media only screen and (max-width: 991px) {
+.section-submit .page-pointer {
+  margin-left: 324px;
+}
+.info-form-group.col-sm-6.col-md-4 > a {
+  display: block;
+  margin-top: 1rem;
+}
+.common-section-body, .submit-section-body{
+  border-top: .1rem solid #000;
+}
+}
+@media only screen and (max-width: 767px) {
+.midle-midle span {
+  display: block;
+  margin: 2rem 0 1rem;
+}
+.common-section-body, .submit-section-body{
+  border-top: .1rem solid #000;
+}
+.section-submit .page-pointer {
+  margin-top: 73px !important;
+}
+.check-outing button {
+  margin-bottom: 3rem;
+}
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 479px) {
+
+}
+

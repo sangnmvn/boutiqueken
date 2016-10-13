@@ -1,0 +1,64 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.vertical {
+  width: 177px;
+}
+.details-2-left {
+  width: 41%;
+}
+
+}
+@media only screen and (max-width: 991px) {
+.details-2-left {
+  width: 48%;
+}
+.details-2-middle {
+  margin-right: 0;
+  width: 50%;
+}
+}
+@media only screen and (max-width: 767px) {
+.details-2-left {
+  float: none;
+  margin: 0;
+  width: 100%;
+}
+.left-content {
+  height: 40rem;
+  width: 34rem;
+}
+.product-details-2-top {
+  padding-top: 2rem;
+}
+.details-2-middle {
+  margin-right: 0;
+  width: 100%;
+  margin-top: 2rem;
+}
+.recent-view-all-item > a {
+  margin: 1%;
+  width: 31%;
+  margin-bottom: 1.5rem;
+}
+.a-to-b {
+  margin-top: 3rem;
+}
+.product-details-2-top {
+  margin-bottom: 0;
+}
+.recent-view h1 {
+  font-size: 2.2rem;
+}
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 500px) {
+
+}
+@media only screen and (max-width: 479px) {
+
+}

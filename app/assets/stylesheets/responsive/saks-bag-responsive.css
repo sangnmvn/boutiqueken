@@ -1,0 +1,98 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.saks-bag-nav li a {
+  margin: 1.2rem 8.4rem 1.2rem 0;
+}
+.saks-bag-body p {
+  margin-bottom: 21rem;
+  margin-top: 23rem;
+}
+
+.saks-bag-shopping .account-input-block .select select {
+  width: 23rem;
+}
+
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 767px) {
+.section-saks-bag {
+  margin-top: 3rem;
+}
+.section-saks-bag header {
+  margin-bottom: 2.5rem;
+}
+.section-saks-bag header h1 {
+  display: block;
+  float: none;
+  font-size: 2.7rem;
+  margin: 0 0 1rem;
+}
+.ul-saks-bag-top-list {
+  float: left !important;
+}
+.saks-bag-nav {
+  padding-left: 0;
+  padding-right: 0;
+}
+.saks-bag-nav li {
+  float: none;
+}
+.saks-bag-nav li a {
+  border-bottom: 1px solid #eee;
+  font-size: 1.6rem;
+  margin: 0;
+  padding: 0.5rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+
+.saks-bag-body p {
+  margin-bottom: 15rem;
+  margin-top: 10rem;
+  font-size: 1.8rem;
+}
+
+
+
+
+
+
+
+
+.saks-bag-table th {
+  border-top:  none !important;
+}
+.check-out-info {
+  float: none;
+  text-align: center;
+  width: 100%;
+}
+.check-outing .text-right{
+  text-align: center;
+}
+.border {
+  float: none;
+  margin: 20px auto;
+  text-align: center;
+}
+.or {
+  display: none;
+}
+.saks-bag-shopping .account-input-block .select select {
+  width: 100%;
+}
+.saks-bag-shopping .account-input-block .select__arrow {
+  right: 1.7rem;
+  top: 1.3rem;
+}
+
+
+
+}
+

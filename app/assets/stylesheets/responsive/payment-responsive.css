@@ -1,0 +1,58 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.section-payment .page-pointer {
+  margin-left: 283px;
+}
+.common-section-body .account-input-block .select select {
+  width: 24rem;
+}
+.common-section-body .account-input-block .select__arrow {
+  right: -15.3rem;
+}
+
+}
+@media only screen and (max-width: 991px) {
+.section-payment .page-pointer {
+  margin-left: 202px;
+}
+.common-section-body .account-input-block .select select {
+  width: 17rem;
+}
+.common-section-body .account-input-block .select__arrow {
+  right: -10.3rem;
+}
+}
+@media only screen and (max-width: 767px) {
+.common-section-body .account-input-block .select select {
+  width: 100%;
+}
+.common-section-body .account-input-block .select__arrow {
+  margin-top: -3rem;
+  right: 1.5rem;
+}
+.apply {
+  margin-top: 1.5rem;
+}
+.half-input-div .reqf {
+  float: left;
+}
+.half-input-div label {
+  float: left;
+}
+.common-section-body .half-input-div input{
+  width: 100%;
+}
+.half-left-input {
+  margin-bottom: 1rem;
+}
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 479px) {
+
+}
+

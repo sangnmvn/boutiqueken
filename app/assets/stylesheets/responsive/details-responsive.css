@@ -1,0 +1,26 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 767px) {
+.thumb-image {
+  float: left;
+  margin: 0 2% 10px 0;
+  width: 15%;
+}
+.product-specification {
+  margin-top: 3rem;
+}
+.qa-details {
+  padding-top: 0;
+}
+.review-contents h2 {
+  margin-top: 1rem;
+}
+.review-section .nav-tabs li a {
+  font-size: 2.2rem;
+  padding: 1rem 2rem 1rem 0.7rem;
+}
+}

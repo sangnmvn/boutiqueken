@@ -1,0 +1,38 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+
+
+}
+@media only screen and (max-width: 991px) {
+
+}
+@media only screen and (max-width: 767px) {
+.featured-single-item {
+  width: 22%;
+}
+.featured-items {
+  justify-content: space-around;
+}
+.featured-product-area h1 {
+  font-size: 2.1rem;
+}
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 500px) {
+.popup-single-item {
+  width: 46%;
+}
+.featured-single-item {
+  width: 30%;
+}
+}
+@media only screen and (max-width: 479px) {
+.featured-single-item {
+  margin-bottom: 1rem;
+}
+}

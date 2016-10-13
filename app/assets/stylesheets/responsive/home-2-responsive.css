@@ -1,0 +1,104 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.home-left-menu {
+  width: 20%;
+}
+.home-right-content {
+  width: 78%;
+}
+.add-right img {
+  margin-bottom: 2.5rem;
+}
+.add-left a:first-child img {
+  margin-bottom: 4.7rem;
+}
+}
+@media only screen and (max-width: 991px) {
+.home-left-menu {
+  width: 22%;
+}
+.home-right-content {
+  width: 76%;
+}
+.catagory-item-ul {
+  padding: 1rem;
+}
+.grid a{
+  width: 31%;
+}
+.catagory-item-title > img {
+  margin-right: 0.3rem;
+  width: 4rem;
+}
+.add-left a:first-child img {
+  margin-bottom: 2.4rem;
+}
+.add-right img {
+  margin-bottom: 1.5rem;
+}
+
+}
+@media only screen and (max-width: 767px) {
+.grid a {
+  width: 48%;
+}
+.home-right-content {
+  width: 100%;
+}
+
+.all-brands > a {
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+  width: 26%;
+}
+.r-not {
+  padding-right: 15px;
+}
+.l-not {
+  padding-left: 15px;
+}
+.add-middle {
+  padding: 0 5rem;
+  margin: 1rem 0;
+}
+.add-left a:first-child img {
+  margin-bottom: 1.4rem;
+}
+.add-right img {
+  margin-bottom: 1.2rem;
+}
+.slider-bottom-menu {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.slider-bottom-menu > a {
+  width: 25%;
+}
+.slider-bottom-menu img {
+  margin-bottom: 1rem;
+}
+
+
+}
+/* All Mobile Sizes (devices and browser) 360*640 */
+@media only screen and (max-width: 479px) {
+
+.grid a{
+  width: 95%;
+  margin: 3%;
+}
+.slider-bottom-menu > a {
+  width: 45%;
+}
+
+}
+

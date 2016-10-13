@@ -1,0 +1,54 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.section-products-area aside .select select {
+  font-size: 1.2rem;
+}
+}
+@media only screen and (max-width: 991px) {
+.main-product-area {
+  margin-bottom: 5rem;
+}
+.sort-right.sort-right-bottom {
+  padding-top: 10rem;
+}
+}
+
+@media only screen and (max-width: 767px) {
+.main-product-area .select {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.main-product-area .select .select__arrow {
+  top: 3.3rem;
+}
+.sort-right {
+  float: none;
+}
+.ul-filter-by {
+  border-bottom: none;
+  border-top: none;
+  padding: 0rem 0 0.6rem 1rem;
+}
+.ul-filter-by li::after {
+  content: "/";
+  font-size: 1.6rem;
+}
+.product-img-wrapper img {
+  height: auto;
+}
+.product-item-div {
+  justify-content: space-around;
+}
+.main-product-area h1.pull-left {
+  display: block;
+  float: none !important;
+  margin-top: 0;
+  text-align: center;
+}
+}
+

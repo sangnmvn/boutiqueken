@@ -1,0 +1,128 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+/*@media only screen and (min-width: 768px) and (max-width: 1199px) {*/
+@media only screen and (max-width: 1199px) {
+.category-featured-inner-list {
+  width: 85%;
+}
+.apparal-body aside strong {
+  width: 92%;
+}
+.ul-letter-list{
+  -webkit-columns: 4 18.5rem;
+  -moz-columns: 4 18.5rem;
+  -o-columns: 4 18.5rem;
+  columns: 4 18.5rem; 
+}
+}
+@media only screen and (max-width: 992px) {
+.category-featured-inner-list {
+  width: 100%;
+}
+.section-category-featured h2 {
+  margin-top: 1.6rem;
+}	
+.category-featured-inner-list{
+  -webkit-columns: 3 15rem;
+  -moz-columns: 3 15rem;
+  -o-columns: 3 15rem;
+  columns: 3 15rem;
+}
+.apparal-body aside strong {
+  width: 80%;
+}
+.letter-order strong {
+  float: left;
+  width: 23%;
+}
+.letter-order-list {
+  float: left;
+  width: 75%;
+}
+.letter {
+  font-size: 2.6rem;
+  text-indent: 0;
+  width: 7%;
+  text-align: center;
+}
+.letter-list {
+  width: 93%;
+}
+.ul-letter-list{
+  -webkit-columns: 3 15rem;
+  -moz-columns: 3 15rem;
+  -o-columns: 3 15rem;
+  columns: 3 15rem; 
+}
+}
+
+@media only screen and (max-width: 767px) {
+.category-banner-wrapper img {
+  display: block;
+  margin: 0 auto;
+}
+.section-category-featured h2 {
+  margin-top: 3rem;
+}
+.apparal-body aside {
+  display: block;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  padding-top: .6rem;
+}
+.apparal-body aside strong {
+  border-bottom: medium none;
+  border-top: medium none;
+  display: block;
+  float: left;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+  text-indent: 0;
+  width: 100%;
+}
+.letter-order strong{
+	width: 100%;
+}
+.apparal-body aside ul, .letter-order-list {
+  float: left;
+  width: 90%;
+}
+.apparal-body aside ul li{
+	float: left;
+}
+.apparal-body aside ul li a {
+  margin-left: 1.2rem;
+}
+.letter-order {
+  padding-bottom: 1.2rem;
+}
+
+@media only screen and (max-width: 550px) {
+.letter {
+  width: 7%;
+  float: none;
+  margin-bottom: .7rem;
+}	
+.letter-list {
+  width: 100%;
+}
+.ul-letter-list{
+  -webkit-columns: 3 17rem;
+  -moz-columns: 3 17rem;
+  -o-columns: 3 17rem;
+  columns: 3 17rem; 
+}
+}
+
+
+
+
+
+
+
+
+

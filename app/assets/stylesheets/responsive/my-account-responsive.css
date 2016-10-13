@@ -1,0 +1,74 @@
+
+/***********************************************************************************************/
+/*  Responsive/adaptive stuff */
+/***********************************************************************************************/
+
+@media only screen and (max-width: 1199px) {
+.account-inner {
+  margin: 4rem 0;
+}
+.info-form-group {
+  margin-right: 2rem;
+}
+}
+@media only screen and (max-width: 991px) {
+.account-inner aside {
+  margin: 0;
+}
+.ul-account {
+  padding: .5rem 1rem;
+}
+}
+@media only screen and (max-width: 767px) {
+.account-inner {
+  margin: 0;
+}
+.account-inner aside {
+  margin: 0 0 3rem;
+}
+.dsh-tx {
+  float: left;
+  max-width: 85%;
+}
+.c-single-info {
+  margin-bottom: 2rem;
+}
+.all-informations-wrapper .reqf {
+  color: #fa0101;
+  float: left;
+  left: 0;
+  margin-left: unset;
+  margin-top: 1rem;
+  position: unset;
+  top: 0;
+}
+.all-informations-wrapper .sign-in-col label {
+  float: left;
+}
+.info-form-group {
+  margin-right: 2rem;
+  width: 100%;
+}
+.all-informations-wrapper .sign-in-col input[type="text"],.all-informations-wrapper .sign-in-col input[type="password"],
+.all-informations-wrapper .sign-in-col input[type="email"]{
+	display: block;
+	width: 100%;
+}
+.account-input-block .select select {
+  width: 100%;
+}
+.account-input-block span.reqf {
+  display: none;
+}
+.account-input-block .select__arrow {
+  right: 1.7rem;
+  top: 4.3rem;
+}
+.order-links {
+  text-align: left;
+}
+.order-input-block .select__arrow {
+  right: 0.8rem;
+}
+}
+
