@@ -13,7 +13,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
+//= require parsley
+//= require vendor/modernizr-2.6.2.min
 //= require bootstrap.min
 //= require platform
 //= require pinit

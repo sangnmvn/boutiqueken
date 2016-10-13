@@ -30,8 +30,11 @@
   });
 
   //input required
-  $('input[required="required"]').before('<span class="reqf">*</span>');
-  $('select[required="required"]').closest('.select').before('<span class="reqf">*</span>');
+  setTimeout(function(){
+    $('input[required="required"]').before('<span class="reqf">*</span>');
+    $('select[required="required"]').closest('.select').before('<span class="reqf">*</span>');
+  },200)
+  
 
   //product aside bar toggling
   $('.trigger').on('click', function(){

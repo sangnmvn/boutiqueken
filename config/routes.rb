@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   #   resources :products
 
   # Example resource route with options:
-  #   resources :products do
+  resources :users do
+    member do
+      get 'profile' 
+    end
+  end
   #     member do
   #       get 'short'
   #       post 'toggle'

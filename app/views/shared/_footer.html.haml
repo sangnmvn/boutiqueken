@@ -1,0 +1,142 @@
+%footer.footer-area
+  -if !devise_controller?
+    .footer-top
+      .container
+        .footer-top-inner
+          .f-left.pull-left
+            .rotate-image
+              %img.img-responsive.pull-left{:alt => "rotate-img", :src => "/assets/img/rotate.png"}/
+            %h3 OUR NEW CATALOG IS HERE
+            %p
+              The latest issue now available online.
+              %a{:href => "#"} View Now
+          / .f-left ends
+          .f-center.pull-left
+            .exclusive.pull-left
+              %img{:alt => "saks-img", :src => "/assets/img/saks.png"}/
+              %img{:alt => "first-img", :src => "/assets/img/first.png"}/
+              %p Exclusive Rewards Card.
+            .start.pull-left
+              %h3
+                START GETTING
+                %br/
+                POINTS &amp; MORE
+              %p
+                from your first purchase with ourExclusive Rewards Card.
+                %a{:href => "#"} Apply Now
+          / .f-center ends
+          .f-right.pull-left
+            %form.pull-right{:action => "#"}
+              %label{:for => "sign-up-1"} SIGN UP FOR DAILY EMAILS
+              %input#sign-up-1{:placeholder => "Enter Email Address", :type => "text"}/
+              %button{:type => "submit"} GO
+          / .f-right ends
+        / .footer-top-inner ends
+      / .container ends
+    / .footer-top ends
+  -else
+    %br
+    %br
+    %br
+    %br
+    %br
+    %br
+    %br
+    %br
+  .footer-bottom
+    .container
+      %h2 We’re Dedicated to Our Customers 24/7
+      .footer-bottom-inner
+        .footer-sitemap
+          .row
+            .col-sm-3
+              %strong Shop Saks
+              %ul.ul-single-sitemap
+                %li
+                  %a{:href => "#"} EDITION
+                %li
+                  %a{:href => "#"} The Trendcaster
+                %li
+                  %a{:href => "#"} Fall Fashion: A Designer Series
+                %li
+                  %a{:href => "#"} Collection: A Contemporary Series
+                %li
+                  %a{:href => "#"} #SaksStyle Hub
+                %li
+                  %a{:href => "#"} Catalogs
+                %li
+                  %a{:href => "#"} Gift Cards
+            / .col-sm-3 ends
+            .col-sm-3
+              %strong Stores &amp; Corporate
+              %ul.ul-single-sitemap
+                %li
+                  %a{:href => "#"} Store Locations &amp; Events
+                %li
+                  %a{:href => "#"} Bridal Trunk Shows
+                %li
+                  %a{:href => "#"} About Us
+                %li
+                  %a{:href => "#"} Careers
+                %li
+                  %a{:href => "#"} Policies
+            / .col-sm-3 ends
+            .col-sm-3
+              %strong Shipping &amp; Returns
+              %ul.ul-single-sitemap
+                %li
+                  %a{:href => "#"} Domestic
+                %li
+                  %a{:href => "#"} International
+                %li
+                  %a{:href => "#"} Order Status &amp; Tracking
+            / .col-sm-3 ends
+            .col-sm-3
+              %strong SaksFirst Card
+              %ul.ul-single-sitemap
+                %li
+                  %a{:href => "#"} SaksFirst
+                %li
+                  %a{:href => "#"} Pay Bills &amp; Manage
+                %li
+                  %a{:href => "#"} Apply
+                %li
+                  %a{:href => "#"} Upgrade to the Saks MasterCard
+            / .col-sm-3 ends
+          / .row ends
+        / .footer-sitemap ends
+      / .footer-bottom-inner ends
+      .footer-social
+        %ul.ul-social-icons
+          %li
+            %a{:href => "#"}
+              %img{:alt => "pov-icon", :src => "/assets/img/icons/pov.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "fb-icon", :src => "/assets/img/icons/facebook.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "twitter-icon", :src => "/assets/img/icons/twitter.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "pinterest-icon", :src => "/assets/img/icons/pinterest.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "tumbler-icon", :src => "/assets/img/icons/tumbler.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "instagram-icon", :src => "/assets/img/icons/instagram.png"}/
+          %li
+            %a{:href => "#"}
+              %img{:alt => "youtube-icon", :src => "/assets/img/icons/youtube.png"}/
+        %a.download-app{:href => "#"}
+          Download the Saks App:
+          %img{:alt => "app-icon", :src => "/assets/img/icons/app.png"}/
+        %a.sign-up-sms{:href => "#"}
+          Sign up for SMS:
+          %img{:alt => "sms-icon", :src => "/assets/img/icons/sms.png"}/
+      / .footer-social ends
+      %p.copyright
+        © 2015, Saks Fifth Avenue
+        %span •
+        CA Transparency in Supply Chains Act

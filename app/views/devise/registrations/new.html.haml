@@ -1,0 +1,94 @@
+%section.section-sign-up-area
+  .container
+    .row
+      .col-md-11
+        %h1 create an account
+        %p.required-p *Required Information
+        / %form{:action => "#"}
+        = form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |f|
+          .devise-error
+            -flash.each do |name,msg|
+              %div.error-txt
+                = msg
+            %div.error-txt
+              = devise_error_messages!
+          .single-account-block.single-account-block-name
+            %h4 name
+            .name-input-block
+              %label{:for => "title"} Title
+              .select
+                / %select#title{:name => "title"}
+                /   %option{:selected => "selected"} Select a Title
+                /   %option{:value => "0"} Title 1
+                /   %option{:value => "1"} Title 2
+                /   %option{:value => "2"} Title 3
+                /   %option{:value => "3"} Title 4
+                =f.select :title,render_title
+                .select__arrow
+            .name-input-block
+              %label{:for => "first-name"} First Name
+              
+              = f.text_field :first_name, autofocus: true, autocomplete: "off", placeholder: "First Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, First Name is required!",:id =>"first_name"
+            .name-input-block.mi
+              %label{:for => "mi"} MI
+              / %input#mi{:type => "text"}/
+              = f.text_field :middle_name,autocomplete: "off", placeholder: "MI Name",:id =>"mi"
+            .name-input-block
+              %label{:for => "last-name"} Last Name
+              / %input#last-name{:required => "required", :type => "text"}/
+              = f.text_field :last_name,autocomplete: "off", placeholder: "Last Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Last Name is required!",:id =>"last_name"
+          / .single-account-block ends
+          .single-account-block.single-account-block-password
+            %h4 password
+            %p Passwords must be at least six characters and include one number and one letter.
+            .password-input-block
+              %label{:for => "password"} Password
+              / %input#password{:required => "required", :type => "password"}/
+              = f.password_field :password, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password is required!","data-parsley-trigger" => "change",:id =>"password"
+            .password-input-block
+              %label{:for => "confirm-password"} Confirm Password
+              = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password Confirmation is required!","data-parsley-trigger" => "change",:id =>"password_confirmation","data-parsley-equalto"=>"#password","parsley-equalto-message" => "Password confirmation does not match"
+            / .password-input-block
+            /   %label{:for => "confirm-password-2"} Confirm Password
+            /   %input#confirm-password-2{:type => "password"}/
+          / .single-account-block-password ends
+          .single-account-block.single-account-block-email
+            %h4 EMAIL ADDRESS FOR SIGN-IN &amp; SAKS EMAIL UPDATE
+            .email-input-block
+              %label{:for => "email"} Email Address
+              / %input#email{:required => "required", :type => "email"}/
+              = f.text_field :email, autofocus: true, autocomplete: "off", placeholder: "Email", :required =>"required", "data-parsley-type" =>"email", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Email is required!",:id =>"email"
+          / .single-account-block-email ends
+          .single-account-block.single-account-block-check
+            %h4 EMAIL CONTACT PREFERENCES
+            .checkbox-input-block
+              / <input type="checkbox" id="checkbox" name="check">
+              %label.control.control--checkbox
+                Yes, I would like to receive email updates about the latest trends, special events, new arrivals and exclusive offers from Saks Fifth Avenue.
+                %input{:checked => "checked", :type => "checkbox"}/
+                =f.check_box :is_contact_reference,:checked =>true
+                %span.control__indicator
+          / .single-account-block-check ends
+          .single-account-block.single-account-block-radio
+            %h4 ARE YOU CURRENTLY A SAKSFIRST MEMBER?
+            %p If so, you will be able to check the status of your SAKSFIRST Rewards online
+            .radio-input-block
+              %label.control.control--radio{:for => "no"}
+                No, I am not a SAKSFIRST
+                =f.radio_button :is_skas_member,false
+                %span.control__indicator
+              %label.control.control--radio{:for => "yes"}
+                Yes, I am a SAKSFIRST member
+                =f.radio_button :is_skas_member,true, checked: true
+                %span.control__indicator
+            %a{:href => "#"} What is SAKSFIRST?
+          / .single-account-block-radio ends
+          .signup-submit-buttons
+            %a.cancel-link{href: "#{root_path}"} Cancel
+            / %button{:type => "submit"} SAVE
+            = f.button "SAVE"
+          / .signup-submit-buttons ends
+      / .col-md-10 ends
+    / .row ends
+  / .container ends
+/ SIGN UP AREA ENDS

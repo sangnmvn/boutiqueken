@@ -1,0 +1,534 @@
+%section.section-signin-area
+  .container
+    %h2.sr-only My Account Navigation Area
+    .account-inner
+      .row
+        .col-md-3.col-sm-3
+          %aside.account-menu
+            %h3 MY ACCOUNT
+            %ul.ul-account
+              %li
+                %a{"data-account" => "dashboard", :href => "#"} Account Dashboard
+              %li.active
+                %a{"data-account" => "information", :href => "#"} Account Information
+              %li
+                %a{"data-account" => "address", :href => "#"} Address Book
+              %li
+                %a{"data-account" => "orders", :href => "#"} My Orders
+        / .col-md-3 ends
+        .col-md-7.col-sm-9
+          .all-informations-wrapper
+            / ACCOUNT INFORMATION AREA Starts
+            .single-account.show.account-information{"data-account" => "information"}
+              = form_for(@user, url: user_path(@user), html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |f|
+                %h1 Edit Account Information
+                %p.required-p *Required Information
+                .sign-in-col.sign-in-col-has-required
+                  %h4 account information
+                  .info-form-group
+                    %label{:for => "first-name"} First Name
+                    %input#first-name{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "last-name"} Last Name
+                    %input#last-name{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "email-address"} Email Address
+                    %input#email-address{:required => "required", :type => "email"}/
+                  / .info-form-group ends
+                  .info-form-group.info-form-group-single
+                    .checkbox-input-block
+                      %label.control.control--checkbox.change-password-trigger
+                        Change Password
+                        %input{:type => "checkbox"}/
+                        %span.control__indicator
+                    / .checkbox-input-block ends
+                  / .info-form-group ends
+                / .sign-in-col ends
+                .change-password-slideToggle
+                  .sign-in-col.sign-in-col-has-required
+                    %h4 change password
+                    .info-form-group
+                      %label{:for => "current-password"} Current Password
+                      %input#current-password{:required => "required", :type => "password"}/
+                    / .info-form-group ends
+                    .info-form-group
+                      %label{:for => "new-password"} New Password
+                      %input#new-password{:required => "required", :type => "password"}/
+                    / .info-form-group ends
+                    .info-form-group
+                      %label{:for => "confirm-password"} Confirm New Password
+                      %input#confirm-password{:required => "required", :type => "password"}/
+                    / .info-form-group ends
+                  / .sign-in-col ends
+                / .change-password-slideToggle ends
+                .signup-submit-buttons
+                  %button Cancel
+                  %button{:type => "submit"} SAVE
+                / .signup-submit-buttons ends
+            / .single-account ends
+            / ACCOUNT INFORMATION AREA Ends
+            / ADDRESS BOOK AREA Starts
+            .single-account.address-book{"data-account" => "address"}
+              %form{:action => "#"}
+                %h1 Add New Address
+                %p.required-p *Required Information
+                .sign-in-col.sign-in-col-has-required
+                  %h4 contact information
+                  .info-form-group
+                    %label{:for => "first-name2"} First Name
+                    %input#first-name2{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "last-name2"} Last Name
+                    %input#last-name2{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group.full-width
+                    %label{:for => "company"} Company
+                    %input#company{:type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "telephone"} Telephone
+                    %input#telephone{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "fax"} Fax
+                    %input#fax{:type => "text"}/
+                  / .info-form-group ends
+                / .sign-in-col ends
+                .sign-in-col.sign-in-col-has-required
+                  %h4 address
+                  .info-form-group.full-width
+                    %label{:for => "street"} Street Address
+                    %input#street.street-1{:required => "required", :type => "text"}/
+                    %input{:type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "city"} City
+                    %input#city{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    .account-input-block
+                      %label{:for => "zip"}
+                        State/Province
+                        %span.re.hidden-lg.hidden-md.hidden-sm *
+                      .select
+                        %select#zip{:name => "zip", :required => "required"}
+                          %option{:selected => "selected", :value => ""} Please select state/province
+                          %option{:value => "0"} option 1
+                          %option{:value => "1"} option 2
+                          %option{:value => "2"} option 3
+                          %option{:value => "3"} option 4
+                        .select__arrow
+                      / .select ends
+                    / .account-input-block ends
+                  / .info-form-group ends
+                  .info-form-group
+                    %label{:for => "zip2"} Zip/Postal Code
+                    %input#zip2{:required => "required", :type => "text"}/
+                  / .info-form-group ends
+                  .info-form-group
+                    .account-input-block
+                      %label{:for => "country"}
+                        Country
+                        %span.re.hidden-lg.hidden-md.hidden-sm *
+                      .select
+                        %select#country{:name => "country", :required => "required"}
+                          %option{:selected => "selected", :value => ""} United States
+                          %option{:value => "2"} Alzeria
+                          %option{:value => "3"} Bangladesh
+                          %option{:value => "4"} Brazil
+                          %option{:value => "5"} Australia
+                        .select__arrow
+                      / .select ends
+                    / .account-input-block ends
+                  / .info-form-group ends
+                / .sign-in-col ends
+                .signup-submit-buttons
+                  %button Cancel
+                  %button{:type => "submit"} SAVE
+                / .signup-submit-buttons ends
+            / .single-account ends
+            / ADDRESS BOOK AREA Ends
+            / DASHBOARD AREA Starts
+            .single-account.my-dashboard{"data-account" => "dashboard"}
+              %h1 My Dashboard
+              .dashboard-welcome-alert
+                %span.dsh-tx
+                  %i.fa.fa-check-circle{"aria-hidden" => "true"}
+                  Thank you for registering with main store.
+                %span.close.pull-right x
+              / .dashboard-welcome-alert ends
+              .welcome-text
+                %strong
+                  Hello,
+                  = succeed "!" do
+                    %span John Smith
+                %p From your My Account Dashboard you have the ability to view a snapshot of your recent account activity and update your account information. Select a link below to view or edit information.
+              / .welcome-text ends
+              .sign-in-col
+                %h3
+                  %i.fa.fa-user{"aria-hidden" => "true"}
+                  ACCOUNT INFORMATION
+                .dash-details
+                  .row
+                    .col-md-6.col-sm-6
+                      .c-single-info
+                        %header
+                          %h5.pull-left Contact Information
+                          %a.pull-right{:href => "#"} Edit
+                        %span.u-name John Smith
+                        %span.u-email john.smith@gmail.com
+                        %a{:href => "#"} Change Password
+                    / .col-md-6 ends
+                    .col-md-6.col-sm-6
+                      .c-single-info
+                        %header
+                          %h5.pull-left Contact Information
+                          %a.pull-right{:href => "#"} Edit
+                        You are currently not subscribed to any newsletter.
+                    / .col-md-6 ends
+                    .col-md-12.col-sm-12
+                      .c-single-info.full-c-info
+                        %header
+                          %h5.pull-left Address Book
+                          %a.pull-right{:href => "#"} Manage addresses
+                        .row
+                          .col-md-6.col-sm-6
+                            .c-single-info
+                              %strong Default Billing Address
+                              %span You've not set a default billing address
+                              %a{:href => "#"} Edit Address
+                          .col-md-6.col-sm-6
+                            %strong Default Shipping Address
+                            %span You've not set a default shipping address
+                            %a{:href => "#"} Edit Address
+                        / .row ends
+                      / .c-single-info ends
+                    / .col-md-12 ends
+                  / .row ends
+                / .dash-details ends
+              / .sign-in-col ends
+            / .single-account ends
+            / DASHBOARD AREA Ends
+            / ORDER AREA Starts
+            .single-account.my-orders{"data-account" => "orders"}
+              .my-order-list
+                %h1 My Orders
+                .order-bar
+                  %span.pull-left
+                    %span> 1
+                    item(s)
+                  .pull-right
+                    %span.pull-left Show
+                    .order-input-block.pull-left
+                      .select
+                        %select#order{:name => "order"}
+                          %option{:selected => "selected", :value => "0"} 10
+                          %option{:value => "1"} 15
+                          %option{:value => "2"} 20
+                          %option{:value => "3"} 25
+                          %option{:value => "4"} 30
+                        .select__arrow
+                      / .select ends
+                    / .order-input-block ends
+                    %span.pull-left per page
+                  / .pull-right ends
+                / .order-bar ends
+                / ORDER LIST FOR DESKTOP Starts
+                %table.table.table-bordered.hidden-xs
+                  %thead
+                    %tr
+                      %th{:scope => "row"} Order #
+                      %th{:scope => "row"} Date
+                      %th{:scope => "row"} Ship To
+                      %th{:scope => "row"} Order Total
+                      %th{:scope => "row"} Order Status
+                      %th{:scope => "row"}  
+                  %tbody
+                    %tr
+                      %td 1000002
+                      %td 10/1/16
+                      %td John Smith
+                      %td $2,704.99
+                      %td
+                        %i Pending
+                      %td
+                        %span.order-links
+                          %a{"data-order" => "o1", :href => "#"} View Order
+                          |
+                          %a{:href => "#"} Reorder
+                    %tr
+                      %td 1003
+                      %td 10/1/16
+                      %td James Bond
+                      %td $2,7.99
+                      %td
+                        %i Pending
+                      %td
+                        %span.order-links
+                          %a{"data-order" => "o2", :href => "#"} View Order
+                          |
+                          %a{:href => "#"} Reorder
+                / ORDER LIST FOR MOBILE Ends
+                / ORDER LIST FOR MOBILE Starts
+                %table.table.table-bordered.hidden-lg.hidden-md.hidden-sm
+                  %tbody
+                    %tr
+                      %th{:scope => "row"} Order #
+                      %td 1000002
+                      %td 1003
+                    %tr
+                      %th{:scope => "row"} Date
+                      %td 10/1/16
+                      %td 10/1/16
+                    %tr
+                      %th{:scope => "row"} Ship To
+                      %td John Smith
+                      %td James Bond
+                    %tr
+                      %th{:scope => "row"} Order Total
+                      %td $2,704.99
+                      %td $2,7.99
+                    %tr
+                      %th{:scope => "row"} Order Status
+                      %td
+                        %i Pending
+                      %td
+                        %i Pending
+                    %tr
+                      %th{:scope => "row"}  
+                      %td
+                        %span.order-links
+                          %a{"data-order" => "o1", :href => "#"} View Order
+                          |
+                          %a{:href => "#"} Reorder
+                      %td
+                        %span.order-links
+                          %a{"data-order" => "o2", :href => "#"} View Order
+                          |
+                          %a{:href => "#"} Reorder
+                / ORDER LIST FOR MOBILE Ends
+                .order-bar
+                  %span.pull-left
+                    %span> 1
+                    item(s)
+                  .pull-right
+                    %span.pull-left Show
+                    .order-input-block.pull-left
+                      .select
+                        %select#order2{:name => "order2"}
+                          %option{:selected => "selected", :value => "0"} 10
+                          %option{:value => "1"} 15
+                          %option{:value => "2"} 20
+                          %option{:value => "3"} 25
+                          %option{:value => "4"} 30
+                        .select__arrow
+                      / .select ends
+                    / .order-input-block ends
+                    %span.pull-left per page
+                  / .pull-right ends
+                / .order-bar ends
+              / .my-order-list ends
+              .single-order-wrapper
+                / SINGLE PRODUCT ORDER Starts
+                .single-product-order-details{"data-order" => "o1"}
+                  %h1
+                    Order #
+                    %span.p-id 1000002
+                    \-
+                    %span.status Pending
+                  %h4
+                    About This Product:
+                    %strong Order Information
+                  %h4.no-border Order Date: October 1, 2016.
+                  .sign-in-col.sign-in-col-has-required
+                    .row
+                      .col-md-6
+                        %h5 Shipping Address
+                        %span.name John Smith
+                        %span.road 1/9/3, Waashington DC
+                        %span.province New York
+                        %span.country United States
+                        %span.tel 555-555-5555
+                      .col-md-6
+                        %h5 Shipping Method
+                        Flat Rate - Fixed
+                    / .row ends
+                  / .sign-in-col ends
+                  .sign-in-col.sign-in-col-has-required
+                    .row
+                      .col-md-6
+                        %h5 Billing Address
+                        %span.name John Smith
+                        %span.road 1/9/3, Waashington DC
+                        %span.province New York
+                        %span.country United States
+                        %span.tel 555-555-5555
+                      .col-md-6
+                        %h5 Payment Method
+                        Check/Money Order
+                    / .row ends
+                  / .sign-in-col ends
+                  %h5 Items Ordered
+                  / ORDER LIST FOR DESKTOP Starts
+                  %table.table.table-bordered.hidden-xs
+                    %thead
+                      %tr
+                        %th{:scope => "row"} Product Name
+                        %th{:scope => "row"} SKU
+                        %th{:scope => "row"} Price
+                        %th{:scope => "row"} Qty
+                        %th{:scope => "row"} Subtotal
+                    %tbody
+                      %tr
+                        %td Sony VAIO VGN-TXN27N/B 11.11" Notebook PC
+                        %td VGN- TXN27N/B
+                        %td $2,704.99
+                        %td
+                          Ordered:
+                          %strong 1
+                        %td $2,704.99
+                  / ORDER LIST FOR DESKTOP Ends
+                  / ORDER LIST FOR MOBILE Starts
+                  %table.table.table-bordered.hidden-lg.hidden-md.hidden-sm
+                    %tbody
+                      %tr
+                        %th{:scope => "row"} Product Name
+                        %td Sony VAIO VGN-TXN27N/B 11.11" Notebook PC
+                      %tr
+                        %th{:scope => "row"} SKU
+                        %td VGN- TXN27N/B
+                      %tr
+                        %th{:scope => "row"} Price
+                        %td $2,704.99
+                      %tr
+                        %th{:scope => "row"} Qty
+                        %td
+                          Ordered:
+                          %strong 1
+                      %tr
+                        %th{:scope => "row"} Subtotal
+                        %td $2,704.99
+                  / ORDER LIST FOR MOBILE Ends
+                  .order-bar
+                    .order-grand.pull-right
+                      .title.pull-left
+                        %p Subtotal
+                        %p Shipping &amp; Handling
+                        %strong Grand Total
+                      .result.pull-left
+                        %p $2,704.99
+                        %p $5.00
+                        %strong $2,709.99
+                  / .order-bar ends
+                  .signup-submit-buttons
+                    %button Back to My Orders
+                  / .signup-submit-buttons ends
+                / .single-product-order-details ends
+                / SINGLE PRODUCT ORDER Ends
+                / SINGLE PRODUCT ORDER Starts
+                .single-product-order-details{"data-order" => "o2"}
+                  %h1
+                    Order #
+                    %span.p-id 1003
+                    \-
+                    %span.status Pending
+                  %h4
+                    About This Product:
+                    %strong Order Information
+                  %h4.no-border Order Date: October 1, 2016.
+                  .sign-in-col.sign-in-col-has-required
+                    .row
+                      .col-md-6
+                        %h5 Shipping Address
+                        %span.name John Smith
+                        %span.road 1/9/3, Waashington DC
+                        %span.province New York
+                        %span.country United States
+                        %span.tel 555-555-5555
+                      .col-md-6
+                        %h5 Shipping Method
+                        Flat Rate - Fixed
+                    / .row ends
+                  / .sign-in-col ends
+                  .sign-in-col.sign-in-col-has-required
+                    .row
+                      .col-md-6
+                        %h5 Billing Address
+                        %span.name John Smith
+                        %span.road 1/9/3, Waashington DC
+                        %span.province New York
+                        %span.country United States
+                        %span.tel 555-555-5555
+                      .col-md-6
+                        %h5 Payment Method
+                        Check/Money Order
+                    / .row ends
+                  / .sign-in-col ends
+                  %h5 Items Ordered
+                  / ORDER LIST FOR DESKTOP Starts
+                  %table.table.table-bordered.hidden-xs
+                    %thead
+                      %tr
+                        %th{:scope => "row"} Product Name
+                        %th{:scope => "row"} SKU
+                        %th{:scope => "row"} Price
+                        %th{:scope => "row"} Qty
+                        %th{:scope => "row"} Subtotal
+                    %tbody
+                      %tr
+                        %td MacBook Pro 15.4"
+                        %td VGN- TXN27N/B
+                        %td $2,804.99
+                        %td
+                          Ordered:
+                          %strong 1
+                        %td $2,804.99
+                  / ORDER LIST FOR DESKTOP Ends
+                  / ORDER LIST FOR MOBILE Starts
+                  %table.table.table-bordered.hidden-lg.hidden-md.hidden-sm
+                    %tbody
+                      %tr
+                        %th{:scope => "row"} Product Name
+                        %td Sony VAIO VGN-TXN27N/B 11.11" Notebook PC
+                      %tr
+                        %th{:scope => "row"} SKU
+                        %td VGN- TXN27N/B
+                      %tr
+                        %th{:scope => "row"} Price
+                        %td $2,704.99
+                      %tr
+                        %th{:scope => "row"} Qty
+                        %td
+                          Ordered:
+                          %strong 1
+                      %tr
+                        %th{:scope => "row"} Subtotal
+                        %td $2,704.99
+                  / ORDER LIST FOR MOBILE Ends
+                  .order-bar
+                    .order-grand.pull-right
+                      .title.pull-left
+                        %p Subtotal
+                        %p Shipping &amp; Handling
+                        %strong Grand Total
+                      .result.pull-left
+                        %p $2,704.99
+                        %p $5.00
+                        %strong $2,709.99
+                  / .order-bar ends
+                  .signup-submit-buttons
+                    %button Back to My Orders
+                  / .signup-submit-buttons ends
+                / .single-product-order-details ends
+                / SINGLE PRODUCT ORDER Ends
+              / .single-order-wrapper ends
+            / .single-account ends
+            / ORDER AREA Ends
+          / .all-informations-wrapper ends
+        / .col-md-7 ends
+      / .row ends
+    / .account-inner ends
+  / .container ends

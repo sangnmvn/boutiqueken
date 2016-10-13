@@ -3195,3 +3195,37 @@ input[type=number]::-webkit-outer-spin-button {
         page-break-after: avoid;
     }
 }
+
+
+.error-txt{
+  color: red;
+  h2{
+    color: red;
+  }
+}
+
+.btn-cus{
+  background: #000;
+  color: #fff;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 600;
+  float: right;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+
+}
+.btn-cus:hover{
+  color: #fff;
+  text-decoration: none;
+}
+
+.cancel-link{
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 2.2rem;
+  text-decoration: underline;
+  font-weight: 300;
+  padding: 0;
+}

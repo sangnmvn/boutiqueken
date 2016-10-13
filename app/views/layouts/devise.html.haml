@@ -1,0 +1,37 @@
+!!!
+/[if lt IE 7] <html class="no-js lt-ie9 lt-ie8 lt-ie7">
+/[if IE 7] <html class="no-js lt-ie9 lt-ie8">
+/[if IE 8] <html class="no-js lt-ie9">
+/ [if gt IE 8]><!
+%html.no-js{:lang => "en"}
+  / <![endif]
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Product Details
+    %meta{:content => "", :name => "description"}/
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
+    / Place favicon.ico and apple-touch-icon.png in the root directory
+    %link{:href => "http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}/
+    / For third-generation iPad with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "144x144"}/
+    / For iPhone with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "114x114"}/
+    / For first- and second-generation iPad:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "72x72"}/
+    / For non-Retina iPhone, iPod Touch, and Android 2.1+ devices:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed"}/
+    / Google Fonts
+    %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800", :rel => "stylesheet"}/
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => false
+    = javascript_include_tag 'application', 'data-turbolinks-track' => false
+    = csrf_meta_tags 
+    /[if IE] <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  %body
+    /[if lt IE 7]
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    / HEADER STARTS
+    =render "shared/header"
+    = yield
+    =render "shared/footer"
