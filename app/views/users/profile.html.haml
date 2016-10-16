@@ -4,17 +4,7 @@
     .account-inner
       .row
         .col-md-3.col-sm-3
-          %aside.account-menu
-            %h3 MY ACCOUNT
-            %ul.ul-account
-              %li
-                %a{"data-account" => "dashboard", :href => "#"} Account Dashboard
-              %li.active
-                %a{"data-account" => "information", :href => "#"} Account Information
-              %li
-                %a{"data-account" => "address", :href => "#"} Address Book
-              %li
-                %a{"data-account" => "orders", :href => "#"} My Orders
+          =render "left_menu"
         / .col-md-3 ends
         .col-md-7.col-sm-9
           .all-informations-wrapper

@@ -18,7 +18,9 @@ Rails.application.routes.draw do
   # Example resource route with options:
   resources :users do
     member do
-      get 'profile' 
+      get 'profile'
+      get 'dashboard' 
+      get 'address_book' 
     end
   end
   #     member do

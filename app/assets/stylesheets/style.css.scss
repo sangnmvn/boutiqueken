@@ -3248,3 +3248,53 @@ input[type=number]::-webkit-outer-spin-button {
     padding-left: 0px;
   }
 }
+
+.no-pd-lr{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/*====DASHBOARD PAGE*/
+.my-dashboard{
+  .title-text{
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .mg-top-10{
+    margin-top: 5px;
+  }
+  .contact-text{
+    font-size: 14px;
+    font-style: italic;
+  }
+  .manage-address{
+    font-size: 12px;
+    padding-left: 15px;
+    font-weight: normal;
+  }
+  .my-dashboard-link{
+    a{
+      color: #3399cc;
+      text-decoration: none;
+    }
+  }
+}
+
+
+/*=====ADDRESS BOOK*/
+.my-address-book{
+  .big-title{
+    font-size: 24px;
+  }
+  .small-title{
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .change-address{
+    padding-top: 10px;
+    a{
+      color: #3399cc;
+      text-decoration: none;
+    }
+  }
+}

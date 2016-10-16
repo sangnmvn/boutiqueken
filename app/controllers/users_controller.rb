@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   layout "devise"
-  before_filter :get_user, :only =>[:profile,:update]
+  before_filter :get_user, :only =>[:profile,:update,:dashboard]
   before_filter :authenticate_user!
   def index
     # redirect_to new_user_session_path
@@ -30,10 +30,17 @@ class UsersController < ApplicationController
     	
   end
 
+  def address_book
+    
+  end
+
   def get_user
     @user = User.find(params[:id])
   end
 
+  def dashboard
+    
+  end
   protected
   def user_params
     params.require(:user).permit(:password, :password_confirmation,:first_name,:last_name)

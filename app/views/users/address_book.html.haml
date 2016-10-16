@@ -1,0 +1,51 @@
+%section.section-signin-area.my-address-book
+  .container
+    %h2.sr-only My Account Navigation Area
+    .account-inner
+      .row
+        .col-md-3.col-sm-3
+          =render "left_menu"
+        / .col-md-3 ends
+        .col-md-9.col-sm-9
+          .all-informations-wrapper
+            / ACCOUNT INFORMATION AREA Starts
+            .single-account.show.account-information{"data-account" => "information"}
+              %h2
+                ADDRESS BOOK
+              .add-new-address
+                =link_to "ADD NEW ADDRESS","#",class: "btn-cus btn-add-new-address"
+              .clear-fix
+              %br
+              %br
+              .row
+                .col-md-6
+                  .big-title
+                    DEFAULT ADDRESSES
+                  .small-title
+                    DEFAULT BILLING ADDRESS
+                  .address-info
+                    John SmithDemo
+                    111111111
+                    New York, New York, 11111
+                    United States
+                    T: 11111111111111
+                    .change-address
+                      =link_to "Change Billing Address","#"
+                  %br
+                  %br
+                  %br
+                  .small-title
+                    DEFAULT SHIPPING ADDRESS
+                  .address-info
+                    John SmithDemo
+                    111111111
+                    New York, New York, 11111
+                    United States
+                    T: 11111111111111
+                    .change-address
+                      =link_to "Change Shipping Address","#"
+                .col-md-6
+                  .big-title
+                    ADDITIONAL ADDRESS ENTRIES
+                  .small-title
+                    DEFAULT BILLING ADDRESS
