@@ -72,15 +72,18 @@
   });
 
   //Change password trigger
-  $('.change-password-trigger').find('input').attr('checked', 'checked');
-  $('.change-password-trigger').click( function(){
-    $('.change-password-slideToggle').slideToggle(250);
-    if ($('.change-password-trigger input').attr('checked')) {
-        $('.change-password-trigger input').removeAttr('checked');
-    } else {
-        $('.change-password-trigger input').attr('checked', 'checked');
-    }
-  });
+  setTimeout(function(){
+    $('.change-password-trigger').find('input').attr('checked', 'checked');
+    $('.change-password-trigger').click( function(){
+      $('.change-password-slideToggle').slideToggle(250);
+      if ($('.change-password-trigger input').attr('checked')) {
+          $('.change-password-trigger input').removeAttr('checked');
+      } else {
+          $('.change-password-trigger input').attr('checked', 'checked');
+      }
+    });
+  },200)
+  
 
   //dashboard Alert
   $('.dashboard-welcome-alert').find('.close').on('click', function(){

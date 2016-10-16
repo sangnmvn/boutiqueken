@@ -25,23 +25,34 @@
                 %p.required-p *Required Information
                 .sign-in-col.sign-in-col-has-required
                   %h4 account information
+                  .devise-error
+                    -if flash.present? && flash[:error].present?
+                      %div.error-txt
+                        = flash[:error]
+                  .devise-notice
+                    -if flash.present? && flash[:notice].present?
+                      %div.notice-txt
+                        = flash[:notice]
                   .info-form-group
                     %label{:for => "first-name"} First Name
-                    %input#first-name{:required => "required", :type => "text"}/
+                    / %input#first-name{:required => "required", :type => "text"}/
+                    = f.text_field :first_name, autofocus: true, autocomplete: "off", placeholder: "First Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, First Name is required!",:id =>"first-name"
                   / .info-form-group ends
                   .info-form-group
                     %label{:for => "last-name"} Last Name
-                    %input#last-name{:required => "required", :type => "text"}/
+                    / %input#last-name{:required => "required", :type => "text"}/
+                    = f.text_field :last_name,autocomplete: "off", placeholder: "Last Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Last Name is required!",:id =>"last_name"
                   / .info-form-group ends
                   .info-form-group
                     %label{:for => "email-address"} Email Address
-                    %input#email-address{:required => "required", :type => "email"}/
+                    / %input#email-address{:required => "required", :type => "email"}/
+                    = f.text_field :email, autofocus: true, autocomplete: "off", placeholder: "Email", :required =>"required", "data-parsley-type" =>"email", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Email is required!",:id =>"email",disabled: "disabled"
                   / .info-form-group ends
                   .info-form-group.info-form-group-single
                     .checkbox-input-block
                       %label.control.control--checkbox.change-password-trigger
                         Change Password
-                        %input{:type => "checkbox"}/
+                        %input{:type => "checkbox",:checked =>"checked"}/
                         %span.control__indicator
                     / .checkbox-input-block ends
                   / .info-form-group ends
@@ -51,15 +62,18 @@
                     %h4 change password
                     .info-form-group
                       %label{:for => "current-password"} Current Password
-                      %input#current-password{:required => "required", :type => "password"}/
+                      / %input#current-password{:required => "required", :type => "password"}/
+                      =f.password_field :current_password, autocomplete: "off",placeholder: "Current password", :required =>"required", "data-parsley-required-message" => "Oops, Current password is required!","data-parsley-trigger" => "change",:id =>"current-password"
                     / .info-form-group ends
                     .info-form-group
                       %label{:for => "new-password"} New Password
-                      %input#new-password{:required => "required", :type => "password"}/
+                      / %input#new-password{:required => "required", :type => "password"}/
+                      = f.password_field :password, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password is required!","data-parsley-trigger" => "change",:id =>"new-password"
                     / .info-form-group ends
                     .info-form-group
                       %label{:for => "confirm-password"} Confirm New Password
-                      %input#confirm-password{:required => "required", :type => "password"}/
+                      / %input#confirm-password{:required => "required", :type => "password"}/
+                      = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password Confirmation is required!","data-parsley-trigger" => "change",:id =>"confirm-password","data-parsley-equalto"=>"#new-password","parsley-equalto-message" => "Password confirmation does not match"
                     / .info-form-group ends
                   / .sign-in-col ends
                 / .change-password-slideToggle ends

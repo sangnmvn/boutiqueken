@@ -26,7 +26,7 @@
                 =f.select :title,render_title
                 .select__arrow
             .name-input-block
-              %label{:for => "first-name"} First Name
+              %label{:for => "first_name"} First Name
               
               = f.text_field :first_name, autofocus: true, autocomplete: "off", placeholder: "First Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, First Name is required!",:id =>"first_name"
             .name-input-block.mi

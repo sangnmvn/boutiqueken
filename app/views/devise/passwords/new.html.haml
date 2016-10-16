@@ -1,0 +1,17 @@
+%section.section-signin-area
+  .container
+    .signin-inner
+      .row
+        .col-md-6
+          .sign-in-col.sign-in-col-left.forgot-pass
+            %h4 Forgot your password?
+            %p Email will be sent via your email address
+            = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post,class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off" }) do |f|
+              .devise-error
+                .error-txt
+                  = devise_error_messages!
+              %label{:for => "email"} Email Address
+              .col-md-9.email-input
+                = f.text_field :email, autofocus: true, autocomplete: "off", placeholder: "Email", required: true, "data-parsley-type" =>"email", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Email is required!",:id =>"email"
+              .col-md-3.send-mail
+                = f.submit "Send Email",class: "btn-cus btn-reset"

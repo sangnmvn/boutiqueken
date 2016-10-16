@@ -20,9 +20,14 @@
             )
         -if current_user.present?
           %li
-            =link_to current_user.full_name,profile_user_path
+            =link_to current_user.full_name,profile_user_path(current_user)
           %li
             = link_to "Log out", destroy_user_session_path,method: :delete
+        -else
+          %li
+            =link_to "Sign In",new_user_session_path
+          %li
+            = link_to "Sign Up", new_user_registration_path
       / DESKTOP TOP LINKS ENDS
       / MOBILE TOP LINKS STARTS
       %ul.ul-top-navigation.ul-top-navigation-mobile.hidden-lg.hidden-md.hidden-sm.pull-right
@@ -62,110 +67,7 @@
     / DESKTOP NAVIGATION STARTS
     %nav.main-navigation.hidden-xs
       %ul
-        %li#ShopByDesignerNavMenu.menu-item.span-3.first-child
-          %a{:href => "#"} DESIGNERS
-          %ul.sub-menu.designers-menu
-            %li.triangle
-            %li.sub-menu-column.first-child
-              %b DESIGNERS BY CATEGORY
-              %ul
-                %li
-                  %a{:href => "#"} Women's Apparel
-                %li
-                  %a{:href => "#"} Shoes
-                %li
-                  %a{:href => "#"} Handbags
-                %li
-                  %a{:href => "#"} Jewelry &amp; Accessories
-                %li
-                  %a{:href => "#"} Beauty
-                %li
-                  %a{:href => "#"} Men
-                %li
-                  %a{:href => "#"} Kids
-                %li
-                  %a{:href => "#"} Home
-                %li
-                  %a{:href => "#"} Sale
-            / SUBMENU COLUMN ENDS
-            %li.sub-menu-column.last-child
-              %b FEATURED DESIGNERS
-              %ul
-                %li
-                  %a{:href => "#"} 3.1 Phillip Lim
-                %li
-                  %a{:href => "#"} Akris/Akris punto
-                %li
-                  %a{:href => "#"} Alexander McQueen
-                %li
-                  %a{:href => "#"} Alice + Olivia
-                %li
-                  %a{:href => "#"} Balmain
-                %li
-                  %a{:href => "#"} Bottega Veneta
-                %li
-                  %a{:href => "#"} Brunello Cucinelli
-                %li
-                  %a{:href => "#"} Burberry
-                %li
-                  %a{:href => "#"} Chloe
-                %li
-                  %a{:href => "#"} Christian Louboutin
-                %li
-                  %a{:href => "#"} Diane von Furstenberg
-                %li
-                  %a{:href => "#"} Dolce &amp; Gabbana
-                %li
-                  %a{:href => "#"} Eileen Fisher
-                %li
-                  %a{:href => "#"} Fendi
-                %li
-                  %a{:href => "#"} Gianvito Rossi
-                %li
-                  %a{:href => "#"} Giorgio Armani
-                %li
-                  %a{:href => "#"} Givenchy
-                %li
-                  %a{:href => "#"} Gucci
-              %ul
-                %li
-                  %a{:href => "#"} Jimmy Choo
-                %li
-                  %a{:href => "#"} Joie
-                %li
-                  %a{:href => "#"} Lanvin
-                %li
-                  %a{:href => "#"} Manolo Blahnik
-                %li
-                  %a{:href => "#"} Moncler
-                %li
-                  %a{:href => "#"} Prada
-                %li
-                  %a{:href => "#"} Proenza Schouler
-                %li
-                  %a{:href => "#"} Rag &amp; Bone
-                %li
-                  %a{:href => "#"} Ralph Lauren
-                %li
-                  %a{:href => "#"} Saint Laurent
-                %li
-                  %a{:href => "#"} Salvatore Ferragamo
-                %li
-                  %a{:href => "#"} Stella McCartney
-                %li
-                  %a{:href => "#"} St. John
-                %li
-                  %a{:href => "#"} Theory
-                %li
-                  %a{:href => "#"} The Row
-                %li
-                  %a{:href => "#"} Tory Burch
-                %li
-                  %a{:href => "#"} Valentino
-                %li
-                  %a{:href => "#"} Vince
-            / SUBMENU COLUMN ENDS
-          / SUBMENU ENDS
+        =render "shared/menu_top"
         %li#WomensApparelNavMenu.menu-item.span-3
           %a{:href => "#"} WOMEN'S APPAREL
           %ul.sub-menu
