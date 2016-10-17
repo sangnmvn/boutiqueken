@@ -1,4 +1,4 @@
-(function(){
+$(document).ready(function(){
   
   //OWN CAROUSEL
   $("#owl-demo").owlCarousel({
@@ -145,4 +145,4 @@
   });
 
 
-})();
+});

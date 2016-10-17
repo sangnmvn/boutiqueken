@@ -28,15 +28,18 @@ function showFirst(){
 	currentTarget = 0;
 	previousTarget = 0;
 	zoomState = initialZoom;
+  if(document.querySelector('.large-image-area') !=null){
+	  document.querySelector('.large-image-area').style.cursor = 'crosshair';
+  }
+  if(images.length >0){
+  	images[0].classList.add('show-imidiate');
+  	for(var i = 1, x = images.length; i < x; i++){
+  		images[i].classList.add('hide-imidiate');
+  	}
+    largeImageHeight();
+  }
 
-	document.querySelector('.large-image-area').style.cursor = 'crosshair';
-
-	images[0].classList.add('show-imidiate');
-	for(var i = 1, x = images.length; i < x; i++){
-		images[i].classList.add('hide-imidiate');
-	}
-
-	largeImageHeight();
+	
 }
 
 function clearAll(){
@@ -211,15 +214,25 @@ function toggleZoom(event){
 	disableEnableZoomColor();
 	showCenter();
 }
-
-document.getElementsByClassName('thumbnail-area')[0].addEventListener('click', smallImageClick);
-document.getElementsByClassName('large-image-area')[0].addEventListener('mousemove', moveImage);
-document.getElementsByClassName('large-image-area')[0].addEventListener('mouseout', normalImage);
-
+if(document.getElementsByClassName('thumbnail-area').length >0){
+  document.getElementsByClassName('thumbnail-area')[0].addEventListener('click', smallImageClick);
+}
+if(document.getElementsByClassName('large-image-area').length >0){
+  document.getElementsByClassName('large-image-area')[0].addEventListener('mousemove', moveImage);
+  document.getElementsByClassName('large-image-area')[0].addEventListener('mouseout', normalImage);
+}
+if(document.getElementById('zoom-in')!=null){
 document.getElementById('zoom-in').addEventListener('click', zoomIn);
+}
+if(document.getElementById('zoom-out') !=null){
 document.getElementById('zoom-out').addEventListener('click', zoomOut);
+}
+if(document.getElementById('reset-zoom')!=null){
 document.getElementById('reset-zoom').addEventListener('click', resetZoom);
+}
+if(document.getElementById('toggle-zoom')!=null){
 document.getElementById('toggle-zoom').addEventListener('click', toggleZoom);
+}
 
 
 window.addEventListener('load', showFirst);
