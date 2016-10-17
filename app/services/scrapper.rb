@@ -13,7 +13,7 @@ class Scrapper
     #+ root url and proxy should be loaded from configuration
     #+ change country before scrapping
     @agent.set_proxy '96.9.252.126', 8080
-    #@agent.set_proxy '127.0.0.1', 5555
+    #@agent.set_proxy '137.135.166.225', 8119
   end
 
   def process
@@ -271,7 +271,71 @@ class Scrapper
   end
 
   def scrape_product_page
-    page = agent.get('http://www1.macys.com/shop/product/ideology-rapidry-heathered-t-shirt-only-at-macys?ID=2255076&CategoryID=29891#fn=sp%3D1%26spc%3D2092%26ruleId%3D65%7CBS%7CBA%26slotId%3D6')
+    page = agent.get('http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=951160&source=100')
 
+    # NOTE: based on h["productThumbnail"]["childProductIds"] to product or product collection
+    # CASE 1: only one product in detail page
+    h = JSON.parse(page.body)
+
+    # crawl 'customers also loved/shopped'
+    recommendations = agent.post('http://www1.macys.com/sdp/rto/request/recommendations',{
+        maxRecommendations: "15",
+        requester: "MCOM-NAVAPP",
+        timeout: "15000",
+        cts: "http://www.macys.com",
+        productId: "951160",
+        categoryId: "255",
+        context: "PDP_ZONE_A|PDP_ZONE_B",
+        visitorId: "1111111111",
+        countryCode: "US",
+        zipCode: "",
+        stateCode: "CA",
+        customerId: "111111111"
+      },
+      "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"
+    )
+
+    # get imgs
+    color_primary_imgs = h["productThumbnail"]["colorwayPrimaryImages"]
+    color_add_imgs = h["productThumbnail"]["colorwayAdditionalImages"]
+
+    # get video id
+    video_id = h["productThumbnail"]["videoID"]
+
+    # long description
+    long_desc = h["productThumbnail"]["longDescription"]
+
+    # product description / product name / product short description
+    short_desc = h["productThumbnail"]["productDescription"]
+
+    # bullet text
+    bullet_texts = h["productThumbnail"]["bulletText"]
+
+    # CASE 2: product collection page
+    page = agent.get('http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=866649&source=100')
+    h = JSON.parse(page.body)
+
+    # collection details
+    collection_details = h["productThumbnail"]
+
+    # list of products in collection
+    # this first one is id of collection 
+    productIds = h["productThumbnail"]["childProductIds"]
+
+    # get imgs
+    color_primary_imgs = h["productThumbnail"]["colorwayPrimaryImages"]
+    color_add_imgs = h["productThumbnail"]["colorwayAdditionalImages"]
+
+    # get video id
+    video_id = h["productThumbnail"]["videoID"]
+
+    # long description
+    long_desc = h["productThumbnail"]["longDescription"]
+
+    # bullet text
+    bullet_texts = h["productThumbnail"]["bulletText"]
+
+    # product description / product name / product short description
+    short_desc = h["productThumbnail"]["productDescription"]
   end
 end
