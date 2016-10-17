@@ -17,6 +17,9 @@
               .clear-fix
               %br
               %br
+              -if flash[:notice].present?
+                .notice-txt
+                  =flash[:notice]
               .row
                 .col-md-6
                   .big-title

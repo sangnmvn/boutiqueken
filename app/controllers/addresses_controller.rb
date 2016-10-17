@@ -16,7 +16,7 @@ class AddressesController < ApplicationController
   def create
     @address = Address.new(address_params.merge({user_id: current_user.id}))
     if @address.save
-      redirect_to address_book_user_path(current_user)
+      redirect_to address_book_user_path(current_user),:notice =>"The address has been created."
     end
   end
 
@@ -24,7 +24,7 @@ class AddressesController < ApplicationController
     puts @address.update_attributes(address_params)
     puts @address.errors.inspect
     if @address.save
-      redirect_to address_book_user_path(current_user)
+      redirect_to address_book_user_path(current_user),:notice =>"The address has been saved."
     end  
   end
 
