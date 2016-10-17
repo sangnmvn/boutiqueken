@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
-
+  get "home/subregions"
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       get 'dashboard' 
       get 'address_book' 
     end
+    resources :addresses
   end
   #     member do
   #       get 'short'

@@ -5,7 +5,7 @@
       %a{"data-account" => "dashboard", :href => "#{dashboard_user_path(current_user)}"} Account Dashboard
     %li{:class =>params[:action]=="profile" ? "active" : ""}
       %a{"data-account" => "information", :href => "#{profile_user_path(current_user)}"} Account Information
-    %li{:class =>params[:action]=="address_book" ? "active" : ""}
+    %li{:class =>active_address_left_menu}
       %a{"data-account" => "address", :href => "#{address_book_user_path(current_user)}"} Address Book
     %li
       %a{"data-account" => "orders", :href => "#"} My Orders

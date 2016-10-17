@@ -13,7 +13,7 @@
               %h2
                 ADDRESS BOOK
               .add-new-address
-                =link_to "ADD NEW ADDRESS","#",class: "btn-cus btn-add-new-address"
+                =link_to "ADD NEW ADDRESS",new_user_address_path(current_user),class: "btn-cus btn-add-new-address"
               .clear-fix
               %br
               %br
@@ -24,28 +24,60 @@
                   .small-title
                     DEFAULT BILLING ADDRESS
                   .address-info
-                    John SmithDemo
-                    111111111
-                    New York, New York, 11111
-                    United States
-                    T: 11111111111111
-                    .change-address
-                      =link_to "Change Billing Address","#"
+                    -if @default_billing.present?
+                      %div
+                        =@default_billing.full_name
+                      %div
+                        =@default_billing.street_address
+                      %div
+                        =@default_billing.full_address
+                      %div
+                        =@default_billing.country_name
+                      %div
+                        T:
+                        =@default_billing.telephone
+                      .change-address
+                        =link_to "Change Billing Address",edit_user_address_path(current_user.id,@default_billing.id)
                   %br
                   %br
                   %br
                   .small-title
                     DEFAULT SHIPPING ADDRESS
                   .address-info
-                    John SmithDemo
-                    111111111
-                    New York, New York, 11111
-                    United States
-                    T: 11111111111111
-                    .change-address
-                      =link_to "Change Shipping Address","#"
+                    -if @default_shipping.present?
+                      %div
+                        =@default_shipping.full_name
+                      %div
+                        =@default_shipping.street_address
+                      %div
+                        =@default_shipping.full_address
+                      %div
+                        =@default_shipping.country_name
+                      %div
+                        T:
+                        =@default_shipping.telephone
+                      .change-address
+                        =link_to "Change Shipping Address",edit_user_address_path(current_user.id,@default_shipping.id)
                 .col-md-6
                   .big-title
                     ADDITIONAL ADDRESS ENTRIES
                   .small-title
                     DEFAULT BILLING ADDRESS
+                  .list-address
+                    -@other_address.each do |i|
+                      .address-info
+                        %div
+                          =i.full_name
+                        %div
+                          =i.street_address
+                        %div
+                          =i.full_address
+                        %div
+                          =i.country_name
+                        %div
+                          T:
+                          =i.telephone
+                        .address-item-actions
+                          =link_to "Edit Address",edit_user_address_path(current_user,i.id)
+                          |
+                          =link_to "Delete Address",user_address_path(current_user,i.id), method: :delete,data: {:confirm =>"Are you sure want to delete this address"}

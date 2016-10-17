@@ -56,10 +56,35 @@
                 .col-md-4
                   .title-text
                     DEFAULT BILLING ADDRESS
+                  -if @default_billing.present?
+                    .italic-txt
+                      %div
+                        =@default_billing.full_name
+                      %div
+                        =@default_billing.street_address
+                      %div
+                        =@default_billing.full_address
+                      %div
+                        =@default_billing.country_name
+                      %div
+                        T:
+                        =@default_billing.telephone
                 .col-md-2.no-pd-lr
-                  =link_to "EDIT ADDRESS","#"
+                  =link_to "EDIT ADDRESS",edit_user_address_path(current_user.id,@default_billing.id) if @default_billing.present?
                 .col-md-4
                   .title-text
                     DEFAULT SHIPPING ADDRESS
+                  .italic-txt
+                    %div
+                      =@default_shipping.full_name
+                    %div
+                      =@default_shipping.street_address
+                    %div
+                      =@default_shipping.full_address
+                    %div
+                      =@default_shipping.country_name
+                    %div
+                      T:
+                      =@default_shipping.telephone
                 .col-md-2.no-pd-lr
-                  =link_to "EDIT ADDRESS","#"
+                  =link_to "EDIT ADDRESS",edit_user_address_path(current_user.id,@default_shipping.id) if @default_billing.present?

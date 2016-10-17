@@ -24,3 +24,4 @@
 //= require jquery.rateit
 //= require main
 //= require masonry.pkgd
+//= require address

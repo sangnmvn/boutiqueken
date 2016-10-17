@@ -3278,6 +3278,9 @@ input[type=number]::-webkit-outer-spin-button {
       text-decoration: none;
     }
   }
+  .italic-txt{
+    font-style: italic;
+  }
 }
 
 
@@ -3297,4 +3300,34 @@ input[type=number]::-webkit-outer-spin-button {
       text-decoration: none;
     }
   }
+  .address-item-actions{
+    padding-top: 10px;
+    a{
+      color: #3399cc;
+      text-decoration: none;
+    }
+  }
+}
+
+.bold-txt{
+  font-weight: bold;
+}
+/*=========================================
+  ADDRESS FORM
+  =========================================
+*/
+.address-form{
+  .info-form-group{
+
+  }
+  select{
+    width: 23rem;
+  }
+  .cb-default{
+    height: 14px;
+    width: auto;
+    vertical-align: middle;
+  }
+
+
 }

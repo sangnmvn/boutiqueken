@@ -31,7 +31,9 @@ class UsersController < ApplicationController
   end
 
   def address_book
-    
+    @default_billing = current_user.default_billing_address
+    @default_shipping = current_user.default_shipping_address
+    @other_address = current_user.not_default_addresses
   end
 
   def get_user
@@ -39,8 +41,10 @@ class UsersController < ApplicationController
   end
 
   def dashboard
-    
+    @default_billing = current_user.default_billing_address
+    @default_shipping = current_user.default_shipping_address
   end
+
   protected
   def user_params
     params.require(:user).permit(:password, :password_confirmation,:first_name,:last_name)

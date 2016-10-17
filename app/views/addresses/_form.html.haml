@@ -1,0 +1,87 @@
+.address-form
+  %h2
+    -if @address.new_record?
+      ADD NEW ADDRESS
+    -else
+      EDIT ADDRESS
+  -if @address.new_record?
+    -url = user_addresses_path(current_user)
+  -else
+    -url = user_address_path(current_user,@address.id)
+  = form_for(@address, url: url, html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |f|
+    .sign-in-col.sign-in-col-has-required
+      .account-information.title-text
+        CONTACT INFORMATION
+      %hr.mg-top-10
+      %p.required-p *Required Information
+      .info-form-group
+        %label{:for => "first-name"} First Name
+        = f.text_field :first_name, autofocus: true, autocomplete: "off", placeholder: "First Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, First Name is required!",:id =>"first-name"
+      .clear-fix
+      .info-form-group
+        %label{:for => "last-name"} Last Name
+        = f.text_field :last_name,autocomplete: "off", placeholder: "Last Name", :required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Last Name is required!",:id =>"last_name"
+      .clear-fix
+      .info-form-group
+        %label{:for => "company-name"} Company Name
+        = f.text_field :company_name, autocomplete: "off", placeholder: "Company Name",:id =>"company-name"
+      .clear-fix
+      .info-form-group
+        %label{:for => "telephone"} Telephone
+        = f.text_field :telephone,autocomplete: "off", :required =>"required", placeholder: "Telephone", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Telephone is required!",:id =>"telephone",:required =>"required"
+      .clear-fix
+      .info-form-group
+        %label{:for => "fax"} Fax
+        = f.text_field :fax,autocomplete: "off", placeholder: "Fax",:id =>"fax"
+      .clear-fix
+      %br
+      .account-information.title-text
+        ADDRESS
+      %hr.mg-top-10
+      .info-form-group
+        %label{:for => "street-address"} Street Address
+        = f.text_field :street_address,autocomplete: "off", :required =>"required", placeholder: "Street Address", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Street Address is required!",:id =>"street-address"
+      .clear-fix
+      .info-form-group
+        %label{:for => "street-address2"} Street Address2
+        = f.text_field :street_address2,autocomplete: "off", placeholder: "Street Address2",:id =>"street-address2"
+      .clear-fix
+      .info-form-group
+        %label{:for => "city"} City
+        = f.text_field :city,autocomplete: "off", placeholder: "City",:id =>"city", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, City is required!",:id =>"city",:required =>"required"
+      .clear-fix
+      .info-form-group
+        %label{:for => "state"} State
+        
+        =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f}
+        =# f.text_field :state,autocomplete: "off", placeholder: "State",:id =>"state", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, State is required!",:required =>"required"
+      .clear-fix
+      .info-form-group
+        %label{:for => "zip-code"} Zip
+        = f.text_field :zip_code,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
+      .clear-fix
+      .info-form-group
+        %label{:for => "country"} Country
+        =f.country_select :country,{priority: %w(US),selected: f.object.country}
+        / = f.text_field :country,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
+      
+      .clear-fix
+      %br
+      .info-form-group
+        -if f.object.is_default_billing == true
+          .bold-txt
+            Default Billing Address
+        -else
+          =f.check_box :is_default_billing,:id =>"default-billing",class: "cb-default"
+          Use as my default billing address
+      .clear-fix
+      .info-form-group
+        -if f.object.is_default_shipping == true
+          .bold-txt
+            Default Shipping Address
+        -else
+          =f.check_box :is_default_shipping,:id =>"default-shipping",class: "cb-default"
+          Use as my default shipping address
+      .signup-submit-buttons
+        =link_to "Cancel",address_book_user_path(current_user),class: "cancel-link"
+        %button{:type => "submit"} SAVE

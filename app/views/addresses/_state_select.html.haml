@@ -1,0 +1,8 @@
+-country ||=params[:country]
+-select_state ||=params[:select_state]
+-country = Carmen::Country.coded(country)
+.state-div
+  -if country.present? && country.subregions?
+    =subregion_select("address",:state,country,{selected: select_state})
+  -else
+    =text_field("address",:state,autocomplete: "off", placeholder: "State",:id =>"state", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, State is required!",:required =>"required")
