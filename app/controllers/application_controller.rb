@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :layout_by_resource
   before_filter :configure_permitted_parameters , if: :devise_controller?
-
+  before_filter :get_main_menus
 
   protected
 
@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
       u.permit(:first_name,:last_name,:middle_name, :is_contact_reference,:is_skas_member,
         :email, :password, :password_confirmation)
     end
+  end
+
+  def get_main_menus
+    @main_menus = Category.main_menus
   end
 
 end
