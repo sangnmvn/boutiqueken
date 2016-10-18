@@ -2729,32 +2729,39 @@ input[type=number]::-webkit-outer-spin-button {
   padding-bottom: 5rem;
 }
 .designer-popup-items {
-  display: flex;
+  display: block;
   flex-wrap: wrap;
   justify-content: space-between;
 }
 .popup-single-item{
   width: 22%;
   text-align: center;
+  float: left;
 }
 .popup-single-item img{
   margin-bottom: 1rem;
 }
 .featured-categories-div {
+  clear: both;
   padding-bottom: 5rem;
 }
 .featured-items {
-  display: flex;
+
+  display: block;
   flex-wrap: wrap;
   justify-content: space-between;
 }
 .featured-single-item {
   margin-bottom: 2rem;
   text-align: center;
-  width: 15%;
+  width: 20%;
+  float: left;
 }
+
 .featured-single-item img{
+  margin: 0 auto;
   margin-bottom: 1rem;
+
 }
 
 

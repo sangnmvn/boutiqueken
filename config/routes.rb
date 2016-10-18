@@ -24,6 +24,9 @@ Rails.application.routes.draw do
     end
     resources :addresses
   end
+
+  resources :products
+  resources :categories 
   #     member do
   #       get 'short'
   #       post 'toggle'

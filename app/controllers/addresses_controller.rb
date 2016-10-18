@@ -28,6 +28,12 @@ class AddressesController < ApplicationController
     end  
   end
 
+  def destroy
+    if @address.destroy
+      redirect_to address_book_user_path(current_user),:notice =>"The address has been destroyed."
+    end
+  end
+
   protected
   def get_address
     @address = Address.find(params[:id])

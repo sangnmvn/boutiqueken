@@ -1,20 +1,22 @@
 %nav.main-navigation.hidden-xs
   %ul
     - @main_menus.each do |i|
-      %li.menu-item.span-3.first-child
-        %a{:href => "#"}=i.cat_name.upcase
-        %ul.sub-menu.designers-menu
-          %li.triangle
-          -main_subs = i.children
-          -main_subs.each_with_index do |sub,index|
-            %li.sub-menu-column{class: index == 0 ? 'first-child' : ''}
-              %b=sub.cat_name.capitalize
-              -sub_of_subs =  sub.children
-              -if sub_of_subs.present?
-                %ul
-                  - sub_of_subs.each do |sub_of_sub|
-                    %li
-                      %a{href: "#"}=sub_of_sub.cat_name.capitalize
+      -if i.cat_name.present?
+        %li.menu-item.span-3.first-child
+          %a{:href => category_path(i.id)}=i.cat_name.upcase
+          %ul.sub-menu.designers-menu
+            %li.triangle
+            -main_subs = i.children.where(:is_shown_in_menu => true).group_by(&:group_name)
+            -group_name =""
+            -main_subs.keys.each do |key|
+              %li.sub-menu-column
+                - if group_name != key
+                  %b=key
+                  -group_name = key
+                  %ul
+                    - main_subs[key].each do |i|
+                      %li
+                        %a{href: "#"}=i.cat_name.capitalize
           / SUBMENU COLUMN ENDS
           / %li.sub-menu-column.last-child
           /   %b FEATURED DESIGNERS
@@ -102,8 +104,9 @@
         Close
         %span X
     - @main_menus.each do |i|
-      %li
-        %a{:href => "#"}
-          = i.cat_name.upcase
-          %span &gt;
+      -if i.cat_name.present?
+        %li
+          %a{:href => "#"}
+            = i.cat_name.upcase
+            %span &gt;
 / MOBILE NAVIGATION ENDS

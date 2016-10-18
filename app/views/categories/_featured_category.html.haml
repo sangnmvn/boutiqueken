@@ -1,0 +1,33 @@
+.featured-product-area
+  / designer-popup-div starts
+  .designer-popup-div
+    -if @top_sales_categories.present?
+      %h1 Shop Our Designer Pop-Up Sale
+      .designer-popup-items
+        / popup single item
+        -@top_sales_categories.each do |i|
+          .popup-single-item
+            %a{:href => category_path(i)}
+              %img.img-responsive{:alt => "product", :src => i.image_url}/
+            %a{:href => category_path(i)}
+              %p=i.category.cat_name
+        .clear-fix
+      / popup single item ends
+    / .designer-popup-items ends
+  / .designer-popup-div ends
+  / featured-categories-div starts
+  .featured-categories-div
+    -if @feature_categories.present?
+      %h1 Featured Categories
+      .featured-items
+        -@feature_categories.each do |i|
+          .featured-single-item
+            %a{:href => category_path(i)}
+              %img.img-responsive{:alt => "", :src => i.image_url}/
+            %a{:href => category_path(i)}
+              %p=i.category.cat_name
+      / featured item ends
+    / featured-items ends
+  / featured-categories-div starts
+/ .main-product-area ends
+/ .col-md-10 ends

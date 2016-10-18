@@ -1,0 +1,260 @@
+!!!
+/[if lt IE 7] <html class="no-js lt-ie9 lt-ie8 lt-ie7">
+/[if IE 7] <html class="no-js lt-ie9 lt-ie8">
+/[if IE 8] <html class="no-js lt-ie9">
+/ [if gt IE 8]><!
+%html.no-js{:lang => "en"}
+  / <![endif]
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Product Details
+    %meta{:content => "", :name => "description"}/
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
+    / Place favicon.ico and apple-touch-icon.png in the root directory
+    %link{:href => "http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}/
+    / For third-generation iPad with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "144x144"}/
+    / For iPhone with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "114x114"}/
+    / For first- and second-generation iPad:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "72x72"}/
+    / For non-Retina iPhone, iPod Touch, and Android 2.1+ devices:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed"}/
+    / Google Fonts
+    %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800", :rel => "stylesheet"}/
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application'
+    = csrf_meta_tags 
+    /[if IE] <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  %body
+    /[if lt IE 7]
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    / HEADER STARTS
+    =render "shared/header"
+    %section.section-home-2
+      .container
+        =render "shared/left_bar"
+        / HOME RIGHT CONTENT MARKUP
+        .home-right-content
+          / TOP SLIDER AREA STARTS
+          .section-slider-area
+            %h2.sr-only Main Slider Area
+            #slider-1.carousel.slide{"data-ride" => "carousel"}
+              / Indicators
+              %ol.carousel-indicators
+                %li.active{"data-slide-to" => "0", "data-target" => "#slider-1"}
+                %li{"data-slide-to" => "1", "data-target" => "#slider-1"}
+                %li{"data-slide-to" => "2", "data-target" => "#slider-1"}
+                %li{"data-slide-to" => "3", "data-target" => "#slider-1"}
+              / Wrapper for slides
+              .carousel-inner{:role => "listbox"}
+                .item.active
+                  %a{:href => "#"}
+                    %img.img-responsive{:alt => "slider-image", :src => "/assets/img/slider/slider-1.jpg"}/
+                .item
+                  %a{:href => "#"}
+                    %img.img-responsive{:alt => "slider-image", :src => "/assets/img/slider/slider-2.jpg"}/
+                .item
+                  %a{:href => "#"}
+                    %img.img-responsive{:alt => "slider-image", :src => "/assets/img/slider/slider-3.jpg"}/
+                .item
+                  %a{:href => "#"}
+                    %img.img-responsive{:alt => "slider-image", :src => "/assets/img/slider/slider-4.jpg"}/
+              / .carousel-inner ends
+              / Controls
+              %a.left.carousel-control{"data-slide" => "prev", :href => "#slider-1", :role => "button"}
+                %i.fa.fa-angle-left{"aria-hidden" => "true"}
+                %span.sr-only Previous
+              %a.right.carousel-control{"data-slide" => "next", :href => "#slider-1", :role => "button"}
+                %i.fa.fa-angle-right{"aria-hidden" => "true"}
+                %span.sr-only Next
+            / #slider-1 ends
+          / TOP SLIDER AREA ENDS
+          / SLIDER BOTTOM MENU MARKUP
+          .slider-bottom-menu
+            %a{:href => "#"}
+              %img{:alt => "nav-img", :src => "/assets/img/_Fall2_FLP_MTE_._V279116091_.jpg"}/
+            %a{:href => "#"}
+              %img{:alt => "nav-img", :src => "/assets/img/_Fall2_FLP_MTE_2._V279116091_.jpg"}/
+            %a{:href => "#"}
+              %img{:alt => "nav-img", :src => "/assets/img/_Fall2_FLP_MTE_3._V279116091_.jpg"}/
+            %a{:href => "#"}
+              %img{:alt => "nav-img", :src => "/assets/img/_Fall2_FLP_MTE_4._V279116091_.jpg"}/
+            %a{:href => "#"}
+              %img{:alt => "nav-img", :src => "/assets/img/_Fall2_FLP_MTE_5._V279116091_.jpg"}/
+          / SLIDER BOTTOM MENU MARKUP ENDS
+          / ADD HOME MARKUP
+          .add-home
+            .row
+              .col-xs-6.col-sm-3.r-not
+                .add-left
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/Fall2_LP_W_5._V279251455_.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/Fall2_LP_W_4._V279251455_.jpg"}/
+              / .col-xs-6 ends
+              .col-xs-6.col-sm-3.visible-xs
+                .add-right
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R1C2_TOP.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R1C2_BOTTOM.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R3C3.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/CAT_PROMO_R2C2_FASHION_DEALS.png"}/
+                / .add-right ends
+              / .col-xs-6 ends
+              .col-xs-12.col-sm-6
+                .add-middle
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/Fall2_WLP_2._V279537642_.jpg"}/
+              / .col-xs-6 ends
+              .col-xs-6.col-sm-3.l-not.hidden-xs
+                .add-right
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R1C2_TOP.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R1C2_BOTTOM.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/FASHION_MEN_R3C3.jpg"}/
+                  %a{:href => "#"}
+                    %img{:alt => "add-img", :src => "/assets/img/adds/CAT_PROMO_R2C2_FASHION_DEALS.png"}/
+              / .col-xs-6 ends
+            / .row ends
+          / ADD HOME MARKUP ENDS
+          / PRODUCT THUMB MARKUP
+          .section-product-thumb
+            .grid
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-1.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-2.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-3.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-4.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-6.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-7.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-8.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+              / single product starts
+              %a{:href => "#"}
+                .grid-item
+                  %img{:alt => "product-image", :src => "/assets/img/products/pd-1.jpg"}/
+                  .product-thumb-text.text-center
+                    %h3 FASHION FINDS
+                    %span Top style under $200
+                / .grid-item ends
+              / single product ends
+            / grid ends
+          / PRODUCT THUMB MARKUP ENDS
+          / SHOP BRAND MARKUP
+          .section-shop-brand
+            .product-container
+              %h2 Shop by Brand
+              .all-brands
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/1.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/2.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/3.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/4.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/5.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/6.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/7.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/8.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/9.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/10.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/11.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/12.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/13.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/14.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/15.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/16.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/17.jpg"}/
+                %a{:href => "#"}
+                  %img{:alt => "brand-image", :src => "/assets/img/brand/18.jpg"}/
+              / .all-brands ends
+            / .product-container ends
+          / .section-shop-brand ends
+        / HOME RIGHT SIDE CONTENT MARKUP ENDS
+      / .container ends
+    / SECTION HOME CONTENT Starts
+    / FOOTER AREA STARTS
+    =render "shared/footer"
+:javascript
+  $(document).ready(function(){
+    setTimeout(function(){
+    $('.grid').masonry();
+    },200);
+  });
+  
