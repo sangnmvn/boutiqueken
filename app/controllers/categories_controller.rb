@@ -6,9 +6,12 @@ class CategoriesController < ApplicationController
   before_filter :get_category, only: [:show]
   layout "devise"
   def show
+    page = params[:page] || 1
+    per_page = params[:per_page] || 20
   	@feature_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>false)
   	@top_sales_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>true)
   	@left_navs = @category.left_navs
+    @products = Product.where(:category_id => @category.id).page(page).per(per_page)
   end
 
   protected
