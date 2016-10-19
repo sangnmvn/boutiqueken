@@ -1,0 +1,159 @@
+//colors
+$color_alizarin_crimson_approx: #e71f28;
+$color_monza_approx: #da0f16;
+$seashell: #f1f1f1;
+$color_gray_nurse_approx: #e8e8e8;
+$color_cloud_approx: #c4c4c4;
+$color_delta_approx: #a4a4a4;
+$color_yellow_approx: #fff400;
+$color_turbo_approx: #fae602;
+$black: #000;
+$color_steel_blue_approx: #517abe;
+$color_san_marino_approx: #405faa;
+$color_sepia_approx: #71431b;
+$color_jambalaya_approx: #593515;
+$color_buff_approx: #f3d889;
+$color_rob_roy_approx: #eed076;
+$color_golden_grass_approx: #dbae2b;
+$color_nugget_approx: #bf9520;
+$color_chilean_heath_approx: #fffde5;
+$color_ecru_white_approx: #f6f5e7;
+$color_alto_approx: #ddd;
+$color_pale_slate_approx: #c3c3c3;
+$color_jade_approx: #00b660;
+$color_salem_approx: #009d49;
+$color_tango_approx: #f47728;
+$color_flamingo_approx: #f15c1f;
+$color_lavender_pink_approx: #f8acd6;
+$color_shocking_approx: #ee90c4;
+$color_royal_purple_approx: #6d36a5;
+$color_daisy_bush_approx: #552a89;
+$color_champagne_approx: #fee8ce;
+$color_corvette_approx: #fed5a8;
+$white: #fff;
+
+//urls
+$url_0: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/multi.gif);
+
+#filters {
+  .item_icon{
+    width: 34px;
+    height: 34px;
+    display: block;
+    border: 1px solid #BFBFBF;
+    margin: 0 auto;
+  }
+	.item_icon[title^=Multi] {
+		background-image: $url_0;
+	}
+	.item_icon[title^=Red] {
+		background: linear-gradient(135deg,$color_alizarin_crimson_approx 50%,$color_monza_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_alizarin_crimson_approx',endcolorstr='$color_monza_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Silver] {
+		background: linear-gradient(135deg,$seashell 0,$color_gray_nurse_approx 50%,$color_cloud_approx 51%,$color_delta_approx 100%);
+	}
+	.item_icon[title^=Yellow] {
+		background: linear-gradient(135deg,$color_yellow_approx 50%,$color_turbo_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_yellow_approx',endcolorstr='$color_turbo_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Black] {
+		background: $black;
+	}
+	.item_icon[title^=Blue] {
+		background: linear-gradient(135deg,$color_steel_blue_approx 50%,$color_san_marino_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_steel_blue_approx',endcolorstr='$color_san_marino_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Brown] {
+		background: linear-gradient(135deg,$color_sepia_approx 0,$color_jambalaya_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_sepia_approx',endcolorstr='$color_jambalaya_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Gold] {
+		background: linear-gradient(135deg,$color_buff_approx 0,$color_rob_roy_approx 50%,$color_golden_grass_approx 51%,$color_nugget_approx 100%);
+	}
+	.item_icon[title^=Ivory] {
+		background: linear-gradient(135deg,$color_chilean_heath_approx 50%,$color_ecru_white_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_chilean_heath_approx',endcolorstr='$color_ecru_white_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Gray] {
+		background: linear-gradient(135deg,$color_alto_approx 50%,$color_pale_slate_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_alto_approx',endcolorstr='$color_pale_slate_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Green] {
+		background: linear-gradient(135deg,$color_jade_approx 50%,$color_salem_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_jade_approx',endcolorstr='$color_salem_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Orange] {
+		background: linear-gradient(135deg,$color_tango_approx 50%,$color_flamingo_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_tango_approx',endcolorstr='$color_flamingo_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Pink] {
+		background: linear-gradient(135deg,$color_lavender_pink_approx 50%,$color_shocking_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_lavender_pink_approx',endcolorstr='$color_shocking_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Purple] {
+		background: linear-gradient(135deg,$color_royal_purple_approx 50%,$color_daisy_bush_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_royal_purple_approx',endcolorstr='$color_daisy_bush_approx',gradienttype=1 );
+	}
+	.item_icon[title^=Tan] {
+		background: linear-gradient(135deg,$color_champagne_approx 50%,$color_corvette_approx 100%);
+		filter: progid:dximagetransform.microsoft.gradient(startcolorstr='$color_champagne_approx',endcolorstr='$color_corvette_approx',gradienttype=1 );
+	}
+	.item_icon[title^=White] {
+		background: $white;
+	}
+	.li-color{
+	  width: 50px;
+    height: 60px;
+    float: left;
+
+	}
+  .item{
+    width: 40px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
+
+
+//urls
+$url_star_0: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_5.png);
+$url_star_1: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_4.png);
+$url_star_2: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_3.png);
+$url_star_3: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_2.png);
+$url_star_4: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_1.png);
+
+#filters {
+  .li-cus-review{
+    .item_review[title*="5 "] {
+      background: transparent $url_star_0 no-repeat right 1px;
+    }
+    .item_review[title*="4 "] {
+      background: transparent $url_star_1 no-repeat right 1px;
+    }
+    .item_review[title*="3 "] {
+      background: transparent $url_star_2 no-repeat right 1px;
+    }
+    .item_review[title*="2 "] {
+      background: transparent $url_star_3 no-repeat right 1px;
+    }
+    .item_review[title*="1 "] {
+      background: transparent $url_star_4 no-repeat right 1px;
+    }
+    .item_review{
+      height: 20px;
+      display: inline-block;
+      width: 80px;
+      vertical-align: middle;
+    }
+  }
+  .sub-group-name{
+    padding-left: 8px;
+  }
+}
+

@@ -3,7 +3,7 @@
 .main-product-area
   .sort-by-area
     .sort-left
-      %h1.pull-left Shop All
+      %h1.pull-left=@category.cat_name.upcase
     / .sort-left ends
     .sort-right.hidden-xs
       .single-view-option.items
@@ -98,6 +98,8 @@
               %a{:href => "#"} 5
           %a{:href => "#"}
             %i.fa.fa-chevron-right
+      .kaminari-paging
+        = paginate @products
         / .single-view-option.pagi ends
       / .sort-right ends
     / .row ends
