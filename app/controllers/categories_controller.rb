@@ -13,6 +13,7 @@ class CategoriesController < ApplicationController
   	@left_navs = @category.left_navs
     @products = Product.where(:category_id => @category.id).page(page).per(per_page)
     @filters = Filter.where(:category_id => @category.id).order("group_pos asc")
+    @filters2 = Filter.where(:category_id => @category.id).order("group_pos asc").page(page).per(1)
   end
 
   protected
