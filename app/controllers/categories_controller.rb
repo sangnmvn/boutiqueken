@@ -7,13 +7,18 @@ class CategoriesController < ApplicationController
   layout "devise"
   def show
     page = params[:page] || 1
-    per_page = params[:per_page] || 20
+    @per_page = params[:per_page] || 60
   	@feature_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>false)
   	@top_sales_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>true)
   	@left_navs = @category.left_navs
-    @products = Product.where(:category_id => @category.id).page(page).per(per_page)
+    @products = Product.where(:category_id => @category.id).page(page).per(@per_page)
     @filters = Filter.where(:category_id => @category.id).order("group_pos asc")
-    @filters2 = Filter.where(:category_id => @category.id).order("group_pos asc").page(page).per(1)
+    @product_ls = Product.where(:category_id => @category.id).page(page).per(@per_page)
+  
+    if request.xhr?
+      @product_ls = Product.where(:category_id => @category.id).page(page).per(@per_page)
+    end
+
   end
 
   protected

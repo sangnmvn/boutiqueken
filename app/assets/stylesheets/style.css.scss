@@ -3348,5 +3348,34 @@ input[type=number]::-webkit-outer-spin-button {
 .kaminari-paging{
   .item{
     display: inline-block;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+    vertical-align: middle;
+    padding-right: 5px;
+    &.active{
+      font-weight: 800;
+    }
+  }
+
+
+  .fa-p-x{
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+}
+
+.active-per{
+  font-weight: 700 !important;
+  span{
+    font-weight: 700 !important;
+  }
+}
+
+.normal-per{
+  font-weight: 300 !important;
+  span{
+    font-weight: 300 !important;
   }
 }

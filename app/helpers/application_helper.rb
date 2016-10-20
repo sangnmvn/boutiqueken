@@ -18,4 +18,22 @@ module ApplicationHelper
       "li-cus-review"
     end
   end
+
+  def determine_per_page_select(per_attribute,current_per_page)
+    if per_attribute == current_per_page.to_i
+      "active-per"
+    else
+      "normal-per"
+    end
+    
+  end
+
+  def perpage_item_of(total_record,current_page,per_page)
+    records = current_page*per_page.to_i
+    if records > total_record
+      total_record
+    else
+      records
+    end
+  end
 end

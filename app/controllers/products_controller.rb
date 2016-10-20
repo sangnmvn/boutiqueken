@@ -7,7 +7,8 @@ class ProductsController < ApplicationController
   layout "devise"
 
   def show
-  	
+  	@product_related = Product.where(:id =>@product.related_products)
+    @product_loved = Product.where(:id =>@product.related_loved_product)
   end
 
   protected

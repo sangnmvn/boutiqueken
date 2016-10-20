@@ -25,3 +25,4 @@
 //= require main
 //= require masonry.pkgd
 //= require address
+//= require js.cookie

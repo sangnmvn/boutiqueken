@@ -1,0 +1,3 @@
+var html = "<% j render :partial =>'product_items',locals: {:product_ls => @product_ls}%>";
+$(".product-showcase").html(html);
+ProductList.reinit_per_page();

@@ -1,6 +1,6 @@
 / PRODUCTS AREA STARTS
 
-.main-product-area
+.main-product-area.product-list
   .sort-by-area
     .sort-left
       %h1.pull-left=@category.cat_name.upcase
@@ -8,30 +8,20 @@
     .sort-right.hidden-xs
       .single-view-option.items
         %a{:href => "#"}
-          %span 23,952
-          lteams
+          %span
+            =@product_ls.total_count
+          items
       .single-view-option.view-number.hidden-xs
-        %a{:href => "#"} View 60
-        %a{:href => "#"}
+        %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+        %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
           %span 180
       .single-view-option.view-pagi.hidden-xs
-        %span.current 1
+        %span.current=perpage_item_of(@product_ls.total_count,@product_ls.current_page,@per_page)
         of
-        %span.total 400
+        %span.total=@product_ls.total_count
       .single-view-option.pagi
-        %a{:href => "#"}
-          %i.fa.fa-chevron-left
-        %ul.product-pagination
-          %li
-            %a{:href => "#"} 2
-          %li
-            %a{:href => "#"} 3
-          %li
-            %a{:href => "#"} 4
-          %li
-            %a{:href => "#"} 5
-        %a{:href => "#"}
-          %i.fa.fa-chevron-right
+        .kaminari-paging
+          = paginate @product_ls
       / .single-view-option.pagi ends
     / .sort-right ends
   / .sort-by-area ends
@@ -39,13 +29,18 @@
     .row
       .product-item-div
         / SINGLE PRODUCT starts
-        -@products.each do |i|
+        -if @product_ls.length <=0
+          %div.nodata
+            No data to display.
+        -@product_ls.each do |i|
           .col-md-3.col-sm-4
             .single-product
               .product-img-wrapper
                 -if i.product_details.present?
                   -i.product_details.each_with_index do |detail,index|
-                    %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-#{index}", :src => detail.color_image}/
+                    %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-#{index}", :src => detail.product_image}/
+                -else
+                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => i.main_image_url}/
               / .product-img-wrapper ends
               .product-details-info
                 -if i.product_details.present?
@@ -53,10 +48,10 @@
                     -i.product_details.each_with_index do |detail,index|
                       %li{"data-color" => "Black", "data-img" => "p-#{index}"}
                         %a{:href => "#"}
-                          %img.img-responsive{:alt => "", :src => detail.product_image}/
+                          %img.img-responsive{:alt => "", :src => detail.color_image}/
                   
                 %strong
-                  %a{:href => "#"}=i.product_name
+                  %a{:href => product_path(i)}=i.short_desc
                 %span.reg-price
                   %strong 
                     Reg. $
@@ -74,29 +69,30 @@
       .sort-right.sort-right-bottom
         .single-view-option.items
           %a{:href => "#"}
-            %span 23,952
-            lteams
+            %span=@product_ls.total_count
+            items
         .single-view-option.view-number.hidden-xs
-          %a{:href => "#"} View 60
-          %a{:href => "#"}
+          %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+          %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
             %span 180
         .single-view-option.view-pagi.hidden-xs
-          %span.current 1
+          %span.current=perpage_item_of(@product_ls.total_count,@product_ls.current_page,@per_page)
           of
-          %span.total 400
+          %span.total=@product_ls.total_count
         .single-view-option.pagi
-          %a{:href => "#"}
-            %i.fa.fa-chevron-left
-          %ul.product-pagination
-            %li
-              %a{:href => "#"} 2
-            %li
-              %a{:href => "#"} 3
-            %li
-              %a{:href => "#"} 4
-            %li
-              %a{:href => "#"} 5
-          %a{:href => "#"}
-            %i.fa.fa-chevron-right
-.kaminari-paging
-  = paginate @filters2
+          .kaminari-paging
+            = paginate @product_ls
+          / %a{:href => "#"}
+          /   %i.fa.fa-chevron-left
+          / %ul.product-pagination
+          /   %li
+          /     %a{:href => "#"} 2
+          /   %li
+          /     %a{:href => "#"} 3
+          /   %li
+          /     %a{:href => "#"} 4
+          /   %li
+          /     %a{:href => "#"} 5
+          / %a{:href => "#"}
+          /   %i.fa.fa-chevron-right
+
