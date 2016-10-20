@@ -36,4 +36,12 @@ module ApplicationHelper
       records
     end
   end
+
+  def show_image_url(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+url
+    else
+      ""
+    end
+  end
 end

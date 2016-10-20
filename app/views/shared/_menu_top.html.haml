@@ -14,9 +14,9 @@
                   %b=key
                   -group_name = key
                   %ul
-                    - main_subs[key].each do |i|
+                    - main_subs[key].each do |t|
                       %li
-                        %a{href: "#"}=i.cat_name.capitalize
+                        %a{href: category_path(t.id)}=t.cat_name.capitalize
           / SUBMENU COLUMN ENDS
           / %li.sub-menu-column.last-child
           /   %b FEATURED DESIGNERS

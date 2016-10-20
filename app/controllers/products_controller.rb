@@ -8,7 +8,12 @@ class ProductsController < ApplicationController
 
   def show
   	@product_related = Product.where(:id =>@product.related_products)
-    @product_loved = Product.where(:id =>@product.related_loved_product)
+    @product_loved = Product.where(:id =>@product.related_loved_products)
+
+    if @product.is_collection
+
+      @product_childrens = Product.where(:site_product_id =>@product.child_site_product_ids)
+    end
   end
 
   protected

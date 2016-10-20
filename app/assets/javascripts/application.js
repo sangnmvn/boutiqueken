@@ -26,3 +26,4 @@
 //= require masonry.pkgd
 //= require address
 //= require js.cookie
+//= require lightslider

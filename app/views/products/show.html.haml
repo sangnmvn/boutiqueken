@@ -6,6 +6,7 @@
       / DETAILS 2 LEFT STARTS
       .details-2-left
         .left-content
+          =render "image_gallery"
       / DETAILS 2 LEFT ENDS
       / DETAILS 2 MIDDLE STARTS
       .details-2-middle
@@ -19,7 +20,7 @@
               %span
                 %del 
                   $
-                  =@product.orginal_price
+                  =@product.regular_price
             %span.cur-price
               %strong Now
               %span 
@@ -32,11 +33,23 @@
             %p.coloring
               %strong Color:
               %span
-            %ul.coloring-ul
+            -if @product.is_price_color == false
+              %ul.coloring-ul
+                -@product.product_details.each do |i|
+                  %li{"data-color" => i.color_name}
+                    %a{:href => "#"}
+                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+            -else
+              %ul
+              -group_price = 0
               -@product.product_details.each do |i|
+                -if group_price != i.price
+                  %div{}
+                    %strong= i.price
                 %li{"data-color" => i.color_name}
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "", :src => i.color_image}/
+                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+
               
           %p.sizing
             %strong Size
@@ -75,7 +88,7 @@
                   %li
                     %a{:href => product_path(product)}
                       .vertical-items
-                        %img.img-responsive{:alt => product.short_desc, :src => product.main_image_url}/
+                        %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
                         %p=product.short_desc
               
             %button.prev
@@ -84,6 +97,11 @@
       / DETAILS 2 RIGHT ENDS
     / PRODUCT DETAILS 2 TOP AREA ENDS
     / RECENT VIEW STARTS
+
+    -if @product.is_collection
+      .collection-list
+        -@product_childrens.each do|child|
+          
     .customers-recent-view.recent-view
       -if @product_loved.present?
         %h1 Customers Who Viewed This Item Also Viewed
@@ -92,62 +110,68 @@
           -@product_loved.each do |product|
             %a{:href => product_path(product)}
               .recent-view-single-item
-                %img.img-responsive{:alt => product.short_desc, :src => product.main_image_url}/
+                %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
                 %p=product.short_desc
                 %span.reg-price
                   %strong
                     Reg. $
-                    =product.orginal_price
+                    =product.regular_price
                 %span.sale-price
                   %strong Reg. $
                   =product.sale_price
         
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
-    .recent-view
-      %h1 Recently Viewed
+    .recent-view.custom-recent-view.demo
+      %h1
+        Recent Views
       .recent-view-all-item
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
+        .item
+          %ul#content-slider.content-slider
+            %li
+              %a{:href => "#"}
+                .recent-view-single-item
+                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
+                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
+                  %span.reg-price
+                    %strong Reg. $69.00
+                  %span.sale-price
+                    %strong Reg. $44.00
+            %li
+              %a{:href => "#"}
+                .recent-view-single-item
+                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
+                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
+                  %span.reg-price
+                    %strong Reg. $69.00
+                  %span.sale-price
+                    %strong Reg. $44.00
+            %li
+              %a{:href => "#"}
+                .recent-view-single-item
+                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
+                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
+                  %span.reg-price
+                    %strong Reg. $69.00
+                  %span.sale-price
+                    %strong Reg. $44.00
+            %li
+              %a{:href => "#"}
+                .recent-view-single-item
+                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
+                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
+                  %span.reg-price
+                    %strong Reg. $69.00
+                  %span.sale-price
+                    %strong Reg. $44.00
+    .clear-fix
+
       / .recent-view-all-item ends
     / RECENT VIEW STARTS
   / .container ends
 / PRODUCTS AREA ENDS
+:javascript
+  var product_info = #{@product.to_json};
+  $(document).ready(function(){
+    ViewProduct(product_info);
+  });

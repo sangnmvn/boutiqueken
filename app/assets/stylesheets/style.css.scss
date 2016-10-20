@@ -3379,3 +3379,43 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 300 !important;
   }
 }
+
+.zoom-left{
+  #zoom_03{
+    width: 100%;
+  }
+}
+
+.custom-recent-view{
+  .recent-view-single-item{
+    max-height: 380px;
+    max-width: 159px;
+    margin: 0 auto;
+    img{
+      max-height: 294px;
+      margin: 0 auto;
+    }
+  }
+  .recent-view-all-item{
+    display: block;
+  }
+  ul{
+      list-style: none outside none;
+        padding-left: 0;
+            margin: 0;
+    }
+  &.demo .item{
+      margin-bottom: 60px;
+  }
+  .content-slider li{
+      text-align: center;
+      color: #FFF;
+  }
+  .content-slider h3 {
+      margin: 0;
+      padding: 70px 0;
+  }
+  &.demo{
+    width: 800px;
+  }
+}

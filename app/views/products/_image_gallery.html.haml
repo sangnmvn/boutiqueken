@@ -1,0 +1,9 @@
+.zoom-wrapper
+  .zoom-left
+    %img#zoom_03{"data-zoom-image" => show_image_url(@product.main_image_url), :src => show_image_url(@product.main_image_url), :style => "border:1px solid #e8e8e6;"}/
+    #gallery_01{:style => "float:left; "}
+      -list_addtion_images = JSON.parse(@product.additional_images);
+      -list_addtion_images.each do |i|
+        %a.elevatezoom-gallery.width-25.active{"data-image" => i, "data-update" => "", "data-zoom-image" => show_image_url(i), :href => "#"}
+          %img{:src => show_image_url(i),width: "100"}/
+      

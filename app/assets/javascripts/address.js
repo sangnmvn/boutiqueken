@@ -14,6 +14,11 @@ var Address = {
 $(function(){
   Address.init(".address-form");
   ProductList.init(".product-list");
+  ViewProduct.init();
+  $("#content-slider").lightSlider({
+                loop:true,
+                keyPress:true
+            });
 });
 
 
@@ -48,3 +53,38 @@ var ProductList = {
 }
 
 
+var ViewProduct ={
+  init: function(){
+
+    check = Cookies.get('product-views');
+    if(check==null || typeof(check)=="undefined"){
+      Cookies.set('product-views',"");
+    }
+  },
+  setview: function(product_info){
+    list_views = jQuery.parseJSON(Cookies.get("product-views"));
+    product={};
+    product["main_image_url"] = product_info["main_image_url"];
+    product["product_id"]= product_info["id"];
+    product["regular_price"] = product_info["regular_price"];
+    product["sale_price"] = product_info["sale_price"];
+    
+    if(list_views.length<10){
+      list_views.push(product);
+    }else{
+      list_views.shift();
+      list_views.push(product);
+    }
+
+    Cookies.set("product-views",list_views);
+  },
+  render: function(){
+    html = '<h1><Recently Viewed</h1><div class="recent-view-all-item"><div class="item"><ul id="content-slider" class="content-slider"><li>';
+    list_views = jQuery.parseJSON(Cookies.get("product-views"));
+
+    if(list_views.length >0){
+      $(".recent-view").html(html);
+    }
+
+  }
+}
