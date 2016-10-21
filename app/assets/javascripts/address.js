@@ -19,6 +19,7 @@ $(function(){
                 loop:true,
                 keyPress:true
             });
+  Product.init(".image-product-detail");
 });
 
 
@@ -86,5 +87,26 @@ var ViewProduct ={
       $(".recent-view").html(html);
     }
 
+  }
+}
+
+
+var Product={
+  init: function(selector){
+    if($(selector).length >0){
+      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "http://www.elevateweb.co.uk/spinner.gif"}); 
+      $("#zoom_03").bind("click", function(e) {  
+        var ez =   $('#zoom_03').data('elevateZoom');
+        ez.closeAll(); //NEW: This function force hides the lens, tint and window 
+        $.fancybox(ez.getGalleryList());
+        return false;
+      });       
+      
+    }
+  },
+  init_events: function(){
+    $(".color-picking").on("click",function(){
+      $("#gallery_01")
+    });
   }
 }

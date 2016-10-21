@@ -5,7 +5,7 @@
     .product-details-2-top
       / DETAILS 2 LEFT STARTS
       .details-2-left
-        .left-content
+        .left-content.image-product-detail
           =render "image_gallery"
       / DETAILS 2 LEFT ENDS
       / DETAILS 2 MIDDLE STARTS
@@ -37,7 +37,7 @@
               %ul.coloring-ul
                 -@product.product_details.each do |i|
                   %li{"data-color" => i.color_name}
-                    %a{:href => "#"}
+                    %a.color-picking{:href => "javascript:;"}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
             -else
               %ul
@@ -48,7 +48,7 @@
                     %strong= i.price
                 %li{"data-color" => i.color_name}
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image),"data-product-image" =>i.product_image,"color-name" => i.color_name}/
 
               
           %p.sizing
@@ -57,7 +57,7 @@
           %ul.sizing-ul
             -@product.list_sizes.each do |size|
               %li
-                %a{:href => "#"} size.upcase
+                %a{:href => "#"}=size.upcase
             
           %button.a-to-b ADD TO BAG
         / PRODUCT DETAILS 2 MIDDLE ENDS
@@ -100,8 +100,29 @@
 
     -if @product.is_collection
       .collection-list
+        %h1
+          Choose your item
         -@product_childrens.each do|child|
-          
+          .single-product
+            .product-img-wrapper
+              -if child.product_details.present?
+                -is_need_main = true
+                -child.product_details.each_with_index do |detail,index|
+                  - if detail.product_image.present?
+
+                    %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
+                    -is_need_main = false
+                -if is_need_main == true
+                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+              -else
+                %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+            .product-details-info
+              -if child.product_details.present?
+                %ul.coloring-ul
+                  -child.product_details.each_with_index do |detail,index|
+                    %li{"data-color" => "Black", "data-img" => "p-#{index}"}
+                      %a{:href => "#"}
+                        %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
     .customers-recent-view.recent-view
       -if @product_loved.present?
         %h1 Customers Who Viewed This Item Also Viewed
@@ -171,7 +192,7 @@
   / .container ends
 / PRODUCTS AREA ENDS
 :javascript
-  var product_info = #{@product.to_json};
+  //var product_info = #{@product.to_json};
   $(document).ready(function(){
-    ViewProduct(product_info);
+    //ViewProduct.setview(product_info);
   });

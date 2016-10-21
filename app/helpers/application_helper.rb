@@ -44,4 +44,28 @@ module ApplicationHelper
       ""
     end
   end
+
+  def show_small_image_url(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+url +"?wid=100"
+    else
+      ""
+    end
+  end
+
+  def show_large_image_url(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+url +"?wid=1000"
+    else
+      ""
+    end
+  end
+
+  def show_image_in_detail(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+url +"?wid=489"
+    else
+      ""
+    end
+  end
 end

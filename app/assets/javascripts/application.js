@@ -27,3 +27,4 @@
 //= require address
 //= require js.cookie
 //= require lightslider
+//= require jquery.elevatezoom
