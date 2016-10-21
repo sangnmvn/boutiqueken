@@ -100,13 +100,42 @@ var Product={
         ez.closeAll(); //NEW: This function force hides the lens, tint and window 
         $.fancybox(ez.getGalleryList());
         return false;
-      });       
+      });
+      this.init_events();       
       
     }
   },
+
   init_events: function(){
+    var c_element;
     $(".color-picking").on("click",function(){
-      $("#gallery_01")
+
+    //   data_image = $(this).attr("product-image");
+    //   console.log(data_image);
+    //   data_large_image = $(this).attr("product-large-image");
+    //   image_t = "<img src = '" + data_image +"' width='100'/>";
+    //   $("#gallery_01 .active").removeClass("active");
+    //   c_element = $("<a></a>").addClass("elevatezoom-gallery width-25 active").attr("href","#").attr("data-update","").attr("data-image",data_image).attr("data-zoom-image",data_large_image).html(image_t).appendTo("#gallery_01");
+      
+    // });
+    // setTimeout(function(){
+    //   $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "http://www.elevateweb.co.uk/spinner.gif"}); 
+    //         $("#zoom_03").bind("click", function(e) {  
+    //           var ez =   $('#zoom_03').data('elevateZoom');
+    //           ez.closeAll(); //NEW: This function force hides the lens, tint and window 
+    //           $.fancybox(ez.getGalleryList());
+    //           return false;
+    //         });
+    // },500);
+    
+    // $(c_element).trigger("click");
+
+      color_name = $(this).attr("color-name");
+      console.log(color_name);
+      $(".product-thumb-image").addClass("hide");
+      $(".product-thumb-image active").removeClass("active");
+      $(".product-thumb-image[color-name='" + color_name + "']").removeClass("hide").addClass("active");
+      $(".product-thumb-image[color-name='" + color_name + "']").trigger("click");
     });
   }
 }

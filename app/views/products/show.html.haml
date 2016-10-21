@@ -37,7 +37,7 @@
               %ul.coloring-ul
                 -@product.product_details.each do |i|
                   %li{"data-color" => i.color_name}
-                    %a.color-picking{:href => "javascript:;"}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
             -else
               %ul
@@ -47,8 +47,8 @@
                   %div{}
                     %strong= i.price
                 %li{"data-color" => i.color_name}
-                  %a{:href => "#"}
-                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image),"data-product-image" =>i.product_image,"color-name" => i.color_name}/
+                  %a{:href => "#","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
 
               
           %p.sizing
