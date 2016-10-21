@@ -68,4 +68,8 @@ module ApplicationHelper
       ""
     end
   end
+
+  def size_chart_id_url(size_id)
+    return "http://www1.macys.com/dyn_img/size_charts/" + size_id.to_s + ".gif" if size_id.present?
+  end
 end

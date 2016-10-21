@@ -134,12 +134,12 @@ var Product={
   init: function(selector){
     if($(selector).length >0){
       $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "/loader/ajax-loader.gif"}); 
-      $("#zoom_03").bind("click", function(e) {  
-        var ez =   $('#zoom_03').data('elevateZoom');
-        ez.closeAll(); //NEW: This function force hides the lens, tint and window 
-        $.fancybox(ez.getGalleryList());
-        return false;
-      });
+      // $("#zoom_03").bind("click", function(e) {  
+      //   var ez =   $('#zoom_03').data('elevateZoom');
+      //   ez.closeAll(); //NEW: This function force hides the lens, tint and window 
+      //   $.fancybox(ez.getGalleryList());
+      //   return false;
+      // });
       this.init_events();       
       
     }
@@ -183,6 +183,19 @@ var Product={
         btnNext: ".vertical .next",
         btnPrev: ".vertical .prev",
         vertical: true
+    });
+
+
+    $(".btn-show-sizechart").on("click",function(){
+      console.log("click");
+      has_id = $(this).attr("size_id");
+      console.log(has_id);
+      if(has_id){
+        $(".modal-size-chart").find(".image-size-chart").attr("src",has_id);
+        $(".modal-size-chart").find(".image-size-chart").removeClass("hide");
+        $(".modal-size-chart").modal("show");
+      }
+
     });
 
   }

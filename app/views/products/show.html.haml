@@ -59,7 +59,9 @@
               
           %p.sizing
             %strong Size
-            %a.pull-right{:href => "#"} Size Guide
+            -if @product.size_chart_id.present? || @product.size_chart_table.present?
+
+              %a.pull-right.btn-show-sizechart{:href => "javascript:;","size_id" =>size_chart_id_url(@product.size_chart_id)} Size Guide
           %ul.sizing-ul
             -@product.list_sizes.each do |size|
               %li
@@ -190,11 +192,7 @@
           %ul#content-slider.content-slider
             
     .clear-fix
-
-      / .recent-view-all-item ends
-    / RECENT VIEW STARTS
-  / .container ends
-/ PRODUCTS AREA ENDS
+=render "modal_size_chart"
 :javascript
   var product_info = #{@product.to_json};
   $(document).ready(function(){
