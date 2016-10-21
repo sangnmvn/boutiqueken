@@ -20,6 +20,7 @@
 //= require pinit
 //= require wow.min
 //= require owl.carousel.min
+//= require jquery.jcarousellite-1.0.1
 //= require product
 //= require jquery.rateit
 //= require main

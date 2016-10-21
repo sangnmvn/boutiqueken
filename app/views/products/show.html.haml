@@ -15,12 +15,13 @@
           %h1=@product.brand_name
           %p=@product.short_desc
           %p.details-2-price
-            %span.del-price
-              %strong Was
-              %span
-                %del 
-                  $
-                  =@product.regular_price
+            -if @product.regular_price.present?
+              %span.del-price
+                %strong Was
+                %span
+                  %del 
+                    $
+                    =@product.regular_price
             %span.cur-price
               %strong Now
               %span 
@@ -32,7 +33,7 @@
           -if @product.product_details.present?
             %p.coloring
               %strong Color:
-              %span
+              %span.width-150
             -if @product.is_price_color == false
               %ul.coloring-ul
                 -@product.product_details.each do |i|
@@ -40,16 +41,21 @@
                     %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
             -else
-              %ul
-              -group_price = 0
-              -@product.product_details.each do |i|
-                -if group_price != i.price
-                  %div{}
-                    %strong= i.price
-                %li{"data-color" => i.color_name}
-                  %a{:href => "#","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
-                    %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
-
+              %ul.coloring-ul
+                -group_price = 0
+                -@product.product_details.each do |i|
+                  -if group_price != i.price
+                    
+                    .seper-small
+                    %div
+                      %strong
+                        $
+                        = i.price
+                    .seper-small
+                  %li{"data-color" => i.color_name}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+              .seper-small
               
           %p.sizing
             %strong Size
@@ -102,9 +108,9 @@
       .collection-list
         %h1
           Choose your item
-        -@product_childrens.each do|child|
+        -@product_childrens.each_with_index do|child,child_index|
           .single-product
-            .product-img-wrapper
+            .product-img-wrapper.left-content-side
               -if child.product_details.present?
                 -is_need_main = true
                 -child.product_details.each_with_index do |detail,index|
@@ -116,13 +122,46 @@
                   %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
               -else
                 %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
-            .product-details-info
-              -if child.product_details.present?
-                %ul.coloring-ul
-                  -child.product_details.each_with_index do |detail,index|
-                    %li{"data-color" => "Black", "data-img" => "p-#{index}"}
-                      %a{:href => "#"}
-                        %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+            .product-details-info.right-content-side
+              .row
+                .col-md-12.col-sm-12.col-xs-12
+                  %strong
+                    %a{:href=>product_path(child)}
+                      =child.short_desc
+                  .seper-small
+                  %strong Color:
+                  %span
+                  .seper-small
+                  -if child.product_details.present?
+                    %ul.coloring-ul
+                      -child.product_details.each_with_index do |detail,index|
+                        %li{"data-color" => "Black", "data-img" => "p-#{index}"}
+                          %a{:href => "#"}
+                            %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                .col-md-12.col-sm-12.col-xs-12
+                  -if child.regular_price.present? && child.regular_price > 0
+                    %span.del-price
+                      %span
+                        %del.price-txt 
+                          $
+                          =child.regular_price
+                  %span.price-txt 
+                    $
+                    =child.sale_price
+                .col-md-12.col-sm-12.col-xs-12
+                  %p.sizing
+                    %strong Size
+                  %ul.sizing-ul
+                    -child.list_sizes.each do |size|
+                      %li
+                        %a{:href => "javascript:;"}=size.upcase
+                .col-md-12.col-sm-12.col-xs-12
+                  %button.a-to-b.btn-medium ADD TO BAG
+          .clear-fix
+          -if @product_childrens.count >1
+            .dot-sperate
+            .clear-fix
+
     .customers-recent-view.recent-view
       -if @product_loved.present?
         %h1 Customers Who Viewed This Item Also Viewed
@@ -143,48 +182,13 @@
         
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
-    .recent-view.custom-recent-view.demo
+    .recent-view.custom-recent-view.hide
       %h1
         Recent Views
       .recent-view-all-item
         .item
           %ul#content-slider.content-slider
-            %li
-              %a{:href => "#"}
-                .recent-view-single-item
-                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
-                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-                  %span.reg-price
-                    %strong Reg. $69.00
-                  %span.sale-price
-                    %strong Reg. $44.00
-            %li
-              %a{:href => "#"}
-                .recent-view-single-item
-                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
-                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-                  %span.reg-price
-                    %strong Reg. $69.00
-                  %span.sale-price
-                    %strong Reg. $44.00
-            %li
-              %a{:href => "#"}
-                .recent-view-single-item
-                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
-                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-                  %span.reg-price
-                    %strong Reg. $69.00
-                  %span.sale-price
-                    %strong Reg. $44.00
-            %li
-              %a{:href => "#"}
-                .recent-view-single-item
-                  %img.img-responsive{:alt => "", :src => "/assets/img/products/pd-1.jpg"}/
-                  %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-                  %span.reg-price
-                    %strong Reg. $69.00
-                  %span.sale-price
-                    %strong Reg. $44.00
+            
     .clear-fix
 
       / .recent-view-all-item ends
@@ -192,7 +196,7 @@
   / .container ends
 / PRODUCTS AREA ENDS
 :javascript
-  //var product_info = #{@product.to_json};
+  var product_info = #{@product.to_json};
   $(document).ready(function(){
-    //ViewProduct.setview(product_info);
+    ViewProduct.setview(product_info);
   });

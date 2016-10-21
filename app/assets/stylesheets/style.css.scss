@@ -3394,6 +3394,7 @@ input[type=number]::-webkit-outer-spin-button {
     img{
       max-height: 294px;
       margin: 0 auto;
+      width: 100%;
     }
   }
   .recent-view-all-item{
@@ -3429,6 +3430,35 @@ input[type=number]::-webkit-outer-spin-button {
     margin-top: 0;
     padding-bottom: 0.7rem;
   }
+  .left-content-side{
+    width: 20%;
+    float: left;
+    border-bottom: 0px;
+  }
+  .right-content-side{
+    float: left;
+    padding-left: 15px;
+    width: 59%;
+    text-align: left;
+    .seper-small{
+      height: 10px;
+    }
+    .price-txt{
+      font-size: 2.5rem;
+    }
+    .btn-medium{
+      width: 70%;
+    }
+
+    
+  }
+
+  .dot-sperate{
+    border-bottom: 1px dashed #ccc;
+    width: 79%;
+    float: left;
+    margin: 20px 0 20px 0;
+  } 
 }
 
 
@@ -3442,8 +3472,23 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
+.color-picking{
+  &.active{
+    img{
+      border: 2px dotted #333; 
+    }
+    
+  }
+}
+
+.width-150{
+  width: 150px !important;
+}
 /*.zoomLens{
     width: 131px !important;
     height: 89px !important;
   }
 */
+.seper-small{
+  height: 10px;
+}

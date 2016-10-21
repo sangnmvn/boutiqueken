@@ -3,6 +3,7 @@ class Product < ActiveRecord::Base
 
 
   def list_sizes
+  	return [] if self.sizes.blank?
   	JSON.parse(self.sizes)
   	
   end

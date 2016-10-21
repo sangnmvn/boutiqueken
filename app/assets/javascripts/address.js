@@ -15,10 +15,7 @@ $(function(){
   Address.init(".address-form");
   ProductList.init(".product-list");
   ViewProduct.init();
-  $("#content-slider").lightSlider({
-                loop:true,
-                keyPress:true
-            });
+  ViewProduct.render();
   Product.init(".image-product-detail");
 });
 
@@ -63,30 +60,72 @@ var ViewProduct ={
     }
   },
   setview: function(product_info){
-    list_views = jQuery.parseJSON(Cookies.get("product-views"));
-    product={};
-    product["main_image_url"] = product_info["main_image_url"];
-    product["product_id"]= product_info["id"];
-    product["regular_price"] = product_info["regular_price"];
-    product["sale_price"] = product_info["sale_price"];
+    console.log(product_info);
+    saved_cookies = Cookies.get("product-views");
+    list_views = new Array();
+    if(saved_cookies !=""){
+      list_views = jQuery.parseJSON(saved_cookies);
+    }
     
+    
+    product={};
+    product["main_image_url"] = "http://macys-o.scene7.com/is/image/MCY/products/" + product_info.main_image_url;
+    product["product_id"]= product_info.id;
+    product["name"] =  product_info.short_desc;
+    product["regular_price"] = product_info.regular_price;
+    product["sale_price"] = product_info.sale_price;
+    list_views = jQuery.grep(list_views, function(obj) {
+      console.log(obj.product_id);
+      console.log(product.id);
+        return obj.product_id !== product_info.id;
+    });
+    console.log(list_views);
     if(list_views.length<10){
-      list_views.push(product);
+      list_views.unshift(product);
     }else{
-      list_views.shift();
-      list_views.push(product);
+      list_views.pop();
+      list_views.unshift(product);
     }
 
     Cookies.set("product-views",list_views);
   },
   render: function(){
-    html = '<h1><Recently Viewed</h1><div class="recent-view-all-item"><div class="item"><ul id="content-slider" class="content-slider"><li>';
-    list_views = jQuery.parseJSON(Cookies.get("product-views"));
+    saved_cookies = Cookies.get("product-views");
+    if(saved_cookies !=""){
+      list_views = jQuery.parseJSON(saved_cookies);
+      
+      jQuery.each(list_views,function(index,value){
+        regular_price = ViewProduct.show_price(value.regular_price);
+        sale_price = ViewProduct.show_price(value.sale_price);
+        li = $("<li></li>");
+        link_a = $("<a></a>").attr("href","/products/" + value.product_id);
+        div_single = $("<div></div>").addClass("recent-view-single-item");
+        image = $("<img></img>").attr("src",value.main_image_url).appendTo(div_single);
+        title = $("<p></p>").html(value.name).appendTo(div_single);
+        reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
+        sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);
 
-    if(list_views.length >0){
-      $(".recent-view").html(html);
+        div_single.appendTo(link_a);
+        link_a.appendTo(li);
+        li.appendTo("#content-slider");
+      });
+
+      $(".recent-view").removeClass("hide");
+      $("#content-slider").lightSlider({
+                loop:false,
+                keyPress:true,
+                item: 6
+            });
     }
+    
 
+  },
+  show_price: function(price){
+    if(price == null){
+      return "";
+    }else{
+      return price;
+    }
   }
 }
 
@@ -94,7 +133,7 @@ var ViewProduct ={
 var Product={
   init: function(selector){
     if($(selector).length >0){
-      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "http://www.elevateweb.co.uk/spinner.gif"}); 
+      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "/loader/ajax-loader.gif"}); 
       $("#zoom_03").bind("click", function(e) {  
         var ez =   $('#zoom_03').data('elevateZoom');
         ez.closeAll(); //NEW: This function force hides the lens, tint and window 
@@ -129,13 +168,22 @@ var Product={
     // },500);
     
     // $(c_element).trigger("click");
+      $('.color-picking.active').removeClass("active");
 
       color_name = $(this).attr("color-name");
+      $(this).addClass("active");
       console.log(color_name);
       $(".product-thumb-image").addClass("hide");
       $(".product-thumb-image active").removeClass("active");
       $(".product-thumb-image[color-name='" + color_name + "']").removeClass("hide").addClass("active");
       $(".product-thumb-image[color-name='" + color_name + "']").trigger("click");
     });
+
+    $(".vertical .carousel").jCarouselLite({
+        btnNext: ".vertical .next",
+        btnPrev: ".vertical .prev",
+        vertical: true
+    });
+
   }
 }
