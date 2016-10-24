@@ -3,8 +3,7 @@ require "socksify/http"
 require "json"
 
 # Mechanize: call @agent.set_socks(addr, port) before using
-# any of it's methods; it might be working in other cases,
-# but I just didn't tried :)
+# any of it's methods;
 class Mechanize::HTTP::Agent
 public
   def set_socks addr, port
@@ -25,10 +24,20 @@ class Scrapper
 
   FEATURE_CATE_LIMIT = {
     "HOME" => 4,
-    "ACTIVE" => 10
+    "ACTIVE" => 50
   }
 
   SITE_NAME = "Boutiqueken"
+  MAX_THREAD = 15
+
+  HOME_SPECIAL_CATES = {
+    "Dining & Entertaining": "http://www1.macys.com/catalog/index.ognc?CategoryID=7498&cm_sp=us_hdr-_-home-_-7498_dining-%26-entertaining_COL1",
+    "Furniture": "http://www1.macys.com/catalog/index.ognc?CategoryID=29391&cm_sp=us_hdr-_-home-_-29391_furniture_COL1",
+    "Kitchen": "http://www1.macys.com/catalog/index.ognc?CategoryID=7497&cm_sp=us_hdr-_-home-_-7497_kitchen_COL1",
+    "Luggage & Backpacks": "http://www1.macys.com/catalog/index.ognc?CategoryID=16908&cm_sp=us_hdr-_-home-_-16908_luggage-%26-backpacks_COL1",
+    "Mattresses": "http://www1.macys.com/catalog/index.ognc?CategoryID=25931&cm_sp=us_hdr-_-home-_-25931_mattresses_COL1",
+    "Holiday Lane": "http://www1.macys.com/catalog/index.ognc?CategoryID=30599&cm_sp=us_hdr-_-home-_-30599_holiday-lane_COL1"
+  }
 
   def initialize
     @root_url = 'https://www.macys.com'
@@ -41,308 +50,369 @@ class Scrapper
     @agent.agent.set_socks('localhost', 8123)
   end
 
-  def full_import
+  def import_full
     scrape_menu
+    scrape_left_nav
+    scrape_filters
+    scrape_products
 
-    #scrape_left_nav
+    scrape_seo_information
+  end
+
+  def import_product
+    scrape_products
   end
 
   def scrape_menu
-    page = @agent.get(@root_url)
+    begin
+      puts "[BEGIN] Scrapping menu and sub-menu"
+      start_time = Time.now
 
-    menu = page.search("#globalMastheadCategoryMenu")
+      page = @agent.get(@root_url)
 
-    puts "\nMain Menu"
-    puts "---------"
+      menu = page.search("#globalMastheadCategoryMenu")
 
-    pos = 0
-    menu.search("li").each do |mnu_item|
-      cat_id = mnu_item.attributes["id"].value.split("_").last
+      puts "\nMain Menu"
+      puts "---------"
 
-      anchor = mnu_item.search("a").first
-      cat_name = anchor.text
-      cat_url = @root_url + anchor.attributes["href"].value
+      pos = 0
+      menu.search("li").each do |mnu_item|
+        cat_id = mnu_item.attributes["id"].value.split("_").last
 
-      cat = Category.find_or_create_by(cat_name: cat_name)
-      cat.site_cat_id = cat_id
-      cat.pos = pos
-      cat.save
+        anchor = mnu_item.search("a").first
+        cat_name = replace_macys_info(anchor.text)
+        cat_url = @root_url + anchor.attributes["href"].value
 
-      pos += 1
+        cat = Category.find_or_create_by(cat_name: cat_name)
+        cat.site_cat_id = cat_id
+        cat.pos = pos
+        cat.save
 
-      scrape_sub_menu(cat, page)
+        pos += 1
 
-      scrape_left_nav(cat, cat_url)
+        puts "Scrapping sub-menu for #{cat_name}"
+        scrape_sub_menu(cat, page)
+      end
+
+      puts "[END] Scrapping menu and sub-menu finished in #{Time.now - start_time}"
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
   def scrape_sub_menu(parent_cat, page)
-    sub_menu_id = "#Flyout_#{parent_cat.site_cat_id}"
+    begin
+      sub_menu_id = "#Flyout_#{parent_cat.site_cat_id}"
 
-    cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
+      cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
 
-    cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
+      cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
 
-      group_cat_name = ""
-      pos = 0
+        group_cat_name = ""
+        pos = 0
 
-      cat_div.search("li").each do |leaf_cat|
-        if leaf_cat.children.first.name == "label"
-          group_cat_name = leaf_cat.children.first.text
-          pos = 0
-        else
-          if leaf_cat.search("a").count > 0
-            cat_el = leaf_cat.search("a").first
+        cat_div.search("li").each do |leaf_cat|
+          if leaf_cat.children.first.name == "label"
+            group_cat_name = leaf_cat.children.first.text
+            puts "- #{group_cat_name}"
+            pos = 0
+          else
+            if leaf_cat.search("a").count > 0
+              cat_el = leaf_cat.search("a").first
 
-            unless leaf_cat.attributes["id"].nil?
-              site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
-            
-              # remove clearance links
-              if cat_el.attributes["class"].nil?
-                cat_name = cat_el.text
+              unless leaf_cat.attributes["id"].nil?
+                site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
+              
+                # remove clearance links
+                if cat_el.attributes["class"].nil?
+                  cat_name = cat_el.text
 
-                unless cat_name.blank?
-                  cat = Category.find_or_create_by(site_cat_id: site_cat_id)
-                  cat.cat_name = cat_name
-                  cat.group_name = group_cat_name
-                  cat.site_cat_id = site_cat_id
-                  cat.parent_id = parent_cat.id
-                  cat.pos = pos
-                  cat.save
+                  puts "  - #{cat_name} - site_cat_id #{site_cat_id}"
+                  unless cat_name.blank?
+                    cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: parent_cat.id)
+                    cat.cat_name = replace_macys_info(cat_name)
+                    cat.group_name = replace_macys_info(group_cat_name)
+                    cat.site_cat_id = site_cat_id
+                    cat.parent_id = parent_cat.id
+                    cat.pos = pos
+                    cat.save
 
-                  pos += 1
+                    pos += 1
+                  end
                 end
               end
             end
           end
         end
       end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
-  def scrape_left_nav(root_cat, url)
-    page = @agent.get(url)
+  def scrape_left_nav
+    begin
+      puts "[BEGIN] Scrapping left navigation"
+      start_time = Time.now
 
-    # crawl left nav
-    puts "\nScrapping Left Nav of #{url}"
-    if root_cat.cat_name == 'BRANDS'
-      scrape_left_nav_brands(root_cat, page)
-    else
-      scrape_left_nav_others(root_cat, page)
+      page = @agent.get(@root_url)
+
+      menu = page.search("#globalMastheadCategoryMenu")
+
+      menu.search("li").each do |mnu_item|
+        cat_id = mnu_item.attributes["id"].value.split("_").last
+        next if cat_id.nil?
+
+        anchor = mnu_item.search("a").first
+        cat_url = @root_url + anchor.attributes["href"].value
+
+        cat = Category.where(site_cat_id: cat_id).first
+        scrape_left_nav_details(cat, cat_url)
+      end
+
+      # scrape left-nav for Home essentials
+      puts "*** Scrape left-nav for Home essentials"
+
+      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
+
+      if !home_cat.nil?
+        HOME_SPECIAL_CATES.each do |cat_name, url|
+          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
+
+          if !cat.nil?
+            scrape_left_nav_details(cat, url)
+          else
+            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
+          end
+        end
+      else
+        puts "Cannot find HOME category by its name"
+      end
+
+      puts "[END] Scrapping left navigation finished in #{Time.now - start_time}\n\n"
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
+  end
 
-    # crawl feature categories
-    puts "\nScrapping Feature Categories #{url}"
-    
-    if root_cat.cat_name == "KIDS"
-      scrape_kids_featured_cates(root_cat, page)
-    elsif root_cat.cat_name == 'ACTIVE'
-      scrap_active_featured_cates(root_cat, page)
-    elsif root_cat.cat_name == 'BRANDS'
-      scrap_brand_featured_brands(root_cat, page)
-    else
-      scrape_others_featured_cates(root_cat, page)
-    end
+  def scrape_left_nav_details(root_cat, url)
+    begin
+      page = @agent.get(url)
 
-    # update seo information for root_cat
-    meta_tags = page.search("//meta[@name='description']")
+      # crawl left nav
+      puts "\nScrapping Left Nav of #{url}"
+      if root_cat.cat_name == 'BRANDS'
+        scrape_left_nav_brands(root_cat, page)
+      else
+        scrape_left_nav_others(root_cat, page)
+      end
 
-    unless meta_tags.empty?
-      seo_desc = page.search("//meta[@name='description']").first.attributes["content"].value
+      # crawl feature categories
+      puts "\nScrapping Feature Categories #{url}"
+      
+      if root_cat.cat_name == "KIDS"
+        scrape_kids_featured_cates(root_cat, page)
+      elsif root_cat.cat_name == 'ACTIVE'
+        scrap_active_featured_cates(root_cat, page)
+      elsif root_cat.cat_name == 'BRANDS'
+        scrap_brand_featured_brands(root_cat, page)
+      else
+        scrape_others_featured_cates(root_cat, page)
+      end
 
-      seo_desc = seo_desc.gsub(/Macys.com/, SITE_NAME)
-      seo_desc = seo_desc.gsub(/macys/, SITE_NAME)
-      seo_desc = seo_desc.gsub(/Macy's/, SITE_NAME)
+      # update seo information for root_cat
+      seo_title, seo_keywords, seo_desc = extract_seo_information(page)
 
+      root_cat.seo_title = seo_title
+      root_cat.seo_keywords = seo_keywords
       root_cat.seo_desc = seo_desc
       root_cat.save
-    end
+      
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
   end
 
   def scrape_left_nav_brands(root_cat, page)
-    nav = page.search(".//div[@class='subCatList']").children
+    begin
+      nav = page.search(".//div[@class='subCatList']").children
 
-    pos = 0
+      pos = 0
 
-    nav.each do |item|
-      unless item.text.strip.empty?
-        cat_name = item.text.strip
-        site_cat_id = item.attributes["id"].text
+      nav.each do |item|
+        unless item.text.strip.empty?
+          cat_name = replace_macys_info(item.text.strip)
+          site_cat_id = item.attributes["id"].text
 
-        if site_cat_id.to_i == 0
-          puts "scrape_left_nav_brands - #{site_cat_id}"
-          puts "cat_name #{cat_name}"
+          if site_cat_id.to_i == 0
+            puts "scrape_left_nav_brands - #{site_cat_id}"
+            puts "cat_name #{cat_name}"
+          end
+
+          cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = site_cat_id
+            cat.save
+          end
+
+          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          nav.category_id = cat.id
+          nav.site_cat_id = site_cat_id
+          nav.parent_id = root_cat.id
+          nav.cat_name = cat_name
+          nav.pos = pos
+          nav.save
+
+          pos += 1
         end
-
-        cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-
-        if cat.new_record?
-          cat.is_shown_in_menu = false
-          cat.cat_name = cat_name
-          cat.parent_id = root_cat.id
-          cat.site_cat_id = site_cat_id
-          cat.save
-        end
-
-        nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-        nav.cat_id = cat.id
-        nav.site_cat_id = site_cat_id
-        nav.parent_id = root_cat.id
-        nav.cat_name = cat_name
-        nav.pos = pos
-        nav.save
-
-        pos += 1
       end
-    end
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
   end
 
   def scrape_left_nav_others(root_cat, page)
-    nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
+    begin
+      nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
+      group_pos = 0
+      nav.each do |group_cat|
+        group_cat_name = replace_macys_info(group_cat.search("span").first.text)
 
-    group_pos = 0
-    nav.each do |group_cat|
-      group_cat_name = group_cat.search("span").first.text
+        puts "+ #{group_cat_name}"
 
-      puts "+ #{group_cat_name}"
+        group_pos += 1
+        pos = 0
 
-      group_pos += 1
-      pos = 0
-
-      group_cat.search("a").each do |cat|
-        site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
-        cat_name = cat.text
-        
-        if site_cat_id.to_i == 0
-          puts "scrape_left_nav_others - #{site_cat_id}"
+        group_cat.search("a").each do |cat|
+          site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
+          cat_name = replace_macys_info(cat.text)
+          
           puts "cat_name #{cat_name}"
+
+          if site_cat_id.to_i == 0
+            puts "scrape_left_nav_others - #{site_cat_id}"
+          end
+
+          cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = site_cat_id
+            cat.save
+          end
+
+          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          nav.group_name = group_cat_name
+          nav.cat_name = cat_name
+          nav.category_id = cat.id
+          nav.parent_id = root_cat.id
+          nav.site_cat_id = site_cat_id
+          nav.pos = pos
+          nav.group_pos = group_pos
+          nav.save
+
+          pos += 1
         end
-
-        cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-
-        if cat.new_record?
-          cat.is_shown_in_menu = false
-          cat.cat_name = cat_name
-          cat.parent_id = root_cat.id
-          cat.site_cat_id = site_cat_id
-          cat.save
-        end
-
-        nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-        nav.group_name = group_cat_name
-        nav.cat_name = cat_name
-        nav.cat_id = cat.id
-        nav.parent_id = root_cat.id
-        nav.site_cat_id = site_cat_id
-        nav.pos = pos
-        nav.group_pos = group_pos
-        nav.save
-
-        pos += 1
       end
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end  
 
   def scrape_kids_featured_cates(root_cat, page)
-    f_cate_groups = page.search(".//div[@class='flexPool flexPoolMargin']")
+    begin
+      f_cate_groups = page.search(".//div[@class='flexPool flexPoolMargin']")
 
-    pos = 0
-    f_cate_groups.each do |f_cate_group|
-      cat_el = f_cate_group.search("a").first
+      pos = 0
+      f_cate_groups.each do |f_cate_group|
+        cat_el = f_cate_group.search("a").first
 
-      cat_name = cat_el.text.strip
-      site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first
+        cat_name = replace_macys_info(cat_el.text.strip)
+        site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first
+        image_url = f_cate_group.search("img").first.attributes["src"].text
 
-      if site_cat_id.to_i == 0
-        puts "scrape_kids_featured_cates - #{site_cat_id}"
-        puts "cat_name #{cat_name}"
+        if site_cat_id.to_i == 0
+          puts "scrape_kids_featured_cates - #{site_cat_id}"
+          puts "cat_name #{cat_name}"
+        end
+
+        cat = Category.where(parent_id: root_cat.id, site_cat_id: site_cat_id).first
+
+        f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+        f_cat.cat_name = cat_name
+        f_cat.parent_id = root_cat.id
+        f_cat.site_cat_id = site_cat_id
+        f_cat.category_id = cat.id unless cat.nil?
+        f_cat.pos = pos
+        f_cat.save
+
+        pos += 1
       end
-
-      cat = Category.where(parent_id: root_cat.id, site_cat_id: site_cat_id).first
-
-      f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-      f_cat.cat_name = cat_name
-      f_cat.parent_id = root_cat.id
-      f_cat.site_cat_id = site_cat_id
-      f_cat.category_id = cat.id unless cat.nil?
-      f_cat.pos = pos
-      f_cat.save
-
-      pos += 1
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
   def scrap_active_featured_cates(root_cat, page)
-    f_cates = page.search("map").search("area")
+    begin
+      f_cates = page.search("map").search("area")
 
-    f_cate_count = 0
-    pos = 0
+      f_cate_count = 0
+      pos = 0
 
-    f_cates.each do |f_cate|
-      f_cate_name = f_cate.attributes["alt"].text
+      f_cates.each do |f_cate|
+        f_cate_name = replace_macys_info(f_cate.attributes["alt"].text)
 
-      unless ['go you macys active'].include? f_cate_name
+        unless ['go you macys active'].include? f_cate_name
 
-        if f_cate_name.blank?
-          puts "scrap_active_featured_cates - #{f_cate_name}"
+          if f_cate_name.blank?
+            puts "scrap_active_featured_cates - #{f_cate_name}"
+          end
+
+          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, cat_name: f_cate_name)
+          f_cat.cat_name = f_cate_name
+          f_cat.parent_id = root_cat.id
+          f_cat.pos = pos
+          f_cat.save
+
+          f_cate_count += 1
+          pos += 1
+          break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
         end
-
-        f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, cat_name: f_cate_name)
-        f_cat.cat_name = f_cate_name
-        f_cat.parent_id = root_cat.id
-        f_cat.pos = pos
-        f_cat.save
-
-        f_cate_count += 1
-        pos += 1
-        break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
       end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
   def scrap_brand_featured_brands(root_cat, page)
-    f_brands = page.search(".//li[@class='featuredBrand']")
+    begin
+      f_brands = page.search(".//li[@class='featuredBrand']")
 
-    pos = 0
+      pos = 0
 
-    f_brands.each do |f_brand|
-      f_brand_el = f_brand.search("a").first
+      f_brands.each do |f_brand|
+        f_brand_el = f_brand.search("a").first
 
-      cat_name = f_brand_el.text.strip
-      site_cat_id = f_brand_el.attributes["href"].text.split("?CategoryID=").last
+        cat_name = replace_macys_info(f_brand_el.text.strip)
+        site_cat_id = f_brand_el.attributes["href"].text.split("?CategoryID=").last
 
-      if site_cat_id.to_i == 0
-        puts "scrap_brand_featured_brands - #{site_cat_id}"
-        puts "cat_name #{cat_name}"
-      end
-
-      cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-      cat.site_cat_id = site_cat_id
-      cat.cat_name = cat_name
-      cat.parent_id = root_cat.id
-      cat.pos = pos
-      cat.save
-
-      pos += 1
-    end
-  end
-
-  def scrape_others_featured_cates(root_cat, page)
-    f_cates = page.search(".//div[@class='adCatIcon']")
-    f_cate_count = 0
-
-    pos = 0
-
-    f_cates.each do |f_cate|
-      f_cate_ele = f_cate.search("a").search("div").first
-      site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?CategoryID=").last.split("&").first
-      site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last if site_cat_id.to_i == 0
-
-      unless f_cate_ele.nil?
-        cat_name = f_cate_ele.text
-        
         if site_cat_id.to_i == 0
-          puts "scrape_others_featured_cates - #{site_cat_id}"
+          puts "scrap_brand_featured_brands - #{site_cat_id}"
           puts "cat_name #{cat_name}"
         end
 
@@ -354,146 +424,181 @@ class Scrapper
         cat.save
 
         pos += 1
-
-        f_cate_count += 1
-
-        break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
-      end     
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
-  def scrape_options_test()
-    page = @agent.get('http://www1.macys.com/shop/womens-clothing/womens-activewear?id=29891&edge=hybrid&cm_sp=us_hdr-_-women-_-29891_activewear_COL1')
+  def scrape_others_featured_cates(root_cat, page)
+    begin
+      f_cates = page.search(".//div[@class='adCatIcon']")
+      f_cate_count = 0
 
-    boxes = page.search("#facets").children
+      pos = 0
 
-    boxes.each do |box|
-      unless box.text.strip == ""
-        next if ['UPC_BOPS_PURCHASABLE', 'SPECIAL_OFFERS'].include? box.attributes["id"].text
-        box_type = box.attributes["aria-label"].text
+      f_cates.each do |f_cate|
+        f_cate_ele = f_cate.search("a").search("div").first
+        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?CategoryID=").last.split("&").first
+        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last if site_cat_id.to_i == 0
+        image_url = f_cate.search("img").first.attributes["src"].text
 
-        puts "+ #{box_type}"
-
-        if box.search("h2").count > 1
-          sub_boxes = box.search(".//li[@class='typbox collapsed ']")
-          sub_boxes |= box.search(".//li[@class='typbox groupFacet ']")
-
-          sub_boxes.each do |sub_box|
-            sub_box_type = sub_box.search("h2").first.text
-            puts "  - #{sub_box_type}"
-
-            sub_box.search("a").each do |item|
-              puts "    * #{item.attributes["data-value"].text} #{item.attributes["href"].text}"
-            end
-          end
-        elsif box_type == "Brand"
-          item_pos = 0
+        unless f_cate_ele.nil?
+          cat_name = replace_macys_info(f_cate_ele.text)
           
-          sub_box_type = "Featured Brands"
-
-          puts " - #{sub_box_type}"
-          box.search("a").each_with_index do |item, idx|
-            break if idx > 9
-            url = "#{@root_url}#{item.attributes["href"].text}"
-            puts "  - #{item.attributes["data-value"].text}"
+          if site_cat_id.to_i == 0
+            puts "scrape_others_featured_cates - #{site_cat_id}"
+            puts "cat_name #{cat_name}"
           end
 
-          sub_box_type = "All Brands"
-          puts " - #{sub_box_type}"
+          cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          cat.site_cat_id = site_cat_id
+          cat.cat_name = cat_name
+          cat.image_url = image_url
+          cat.parent_id = root_cat.id
+          cat.pos = pos
+          cat.save
 
-          box.search("a").each_with_index do |item, idx|
-            url = "#{@root_url}#{item.attributes["href"].text}"
-            puts "  - #{item.attributes["data-value"].text}"
-          end
-        else
-          # crawl details in a box
-          # box.search("a").each do |item|
-          #   url = "#{@root_url}#{item.attributes["href"].text}"
-          #   puts "  - #{item.attributes["data-value"].text} #{url}"
+          pos += 1
 
-          #   #scrape_product_per_option(url)
-          # end
-        end
+          f_cate_count += 1
+
+          break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
+        end     
       end
-
-      puts "\n"
-    end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end    
   end
 
   def scrape_filters
+    begin
+      puts "[BEGIN] Scrapping filters"
+      start_time = Time.now
 
-    puts "Scrapping filters"
+      page = @agent.get(@root_url)
 
-    page = @agent.get(@root_url)
+      menu = page.search("#globalMastheadCategoryMenu")
 
-    menu = page.search("#globalMastheadCategoryMenu")
+      menu.search("li").each do |mnu_item|
+        cat_id = mnu_item.attributes["id"].value.split("_").last
 
-    menu.search("li").each do |mnu_item|
-      cat_id = mnu_item.attributes["id"].value.split("_").last
+        anchor = mnu_item.search("a").first
+        cat_name = replace_macys_info(anchor.text)
+        cat_url = @root_url + anchor.attributes["href"].value
 
-      anchor = mnu_item.search("a").first
-      cat_name = anchor.text
-      cat_url = @root_url + anchor.attributes["href"].value
+        puts "- Scrapping #{cat_name} filters"
+        start = Time.now
 
-      puts "Scrapping #{cat_name} filters"
-      start = Time.now
+        scrape_filters_details(cat_id, cat_url)
 
-      if cat_name == "HOME"
-        #scrape_home_filters()
-      elsif cat_name == "BRANDS"
-        #scrape_others_filters(cat_id, cat_url)
-      elsif ["BED & BATH"].include? cat_name
-        scrape_others_filters(cat_id, cat_url)
+        puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
       end
 
-      puts "Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
+      # scrape filters for special home category
+      puts "*** Scrape filters for Home essentials"
 
-    end
-  end
+      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
 
-  def scrape_home_filters
-    url = ""
-  end
+      if !home_cat.nil?
+        HOME_SPECIAL_CATES.each do |cat_name, url|
+          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
 
-  def scrape_brands_filters
-    url = ""
-  end
-
-  def scrape_others_filters(site_root_cat_id, url)
-    puts url
-
-    page = @agent.get(url)
-
-    sub_menu_id = "#Flyout_#{site_root_cat_id}"
-
-    cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
-
-    cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
-      cat_div.search("li").each do |leaf_cat|
-        next if leaf_cat.children.first.name == "label"
-
-        if leaf_cat.search("a").count > 0
-          cat_el = leaf_cat.search("a").first
-
-          unless leaf_cat.attributes["id"].nil?
-            site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
-            site_cat_url = cat_el.attributes["href"].text
-
-            #scrap_others_filters_for_subcat(site_root_cat_id, site_cat_id, site_cat_url)
-            scrape_products_per_subcat(site_cat_id, site_cat_url)
-
-            break
+          if !cat.nil?
+            scrape_filter_for_spec_home(home_cat, cat, url)
+          else
+            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
           end
         end
+      else
+        puts "Cannot find HOME category by its name"
       end
-    end
+
+      puts "[END] Scrapping filters finished in #{Time.now - start_time}"
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
   end
 
-  def scrap_others_filters_for_subcat(site_root_cat_id, site_cat_id, url)
+  def scrape_filter_for_spec_home(root_cat, cat, url)
     begin
       page = @agent.get(url)
 
-      boxes = page.search("#facets").children
+      groups = page.search(".//li[@class='nav_cat_item_bold']")
+      groups.each do |group|
+        links = group.search("a")
+        links.each do |link|
+          filter_url = link.attributes["href"].text
+          
+          site_cat_id = filter_url.split("?id=").last.split("&").first
+
+          if site_cat_id.blank?
+            puts "Cannot get site_cat_id from url #{filter_url}"
+            next
+          end
+
+          scrape_filters_details(site_cat_id, filter_url)
+        end
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_filters_details(site_root_cat_id, url)
+    begin
+      puts "scrape_filters_details #{url}"
+
+      unless url.start_with?("http")
+        return
+      end
+
+      page = @agent.get(url)
+
+      sub_menu_id = "#Flyout_#{site_root_cat_id}"
+
+      cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
+
+      cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
+        cat_div.search("li").each do |leaf_cat|
+          next if leaf_cat.children.first.name == "label"
+
+          if leaf_cat.search("a").count > 0
+            cat_el = leaf_cat.search("a").first
+
+            unless leaf_cat.attributes["id"].nil?
+              site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
+              site_cat_url = cat_el.attributes["href"].text
+
+              scrap_filters_for_subcat(site_root_cat_id, site_cat_id, site_cat_url)
+            end
+          end
+        end
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
+  end
+
+  def scrap_filters_for_subcat(site_root_cat_id, site_cat_id, url)
+    begin
+      puts "Scrapping filters in #{url}"
+
+      page = @agent.get(url)
+
+      facets = page.search("#facets")
+
+      if facets.empty?
+        puts "Cannot find filters in this page #{url}"
+        return
+      end
+
+      boxes = facets.children
 
       parent_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
       cat = Category.where(site_cat_id: site_cat_id, parent_id: parent_cat.id).first
@@ -509,7 +614,7 @@ class Scrapper
         unless box.text.strip.blank?
           next if ['UPC_BOPS_PURCHASABLE', 'SPECIAL_OFFERS'].include? box.attributes["id"].text
 
-          box_type = box.attributes["aria-label"].text
+          box_type = replace_macys_info(box.attributes["aria-label"].text)
           ui_type = box.attributes["data-uitype"].text
 
           puts "+ #{box_type}"
@@ -527,7 +632,6 @@ class Scrapper
               puts "  - #{sub_box_type}"
 
               sub_box.search("a").each do |item|
-                #{item.attributes["href"].text}
                 puts "    * #{item.attributes["data-value"].text} "
 
                 filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
@@ -535,7 +639,7 @@ class Scrapper
                 filter.group_name = box_type
                 filter.group_pos = group_pos
                 filter.sub_group_name = sub_box_type
-                filter_sub_group_pos = sub_group_pos
+                filter.sub_group_pos = sub_group_pos
                 filter_values = []
 
                 sub_box.search("a").each do |item|
@@ -545,7 +649,7 @@ class Scrapper
                   puts "displayname #{displayname}"
                   puts "value #{value}"
 
-                  filter_values << {name: displayname, value: value}
+                  filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
                 end
 
                 filter.filters = filter_values.to_json
@@ -562,17 +666,17 @@ class Scrapper
             filter.group_name = box_type
             filter.group_pos = group_pos
             filter.sub_group_name = sub_box_type
+            filter.sub_group_pos = 0
             filter_values = []
 
             puts " - #{sub_box_type}"
             box.search("a").each_with_index do |item, idx|
               break if idx > 9
-              # url = "#{@root_url}#{item.attributes["href"].text}"
-              # puts "  - #{item.attributes["data-value"].text}"
+
               displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
               value = item.attributes["data-value"].text
 
-              filter_values << {name: displayname, value: value}
+              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
             end
             filter.filters = filter_values.to_json
             filter.save
@@ -583,17 +687,15 @@ class Scrapper
             filter.group_name = box_type
             filter.group_pos = group_pos
             filter.sub_group_name = sub_box_type
+            filter.sub_group_pos = 1
             filter_values = []
 
             puts " - #{sub_box_type}"
             box.search("a").each_with_index do |item, idx|
-              #url = "#{@root_url}#{item.attributes["href"].text}"
-              #puts "  - #{item.attributes["data-value"].text}"
-
               displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
               value = item.attributes["data-value"].text
 
-              filter_values << {name: displayname, value: value}
+              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
             end
 
             filter.filters = filter_values.to_json
@@ -611,12 +713,7 @@ class Scrapper
               displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
               value = item.attributes["data-value"].text
 
-              filter_values << {name: displayname, value: value}
-
-              # url = "#{@root_url}#{item.attributes["href"].text}"
-              # puts "  - #{item.attributes["data-value"].text} #{url}"
-
-              #scrape_product_per_option(url)
+              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
             end
 
             filter.filters = filter_values.to_json
@@ -630,13 +727,140 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.join("\n")
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_products
+    begin
+      puts "[BEGIN] Scrapping products"
+      start_time = Time.now
+
+      page = @agent.get(@root_url)
+
+      menu = page.search("#globalMastheadCategoryMenu")
+
+      menu.search("li").each do |mnu_item|
+        cat_id = mnu_item.attributes["id"].value.split("_").last
+
+        anchor = mnu_item.search("a").first
+        cat_name = replace_macys_info(anchor.text)
+        cat_url = @root_url + anchor.attributes["href"].value
+
+        puts "Scrapping #{cat_name} products"
+        start = Time.now
+
+        if cat_name == "WOMEN"
+          scrape_others_cat_products(cat_id, cat_url)
+        end
+      end
+
+      # Scrape products for home essentials
+      scrape_home_products()
+
+      puts "[END] Scrapping products finished in #{Time.now - start_time}"
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_home_products()
+    begin
+      puts "*** Scrape products for Home essentials"
+
+      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
+
+      if !home_cat.nil?
+        HOME_SPECIAL_CATES.each do |cat_name, url|
+          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
+
+          if !cat.nil?
+            scrape_home_essential_products(home_cat, cat, url)
+          else
+            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
+          end
+        end
+      else
+        puts "Cannot find HOME category by its name"
+      end
+
+      puts "[END] Scrapping filters finished in #{Time.now - start_time}"
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
+  end
+
+  def scrape_home_essential_products(root_cat, cat, url)
+    begin
+      page = @agent.get(url)
+
+      groups = page.search(".//li[@class='nav_cat_item_bold']")
+      groups.each do |group|
+        links = group.search("a")
+        links.each do |link|
+          filter_url = link.attributes["href"].text
+          
+          site_cat_id = filter_url.split("?id=").last.split("&").first
+
+          if site_cat_id.blank?
+            puts "Cannot get site_cat_id from url #{filter_url}"
+            next
+          end
+
+          scrape_products_per_subcat(site_cat_id, filter_url)
+        end
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_others_cat_products(site_root_cat_id, url)
+    begin
+      puts url
+
+      page = @agent.get(url)
+
+      sub_menu_id = "#Flyout_#{site_root_cat_id}"
+
+      cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
+
+      cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
+        cat_div.search("li").each do |leaf_cat|
+          next if leaf_cat.children.first.name == "label"
+
+          if leaf_cat.search("a").count > 0
+            cat_el = leaf_cat.search("a").first
+
+            unless leaf_cat.attributes["id"].nil?
+              site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
+              site_cat_url = cat_el.attributes["href"].text
+
+              scrape_products_per_subcat(site_cat_id, site_cat_url)
+            end
+          end
+        end
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
   def scrape_products_per_subcat(site_cat_id, url)
     begin
-      full_url = "#{@root_url}#{url}"
+      
+      full_url = ""
+
+      unless url.start_with?("http")
+        full_url = "#{@root_url}#{url}"
+      else
+        full_url = url
+      end
+
       puts "\nScrapping products from #{full_url}"
 
       page = @agent.get(full_url)
@@ -646,7 +870,7 @@ class Scrapper
       product_count_el = page.search("#productCount")
 
       if product_count_el.empty?
-        puts "*** This page is not a product list page\n\n"
+        puts "[WARN] This page is not a product list page\n\n"
         puts "url: #{url}"
         return
       end
@@ -657,19 +881,37 @@ class Scrapper
 
       current_page = 1
 
-      while(product_count > 0 && total_product < product_count)
+      while (product_count > 0 && total_product < product_count)
         products = page.search(".//li[@class='productThumbnail borderless']")
 
+        break if products.empty? 
+
+        threads = []
+        thread_count = 0
+
         products.each do |product|
-          product_id = product.attributes["id"].text
+          total_product_t = total_product
 
-          product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+          threads[thread_count] = Thread.new {
 
-          puts "#{total_product}/#{product_count} - #{product_url}"
+            product_id = product.attributes["id"].text
 
-          scrape_product_or_product_collection_page(product_id, product_url)
+            product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+
+            puts "#{total_product_t}/#{product_count} - #{product_url}"
+
+            scrape_product_or_product_collection_page(product_id, product_url, total_product_t)
+          }
 
           total_product += 1
+          thread_count += 1
+
+          if thread_count == MAX_THREAD || total_product == product_count
+            threads.each {|t| t.join}
+
+            threads = []
+            thread_count = 0
+          end
         end
 
         # go to the next page
@@ -684,61 +926,158 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.join("\n")
+      puts e.backtrace.first(10).join("\n")
     end
   end
 
-  def scrape_product_or_product_collection_page(product_id, url)
-    page = @agent.get(url)
-
-    product_main_data = page.search("#productMainData")
-
-    unless product_main_data.empty?
-      scrape_product_page(product_id, product_main_data)
-    else 
-      pdp_main_data = page.search("#pdpMainData")
-
-      unless pdp_main_data.empty?
-        scrape_product_collection_page(product_id, pdp_main_data)
-      end
-    end
-  end
-
-  def scrape_product_collection_page(product_id, data)
-    puts "inside production collection scrapping function"
-  end
-
-  def scrape_product_page(product_id, data)
+  def scrape_product_or_product_collection_page(product_id, url, pos)
     begin
-      url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{product_id}&source=100"
+      page = @agent.get(url)
+
+      product_main_data = page.search("#productMainData")
+
+      unless product_main_data.empty?
+        scrape_product_page(page, product_id, product_main_data.first, pos, url)
+      else 
+        pdp_main_data = page.search("#pdpMainData")
+
+        unless pdp_main_data.empty?
+          scrape_product_collection_page(page, product_id, pos, url)
+        end
+      end
+    rescue Exception => e 
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end      
+  end
+
+  def scrape_product_collection_page(product_page, site_product_id, pos, product_url)
+    url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
+
+    begin
+      product_thumbnail_page = @agent.get(url)
+
+      product_thumbnail = JSON.parse(
+        replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
+      )["productThumbnail"]
+
+      short_desc = product_thumbnail["productDescription"]
+      long_desc = product_thumbnail["longDescription"]
+      bullet_text = product_thumbnail["bulletText"].to_json
+      child_site_product_ids = product_thumbnail["childProductIds"]
+      site_category_id = product_thumbnail["categoryId"]
+      video_id = product_thumbnail["videoID"]
+      product_atts = product_thumbnail["attributes"].to_json
+
+      main_image_url = product_thumbnail["imageSource"]
+      additional_images = product_thumbnail["additionalImages"].to_json
+
+      colorway_primary_images = product_thumbnail["colorwayPrimaryImages"].to_json
+      colorway_additional_images = product_thumbnail["colorwayAdditionalImages"].to_json
+      swatch_color_list = product_thumbnail["swatchColorList"].to_json
+
+      brand_name = product_thumbnail["brand"]
+      price_range = product_thumbnail["price"]
+
+      seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
+
+      cat = Category.where(site_cat_id: site_category_id).first
+
+      product = Product.find_or_create_by(site_product_id: site_product_id)
+      
+      product.site_product_id = site_product_id
+      product.short_desc = short_desc
+      product.long_desc = long_desc
+      product.bullet_text = bullet_text
+      product.main_image_url = main_image_url
+      product.additional_images = additional_images
+      product.site_cat_id = site_category_id
+      product.category_id = cat.id unless cat.nil?
+      product.video_id = video_id
+      product.colorway_primary_images = colorway_primary_images
+      product.colorway_additional_images = colorway_additional_images
+      product.swatch_color_list = swatch_color_list
+      product.product_atts = product_atts
+      product.child_site_product_ids = child_site_product_ids
+      product.is_collection = true
+      product.pos = pos
+      product.brand_name = brand_name
+      product.price_range = price_range
+      product.url = product_url
+      product.seo_title = seo_title
+      product.seo_keywords = seo_keywords
+      product.seo_desc = seo_desc
+      product.save
+
+      update_product_price_details(product)
+    rescue Exception => e
+      puts "[EXCEPTION] #{e.message} - at url: #{url}"
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_product_page(product_page, site_product_id, data, pos, product_url)
+    url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
+
+    begin
+      size_chart_canvas_url = "http://www1.macys.com/shop/catalog/product/canvassizechart/json?canvasId="
 
       product_thumbnail_page = @agent.get(url)
 
-      product_thumbnail = JSON.parse(product_thumbnail_page.body)["productThumbnail"]
+      product_thumbnail = JSON.parse(
+        replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
+      )["productThumbnail"]
 
-      product = JSON.parse(data)
+      product = JSON.parse(replace_macys_info(data.children.first.text))
+
+      seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
 
       # product description
       short_desc = product_thumbnail["productDescription"]
       long_desc = product_thumbnail["longDescription"]
       bullet_text = product_thumbnail["bulletText"].to_json
-      main_image_url = product["imageUrl"]
-      category_id = product_thumbnail["categoryId"]
-      video_id = h["productThumbnail"]["videoID"]
-      colorway_pricing_swatches = product["colorwayPricingSwatches"].to_json
-      color_swatch_map = product["colorSwatchMap"].to_json
+      site_category_id = product_thumbnail["categoryId"]
+      video_id = product_thumbnail["videoID"]
+
+      main_image_url = product_thumbnail["imageSource"]
+      additional_images = product_thumbnail["additionalImages"].to_json
+      colorway_primary_images = product_thumbnail["colorwayPrimaryImages"].to_json
+      colorway_additional_images = product_thumbnail["colorwayAdditionalImages"].to_json
+      colorway_pricing_swatches = product["colorwayPricingSwatches"]
+      swatch_color_list = product_thumbnail["swatchColorList"].to_json
+      brand_name = product_thumbnail["brand"]
       sizes = product["sizesList"].to_json
-      brand_name = product["brandName"]
-      attributes = product_thumbnail["attributes"].to_json
+
+      tiered_price = product["colorwayPrice"]["tieredPrice"]
+      regular_price, was_price, sale_price = extract_price_info(tiered_price)
+
+      product_atts = product_thumbnail["attributes"].to_json
+
+      size_chart_canvas_id = product_thumbnail["sizeChartCanvasId"]
+
+      size_chart_json = ""
+
+      if !size_chart_canvas_id.nil?
+        # fetch size chart table
+        size_chart_page = @agent.get("#{size_chart_canvas_url}=#{size_chart_canvas_id}")
+        size_chart_json = size_chart_page.body
+
+        if size_chart_canvas_url.blank?
+          puts "size_chart_json: #{size_chart_json.inspect}"
+          puts "url: #{size_chart_canvas_url}=#{size_chart_canvas_id}"
+        end
+      end
+
+      size_chart_id = product_thumbnail["sizeChart"]
 
       # crawl 'customers also loved/shopped'
-      recommendations = @agent.post('http://www1.macys.com/sdp/rto/request/recommendations',{
+      recommendations_page = @agent.post('http://www1.macys.com/sdp/rto/request/recommendations',{
           maxRecommendations: "15",
           requester: "MCOM-NAVAPP",
           timeout: "15000",
           cts: "http://www.macys.com",
-          productId: "#{product_id}",
-          categoryId: "#{category_id}",
+          productId: "#{site_product_id}",
+          categoryId: "#{site_category_id}",
           context: "PDP_ZONE_A|PDP_ZONE_B",
           visitorId: "1111111111",
           countryCode: "US",
@@ -749,47 +1088,178 @@ class Scrapper
         "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8"
       )
 
-      related_products = 
-      related_loved_product = 
+      recommendations = JSON.parse(recommendations_page.body)
 
-      # NOTE: based on h["productThumbnail"]["childProductIds"] to product or product collection
-      # CASE 1: only one product in detail page
-      h = JSON.parse(page.body)
+      related_product_ids = nil
+      related_loved_product_ids = nil
 
-      
+      if recommendations["status"] == "SUCCESS"
+        related_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_A"]["recommendationVBList"]
+        related_product_ids = related_products.collect{|product| product["recommendedItemId"]}
 
-      # get imgs
-      color_primary_imgs = h["productThumbnail"]["colorwayPrimaryImages"]
-      color_add_imgs = h["productThumbnail"]["colorwayAdditionalImages"]
+        related_loved_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_B"]["recommendationVBList"]
+        related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}
+      else
+        puts "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
+      end
 
+      cat = Category.where(site_cat_id: site_category_id).first
+      product = Product.find_or_create_by(site_product_id: site_product_id)
 
-      # CASE 2: product collection page
-      page = agent.get('http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=866649&source=100')
-      h = JSON.parse(page.body)
+      product.site_product_id = site_product_id
+      product.short_desc = short_desc
+      product.long_desc = long_desc
+      product.bullet_text = bullet_text
+      product.site_cat_id = site_category_id
+      product.category_id = cat.id unless cat.nil?
+      product.video_id = video_id
+      product.main_image_url = main_image_url
+      product.additional_images = additional_images
+      product.colorway_primary_images = colorway_primary_images
+      product.colorway_additional_images  = colorway_additional_images
+      product.colorway_pricing_swatches = colorway_pricing_swatches.to_json
+      product.swatch_color_list = swatch_color_list
+      product.sizes = sizes
+      product.brand_name = brand_name
+      product.product_atts = product_atts
+      product.related_products = related_product_ids
+      product.related_loved_products = related_loved_product_ids
+      product.pos = pos
+      product.is_price_color = true if !colorway_pricing_swatches.nil? && colorway_pricing_swatches.count > 1
+      product.regular_price = regular_price
+      product.was_price = was_price
+      product.sale_price = sale_price
+      product.size_chart_id = size_chart_id
+      product.size_chart_table = size_chart_json
+      product.url = product_url
+      product.seo_title = seo_title
+      product.seo_keywords = seo_keywords
+      product.seo_desc = seo_desc
+      product.save
 
-      # collection details
-      collection_details = h["productThumbnail"]
+      update_product_price_details(product)
 
-      # list of products in collection
-      # this first one is id of collection 
-      productIds = h["productThumbnail"]["childProductIds"]
-
-      # get imgs
-      color_primary_imgs = h["productThumbnail"]["colorwayPrimaryImages"]
-      color_add_imgs = h["productThumbnail"]["colorwayAdditionalImages"]
-
-      # get video id
-      video_id = h["productThumbnail"]["videoID"]
-
-      # long description
-      long_desc = h["productThumbnail"]["longDescription"]
-
-      # bullet text
-      bullet_texts = h["productThumbnail"]["bulletText"]
-
-      # product description / product name / product short description
-      short_desc = h["productThumbnail"]["productDescription"]
     rescue Exception => e
+      puts "[EXCEPTION] #{e.message} - at url: #{url}"
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def update_product_price_details(product)
+    product_img_map = {}
+    color_img_map = {}
+
+    product_img_map = JSON.parse(product.colorway_primary_images) if (product.colorway_primary_images != 'null')
+    color_imgs = JSON.parse(product.swatch_color_list)
+    color_img_map = {}
+
+    color_imgs.each do |color_img|
+      color_img.each do |k, v|
+        unless ["spriteIndex","spritePosition"].include? k
+          color_img_map[k] = v
+        end
+      end
+    end
+
+    unless product.colorway_pricing_swatches.nil?
+      # price and color mapping
+      h = JSON.parse(product.colorway_pricing_swatches)
+
+      h.each do |price_with_sign, colors|
+        price = price_with_sign.gsub(/\$/,'')
+
+        colors.each do |color_name, nothing|
+          ppd = ProductPriceDetail.find_or_create_by(product_id: product.id, price: price, color_name: color_name)
+          ppd.product_id = product.id
+          ppd.price = price
+          ppd.color_name = color_name
+          ppd.color_image = color_img_map[color_name]
+          ppd.product_image = product_img_map[color_name]
+          ppd.save
+        end
+      end
+    else
+      color_img_map.each do |color_name, color_img|
+        ppd = ProductPriceDetail.find_or_create_by(product_id: product.id, price: nil, color_name: color_name)
+        ppd.product_id = product.id
+        ppd.color_name = color_name
+        ppd.color_image = color_img
+        ppd.product_image = product_img_map[color_name]
+        ppd.save
+      end
+    end
+  end
+
+  def extract_price_info(tiered_price)
+    regular_price = was_price = sale_price = ""
+
+    begin
+      tiered_price.each do |price_h|
+        price = price_h["value"]
+
+        if price_h["label"] == "Reg. [PRICE]"
+          regular_price = price.first
+        elsif price_h["label"] == "Was [PRICE]"
+          was_price = price.first
+        elsif price_h["label"] == "Sale [PRICE]"
+          sale_price = price.first
+        else
+          sale_price = price.first
+        end
+      end
+
+      return regular_price, was_price, sale_price
+    rescue Exception => e 
+      puts "[Exception] #{e.message} - data: #{tiered_price}"
+      puts e.backtrace.first(10).join("\n")
+      return "","",""
+    end
+  end
+
+  def replace_macys_info(data)
+    return nil if data.nil?
+
+    return data.gsub(/Macys.com|macys|Macy's|Macy/, SITE_NAME)
+  end
+
+  def extract_seo_information(page)
+    seo_title = seo_keywords = seo_desc = ""
+
+    unless page.search("title").first.nil?
+      seo_title = replace_macys_info(page.search("title").first.text)
+    end
+
+    unless page.search(".//meta[@name='keywords']").first.nil?
+      seo_keywords = replace_macys_info(page.search(".//meta[@name='keywords']").first.attributes["content"].text)
+    end
+    
+    unless page.search(".//meta[@name='description']").first.nil?
+      seo_desc = replace_macys_info(page.search(".//meta[@name='description']").first.attributes["content"].text)
+    end
+    
+    return seo_title, seo_keywords, seo_desc
+  end
+
+  def scrape_seo_information
+    begin
+      pages = {
+        "root": @root_url
+      }
+
+      pages.each do |k, url|
+        page = @agent.get(url)
+
+        seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+
+        seo_info = SeoInfo.find_or_create_by(page_name: k)
+        seo_info.seo_title = seo_title
+        seo_info.seo_keywords = seo_keywords
+        seo_info.seo_desc = seo_desc
+        seo_info.save
+      end
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
     end
   end
 end
