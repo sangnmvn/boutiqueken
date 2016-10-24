@@ -49,3 +49,7 @@ group :development do
 end
 
 gem 'mechanize', '2.7.5'
+
+#Search index engine
+gem 'sunspot_rails'
+gem 'sunspot_solr' 

@@ -29,3 +29,4 @@
 //= require js.cookie
 //= require lightslider
 //= require jquery.elevatezoom
+//= require search

@@ -13,7 +13,7 @@ var Address = {
 
 $(function(){
   Address.init(".address-form");
-  ProductList.init(".product-list");
+  ProductList.init(".category-list");
   ViewProduct.init();
   ViewProduct.render();
   Product.init(".image-product-detail");

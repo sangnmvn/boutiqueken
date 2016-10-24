@@ -155,5 +155,20 @@ $url_star_4: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rat
   .sub-group-name{
     padding-left: 8px;
   }
+
+  .item_icon{
+  	img{
+  		widht: 100%;
+  		height: 100%;
+  	}
+  	&.active{
+  		border: 2px solid black;
+  	}
+  }
+  .selected{
+  	.item_icon{
+  	  border: 2px solid black;
+  	}
+  }
 }
 

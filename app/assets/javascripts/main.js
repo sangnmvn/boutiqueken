@@ -49,15 +49,16 @@ $(document).ready(function(){
     }
     
     var arrow = $(this).find('i');
+    
     if(arrow.hasClass('fa-chevron-right')){
       arrow.removeClass('fa-chevron-right').addClass('fa-chevron-down');
-    }else{
+    }else if(arrow.hasClass('fa-chevron-down')){
       arrow.removeClass('fa-chevron-down').addClass('fa-chevron-right');
     }
-
-    if(arrow.hasClass('fa-plus-square')){
+    else if(arrow.hasClass('fa-plus-square')){
       arrow.removeClass('fa-plus-square').addClass('fa-minus-square');
-    }else{
+    }
+    else if(arrow.hasClass('fa-minus-square')){
       arrow.removeClass('fa-minus-square').addClass('fa-plus-square');
     }
 

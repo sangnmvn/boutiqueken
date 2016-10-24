@@ -1,0 +1,11 @@
+-if group_name.downcase == "color"
+  %a{href: "#"}
+    %span.item_icon{title: i["name"]}
+    %span.item
+      =i["name"]
+-elsif group_name.downcase == "customer ratings"
+  %input{:type=>"checkbox",name: "filter",value: i[:value]}
+  %span.item_review{title: i["name"]}
+-else
+  %input{:type=>"checkbox",name: "filter",value: i[:value]}
+    =i["name"]
