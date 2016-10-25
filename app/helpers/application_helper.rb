@@ -108,4 +108,14 @@ module ApplicationHelper
       ""
     end
   end
+
+
+  def show_image_50_50(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+ url + "?wid=60"
+    else
+      ""
+    end
+    
+  end
 end
