@@ -6,6 +6,6 @@ class Category < ActiveRecord::Base
   
   has_many :feature_categories
   def self.main_menus
-    Category.where(:parent_id =>nil)
+    Category.where(:parent_id =>nil).order("pos asc")
   end
 end
