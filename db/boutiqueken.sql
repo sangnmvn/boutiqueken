@@ -90,7 +90,7 @@ price real,
 color_name text,  
 color_image text,  
 product_image text,  
-CONSTRAINT product_price_details_pkey primary key (id))
+CONSTRAINT product_price_details_pkey primary key (id));
 
 
 drop table if exists featured_categories;

@@ -1,24 +1,25 @@
-require "socksify"
-require "socksify/http"
+# require "socksify"
+# require "socksify/http"
+
 require "json"
 
 # Mechanize: call @agent.set_socks(addr, port) before using
 # any of it's methods;
-class Mechanize::HTTP::Agent
-public
-  def set_socks addr, port
-    set_http unless @http
-    class << @http
-      attr_accessor :socks_addr, :socks_port
+# class Mechanize::HTTP::Agent
+# public
+#   def set_socks addr, port
+#     set_http unless @http
+#     class << @http
+#       attr_accessor :socks_addr, :socks_port
 
-      def http_class
-        Net::HTTP.SOCKSProxy(socks_addr, socks_port)
-      end
-    end
-    @http.socks_addr = addr
-    @http.socks_port = port
-  end
-end
+#       def http_class
+#         Net::HTTP.SOCKSProxy(socks_addr, socks_port)
+#       end
+#     end
+#     @http.socks_addr = addr
+#     @http.socks_port = port
+#   end
+# end
 
 class Scrapper
 
@@ -47,7 +48,7 @@ class Scrapper
     #+ root url and proxy should be loaded from configuration
     #+ change country before scrapping
     @agent = Mechanize.new
-    @agent.agent.set_socks('localhost', 8123)
+    #@agent.agent.set_socks('localhost', 8123)
   end
 
   def import_full
