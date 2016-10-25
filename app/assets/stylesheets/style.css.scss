@@ -515,9 +515,16 @@ ul{
   border-top: 1px solid #000;
   display: block;
   font-weight: 600;
-  margin: 7rem auto 0rem;
-  padding-top: 5rem;
-  width: 90%;
+  /*margin: 7rem auto 0rem;*/
+  padding-top: 10px;
+  width: 100%;
+  .image-footer{
+    height: 80px;
+    img{
+      width: 100%;
+      max-height: 100%;
+    }
+  }
 }
 .rotate-image img {
   display: block;
