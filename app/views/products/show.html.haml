@@ -96,7 +96,7 @@
                   %li
                     %a{:href => product_path(product)}
                       .vertical-items
-                        %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
+                        %img.img-responsive{:alt => product.short_desc, :src => show_image_small_slider(product.main_image_url)}/
                         %p=product.short_desc
               
             %button.prev
@@ -172,7 +172,7 @@
           -@product_loved.each do |product|
             %a{:href => product_path(product)}
               .recent-view-single-item
-                %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
+                %img.img-responsive{:alt => product.short_desc, :src => show_image_cus_love(product.main_image_url)}/
                 %p=product.short_desc
                 %span.reg-price
                   %strong

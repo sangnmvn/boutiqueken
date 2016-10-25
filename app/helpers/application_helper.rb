@@ -89,4 +89,23 @@ module ApplicationHelper
       ""
     end
   end
+
+
+  def show_image_small_slider(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+ url + "?wid=99&hei=146"
+    else
+      ""
+    end
+    
+  end
+
+  def show_image_cus_love(url)
+    
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+ url + "?wid=126&hei=154"
+    else
+      ""
+    end
+  end
 end

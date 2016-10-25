@@ -100,7 +100,7 @@ var ViewProduct ={
         li = $("<li></li>");
         link_a = $("<a></a>").attr("href","/products/" + value.product_id);
         div_single = $("<div></div>").addClass("recent-view-single-item");
-        image = $("<img></img>").attr("src",value.main_image_url).appendTo(div_single);
+        image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
         reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
         sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);

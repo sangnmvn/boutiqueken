@@ -41,12 +41,12 @@
                   -i.product_details.each_with_index do |detail,index|
                     - if detail.product_image.present?
 
-                      %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
+                      %img.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_product_list(detail.product_image)}/
                       -is_need_main = false
                   -if is_need_main == true
-                    %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
+                    %img.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
                 -else
-                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
+                  %img.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
               / .product-img-wrapper ends
               .product-details-info.right-content-side
                 -if i.product_details.present?
