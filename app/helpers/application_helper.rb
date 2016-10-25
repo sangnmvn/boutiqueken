@@ -63,7 +63,7 @@ module ApplicationHelper
 
   def show_image_in_detail(url)
     if url.present?
-      "http://macys-o.scene7.com/is/image/MCY/products/"+url +"?wid=489"
+      "http://macys-o.scene7.com/is/image/MCY/products/"+url +"?wid=400&hei=489"
     else
       ""
     end
@@ -71,5 +71,22 @@ module ApplicationHelper
 
   def size_chart_id_url(size_id)
     return "http://www1.macys.com/dyn_img/size_charts/" + size_id.to_s + ".gif" if size_id.present?
+  end
+
+
+  def show_image_product_list(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+ url + "?wid=224&qlt=90,0"
+    else
+      ""
+    end
+  end
+
+  def show_image_product_detail(url)
+    if url.present?
+      "http://macys-o.scene7.com/is/image/MCY/products/"+ url + "?wid=400&hei=489"
+    else
+      ""
+    end
   end
 end

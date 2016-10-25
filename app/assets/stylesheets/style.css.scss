@@ -1372,7 +1372,7 @@ ul{
 }
 .product-img-wrapper img {
   margin: 0 auto;
-  width: 25.8rem;
+  /*width: 25.8rem;*/
   /*height: 34.3rem;*/
 }
 .sort-right.sort-right-bottom {
@@ -2835,7 +2835,7 @@ input[type=number]::-webkit-outer-spin-button {
 .details-2-left {
   float: left;
   margin-right: 2%;
-  width: 42%;
+  width: 420px;
 }
 .details-2-middle{
   float: left;
@@ -2848,7 +2848,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .left-content {
   height: 50rem;
-  background: #000;
+  background: white;
 }
 .p-details-2-top > h1 {
   color: #000;
@@ -3380,11 +3380,6 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
-.zoom-left{
-  #zoom_03{
-    width: 100%;
-  }
-}
 
 .custom-recent-view{
   .recent-view-single-item{

@@ -9,7 +9,7 @@
       
 .zoom-wrapper
   .zoom-left
-    %img#zoom_03{"data-zoom-image" => show_large_image_url(@product.main_image_url), :src => show_image_in_detail(@product.main_image_url), :style => "border:1px solid #e8e8e6;", :width => "411"}/
+    %img#zoom_03{"data-zoom-image" => show_large_image_url(@product.main_image_url), :src => show_image_in_detail(@product.main_image_url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
     #gallery_01{:style => "width=500px;float:left; "}
       -list_addtion_images = JSON.parse(@product.additional_images);
       -list_addtion_images.each_with_index do |i,index|
