@@ -19,7 +19,7 @@ drop table if exists left_navs;
 create table left_navs
 (
 id serial NOT NULL,
-cat_id int,
+category_id int,
 parent_id int,
 site_cat_id int,
 cat_name text,
@@ -32,36 +32,57 @@ seo_desc text,
 CONSTRAINT left_navs_pkey primary key (id)
 );
 
+
 drop table if exists products;
 create table products
 (id serial NOT NULL,
-site_product_id int NOT NULL, -- store Web Id
+site_product_id int NOT NULL,
 category_id int,
+site_cat_id int,
 short_desc text,
 long_desc text,
 bullet_text text, -- store json
-retail_price real,
-orginal_price real,
+
+regular_price real,
+was_price real,
 sale_price real,
+
+price_range real[],
+
 stock_status boolean,
 brand_name text,
-product_name text,
-main_image_url text,
 sizes text, -- store json string
 related_products int[],
-related_loved_product int[],
+related_loved_products int[],
 size_chart_id int,
+size_chart_table text, -- json
 checksum text, -- is used to detect modified product details
 seo_title text,
 seo_keywords text,
 seo_desc text,
-slider_images text,
-is_price_color boolean,
 shipping_return text,
+
+main_image_url text, -- map with imageSource
+additional_images text, -- json, map with additionalImages
+
+is_price_color boolean default false, -- use colorway_pricing_swatches to count how many prices in product
+
+-- product collection
+colorway_primary_images text, -- product images by color
+colorway_additional_images text, -- product images by color
+colorway_pricing_swatches text, -- json, price and color mapping
+swatch_color_list text, -- json, color and color image mapping
+
+product_atts text, -- store json string
+is_collection boolean default false,
+child_site_product_ids int[],
+video_id text,
+pos int,
+url text,
 CONSTRAINT products_pkey primary key (id));
 
 drop table if exists product_price_details;
-create table product_details
+create table product_price_details
 (  
 id serial NOT NULL,  
 product_id int,  
@@ -69,7 +90,8 @@ price real,
 color_name text,  
 color_image text,  
 product_image text,  
-CONSTRAINT product_color_details primary key (id))
+CONSTRAINT product_price_details_pkey primary key (id))
+
 
 drop table if exists featured_categories;
 create table featured_categories
@@ -100,50 +122,25 @@ filters text, --json: [{name: "", value: "", action: ""}]
 CONSTRAINT filters_pkey primary key (id)
 );
 
-select * from categories
-where cat_name = 'Bath Rugs & Bath Mats'
+drop table if exists seo_infos;
+create table seo_infos
+(
+id serial NOT NULL,
+page_name text,
+seo_title text,
+seo_keywords text,
+seo_desc text,
+CONSTRAINT seo_infos_pkey primary key (id)
+);
 
-select * from categories
-where id = 454
+create index products_site_product_id_idx
+on products (site_product_id);
 
-select cat_name, count(1) from categories
-where parent_id is null
-group by cat_name
+create index products_site_product_id_idx
+on products (site_product_id);
 
+create index product_price_details_product_id_color_name_idx
+on product_price_details(product_id, color_name);
 
-select * from categories
-where site_cat_id = 63565
-
-
-select * from left_navs
-where group_name is null
-order by pos
-
-select * from left_navs
-order by parent_id, group_pos, pos
-
-select seo_desc from categories
-where parent_id is null
-
-truncate featured_categories
-select * from featured_categories
-select * from categories
-
-select * from categories
-where parent_id is null
-
-select distinct parent_id from featured_categories
-
-select * from left_navs
-
-select * from categories
-where id = 700
-
-select * from categories
-where cat_name = 'Bed & Bath'
-
-select * from left_navs
-where parent_id = 1
-order by group_name, pos
-
-
+create index filters_category_id_group_name_idx
+on filters(category_id, group_name);

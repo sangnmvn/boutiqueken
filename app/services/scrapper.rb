@@ -736,27 +736,27 @@ class Scrapper
       puts "[BEGIN] Scrapping products"
       start_time = Time.now
 
-      page = @agent.get(@root_url)
+      # page = @agent.get(@root_url)
 
-      menu = page.search("#globalMastheadCategoryMenu")
+      # menu = page.search("#globalMastheadCategoryMenu")
 
-      menu.search("li").each do |mnu_item|
-        cat_id = mnu_item.attributes["id"].value.split("_").last
+      # menu.search("li").each do |mnu_item|
+      #   cat_id = mnu_item.attributes["id"].value.split("_").last
 
-        anchor = mnu_item.search("a").first
-        cat_name = replace_macys_info(anchor.text)
-        cat_url = @root_url + anchor.attributes["href"].value
+      #   anchor = mnu_item.search("a").first
+      #   cat_name = replace_macys_info(anchor.text)
+      #   cat_url = @root_url + anchor.attributes["href"].value
 
-        puts "Scrapping #{cat_name} products"
-        start = Time.now
+      #   puts "Scrapping #{cat_name} products"
+      #   start = Time.now
 
-        if cat_name == "WOMEN"
-          scrape_others_cat_products(cat_id, cat_url)
-        end
-      end
+      #   if cat_name == "HOME"
+      #     scrape_others_cat_products(cat_id, cat_url)
+      #   end
+      # end
 
       # Scrape products for home essentials
-      scrape_home_products()
+      scrape_other_home_products()
 
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -765,9 +765,10 @@ class Scrapper
     end
   end
 
-  def scrape_home_products()
+  def scrape_other_home_products()
     begin
-      puts "*** Scrape products for Home essentials"
+      puts "[BEGIN] Scrape products for Home essentials"
+      start_time = Time.now
 
       home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
 
@@ -785,7 +786,7 @@ class Scrapper
         puts "Cannot find HOME category by its name"
       end
 
-      puts "[END] Scrapping filters finished in #{Time.now - start_time}"
+      puts "[END] Scrapping products for Home essentials finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
       puts e.backtrace.first(10).join("\n")
