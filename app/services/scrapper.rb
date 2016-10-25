@@ -48,7 +48,7 @@ class Scrapper
     #+ root url and proxy should be loaded from configuration
     #+ change country before scrapping
     @agent = Mechanize.new
-    @agent.agent.set_socks('localhost', 8123)
+    #@agent.agent.set_socks('localhost', 8123)
     @number_of_threads = 10
   end
 
