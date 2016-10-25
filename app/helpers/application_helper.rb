@@ -12,9 +12,9 @@ module ApplicationHelper
   end
 
   def determine_type(group_filter)
-    if group_filter.downcase == "color"
+    if group_filter.downcase.strip == "color"
       "li-color"
-    elsif group_filter.downcase == "customer ratings"
+    elsif group_filter.downcase.strip == "customer ratings"
       "li-cus-review"
     end
   end

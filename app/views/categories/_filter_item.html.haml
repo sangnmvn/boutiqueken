@@ -1,11 +1,15 @@
--if group_name.downcase == "color"
+-now_t = Time.now.to_i
+-id = group_name.downcase.gsub(" ","") + "_#{now_t}_" + index.to_s
+-puts group_name.downcase.strip
+-if group_name.downcase.strip == "color"
   %a{href: "#"}
     %span.item_icon{title: i["name"]}
     %span.item
       =i["name"]
 -elsif group_name.downcase == "customer ratings"
-  %input{:type=>"checkbox",name: "filter",value: i[:value]}
+  %input{:type=>"checkbox",name: "filter",value: i[:value],id: id}
   %span.item_review{title: i["name"]}
 -else
-  %input{:type=>"checkbox",name: "filter",value: i[:value]}
+  %input{:type=>"checkbox",name: "filter",value: i[:value],id: id}
+  %label{:for =>id}
     =i["name"]

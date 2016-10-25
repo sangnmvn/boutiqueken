@@ -100,7 +100,7 @@
 .letter-order {
   padding-bottom: 1.2rem;
 }
-
+}
 @media only screen and (max-width: 550px) {
 .letter {
   width: 7%;

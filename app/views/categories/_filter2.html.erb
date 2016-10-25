@@ -25,9 +25,9 @@
             </strong>
             <ul>
               <% filters = JSON.parse(i.filters) rescue []%>
-              <% filters.each do |filtera|%>
-                <li class= "#{determine_type(group_name)}">
-                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+              <% filters.each_with_index do |filtera,index|%>
+                <li class= "<%=determine_type(group_name)%>">
+                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name,index: index}%>
                 </li>
               <%end%>
 
@@ -36,9 +36,9 @@
         <%elsif i.sub_group_name.blank?%>
           <ul>
             <% filters = JSON.parse(i.filters)%>
-            <% filters.each do |filtera|%>
+            <% filters.each_with_index do |filtera,index|%>
               <li class= "<%=determine_type(group_name)%>">
-                <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+                <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name,index: index}%>
               </li>
             <%end%>
 
@@ -58,9 +58,9 @@
             </strong>
             <ul>
               <% filters = JSON.parse(i.filters)%>
-              <% filters.each do |filtera|%>
+              <% filters.each_with_index do |filtera,index|%>
                 <li class= "<%=determine_type(group_name)%>">
-                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name,index: index}%>
                 </li>
               <%end%>
 
