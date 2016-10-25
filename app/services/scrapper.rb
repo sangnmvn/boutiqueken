@@ -49,6 +49,7 @@ class Scrapper
     #+ change country before scrapping
     @agent = Mechanize.new
     #@agent.agent.set_socks('localhost', 8123)
+    @no_threads = 10
   end
 
   def import_full
@@ -732,32 +733,35 @@ class Scrapper
     end
   end
 
-  def scrape_products
+  def scrape_products(no_threads=10)
     begin
-      puts "[BEGIN] Scrapping products"
+
+      @no_threads = no_threads
+
+      puts "[BEGIN] Scrapping products by #{@no_threads} threads"
       start_time = Time.now
 
-      # page = @agent.get(@root_url)
+      page = @agent.get(@root_url)
 
-      # menu = page.search("#globalMastheadCategoryMenu")
+      menu = page.search("#globalMastheadCategoryMenu")
 
-      # menu.search("li").each do |mnu_item|
-      #   cat_id = mnu_item.attributes["id"].value.split("_").last
+      menu.search("li").each do |mnu_item|
+        cat_id = mnu_item.attributes["id"].value.split("_").last
 
-      #   anchor = mnu_item.search("a").first
-      #   cat_name = replace_macys_info(anchor.text)
-      #   cat_url = @root_url + anchor.attributes["href"].value
+        anchor = mnu_item.search("a").first
+        cat_name = replace_macys_info(anchor.text)
+        cat_url = @root_url + anchor.attributes["href"].value
 
-      #   puts "Scrapping #{cat_name} products"
-      #   start = Time.now
+        puts "Scrapping #{cat_name} products"
+        start = Time.now
 
-      #   if cat_name == "HOME"
-      #     scrape_others_cat_products(cat_id, cat_url)
-      #   end
-      # end
+        if cat_name == "WOMEN"
+          scrape_others_cat_products(cat_id, cat_url)
+        end
+      end
 
       # Scrape products for home essentials
-      scrape_other_home_products()
+      #scrape_other_home_products()
 
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -908,7 +912,7 @@ class Scrapper
           total_product += 1
           thread_count += 1
 
-          if thread_count == MAX_THREAD || total_product == product_count
+          if thread_count == @no_threads || total_product == product_count
             threads.each {|t| t.join}
 
             threads = []
