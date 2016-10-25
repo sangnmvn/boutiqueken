@@ -25,6 +25,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'haml'
 gem 'pundit'
 gem 'carmen-rails'
+gem 'kaminari'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -48,3 +49,7 @@ group :development do
 end
 
 gem 'mechanize', '2.7.5'
+
+#Search index engine
+gem 'sunspot_rails'
+gem 'sunspot_solr' 

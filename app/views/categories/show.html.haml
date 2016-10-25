@@ -1,5 +1,5 @@
 / PRODUCTS AREA STARTS
-%section.section-products-area
+%section.section-products-area.category-list
   .container
     .row
       .col-md-10.col-sm-12.col-xs-12.pull-right
@@ -8,8 +8,15 @@
         -else
           =render "product_list"
       .col-md-2.col-sm-12.col-xs-12
-        =render "left_menu"
+        -if @category.parent_id.blank?
+          =render "left_menu"
+        -else
+          =render "filter2"
       / .col-md-2 ends
     / .row ends
   / .container ends
 / PRODUCTS AREA ENDS
+
+
+:javascript
+  var category_path = "#{category_path(@category.id, format: 'js')}"

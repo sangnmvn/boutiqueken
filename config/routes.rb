@@ -25,7 +25,12 @@ Rails.application.routes.draw do
     resources :addresses
   end
 
-  resources :products
+  resources :products do 
+    collection do
+      get 'search'
+    end
+  end
+
   resources :categories 
   #     member do
   #       get 'short'

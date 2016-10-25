@@ -38,13 +38,31 @@ $(document).ready(function(){
 
   //product aside bar toggling
   $('.trigger').on('click', function(){
-    $(this).siblings('ul').slideToggle();
+    if($(this).hasClass("sub-trigger")){
+      $(this).parent().find('ul').slideToggle();
+    }
+    else if($(this).parent().find(".sub-group-name").length>0){
+      $(this).parent().find(".sub-group-name ul").slideToggle();
+    }
+    else{
+      $(this).siblings('ul').slideToggle();
+    }
+    
     var arrow = $(this).find('i');
+    
     if(arrow.hasClass('fa-chevron-right')){
       arrow.removeClass('fa-chevron-right').addClass('fa-chevron-down');
-    }else{
+    }else if(arrow.hasClass('fa-chevron-down')){
       arrow.removeClass('fa-chevron-down').addClass('fa-chevron-right');
     }
+    else if(arrow.hasClass('fa-plus-square')){
+      arrow.removeClass('fa-plus-square').addClass('fa-minus-square');
+    }
+    else if(arrow.hasClass('fa-minus-square')){
+      arrow.removeClass('fa-minus-square').addClass('fa-plus-square');
+    }
+
+    
   });
 
   //Product details features toggling

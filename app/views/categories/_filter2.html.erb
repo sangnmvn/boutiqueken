@@ -1,0 +1,76 @@
+<div id="filters">
+  <%group_name = ""%>
+  <%sub_group_name ="" %>
+  <%@filters.each_with_index do |i,index|%>
+    <%if group_name != i.group_name%>
+      <%if index >=1%>
+        </div>
+      <%end%>
+      <div class="single-product-cat">
+        <strong class="trigger">
+          <%=i.group_name%>
+          <span>
+            <i class="fa fa-chevron-down"></i>
+          </span>
+          <%group_name = i.group_name%>
+        </strong>
+        <%if i.sub_group_name.present? && sub_group_name !=i.sub_group_name%>
+          <div class="sub-group-name">
+            <strong class="trigger sub-trigger">
+              <%=i.sub_group_name%>
+              <span>
+                <i class="fa fa-minus-square"></i>
+              </span>
+              <%sub_group_name = i.sub_group_name%>
+            </strong>
+            <ul>
+              <% filters = JSON.parse(i.filters) rescue []%>
+              <% filters.each do |filtera|%>
+                <li class= "#{determine_type(group_name)}">
+                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+                </li>
+              <%end%>
+
+            </ul>
+          </div>
+        <%elsif i.sub_group_name.blank?%>
+          <ul>
+            <% filters = JSON.parse(i.filters)%>
+            <% filters.each do |filtera|%>
+              <li class= "<%=determine_type(group_name)%>">
+                <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+              </li>
+            <%end%>
+
+          </ul>
+          
+        <%end%>
+
+      <%elsif i.sub_group_name.present?%>
+        <%if i.sub_group_name.present? && sub_group_name !=i.sub_group_name%>
+          <div class="sub-group-name">
+            <strong class="trigger sub-trigger">
+              <%=i.sub_group_name%>
+              <span>
+                <i class="fa fa-minus-square"></i>
+              </span>
+              <%sub_group_name = i.sub_group_name%>
+            </strong>
+            <ul>
+              <% filters = JSON.parse(i.filters)%>
+              <% filters.each do |filtera|%>
+                <li class= "<%=determine_type(group_name)%>">
+                  <%=render :partial =>"filter_item", locals: {:i => filtera, :group_name => group_name}%>
+                </li>
+              <%end%>
+
+            </ul>
+          </div>
+        <%end%>
+
+    <%end%>
+  <%end%>
+  <%if @filters.count>1%>
+    </div>
+  <%end%>
+</div>

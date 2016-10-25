@@ -11,6 +11,7 @@
           %i.fa.fa-chevron-down
       %ul.ul-product-cat
         -main_subs[key].each do |i|
+          -puts "----#{i.id}"
           %li
-            %a{:href => category_path(i.cat_id)}=i.cat_name
+            %a{:href => category_path(i.category_id)}=i.cat_name
       

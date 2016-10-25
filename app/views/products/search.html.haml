@@ -1,0 +1,14 @@
+/ PRODUCTS AREA STARTS
+%section.section-products-area.search-page
+  .container
+    .row
+      .col-md-10.col-sm-12.col-xs-12.pull-right
+        =render "product_list"
+      .col-md-2.col-sm-12.col-xs-12
+        =render "filter"
+      / .col-md-2 ends
+    / .row ends
+  / .container ends
+/ PRODUCTS AREA ENDS
+:javascript
+  var search_products_path = "#{search_products_path(search_txt: params[:search_txt].to_s,format: :js)}";

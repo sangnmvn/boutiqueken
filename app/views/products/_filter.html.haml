@@ -1,0 +1,49 @@
+#filters
+  .single-product-cat
+    %strong.trigger
+      Color
+      %span
+        %i.fa.fa-chevron-down
+          
+    %ul
+      - @color_names.each do |color|
+        
+        %li.li-color
+          %a.color-filter{:href =>"javascript:;"}
+            %span.item_icon{title: color[0]}
+            / %img{src: show_image_url(color[1])}
+            %span.item
+              =color[0]
+  .single-product-cat
+    %strong.trigger
+      Price
+      %span
+        %i.fa.fa-chevron-down
+          
+    %ul
+      %li
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "0|49.9"}
+          ="Under $50"
+      %li
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "50|99.9"}
+          ="$50 - $100"
+      %li
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "100|249.9"}
+          ="$100 - $250"
+      %li
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "250|499.9"}
+          ="$250 - $500"
+      %li
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "500|-1"}
+          ="Above $500"
+  .single-product-cat
+    %strong.trigger
+      Brand
+      %span
+        %i.fa.fa-chevron-down
+          
+    %ul
+      - @brands.each do |brand|
+        %li
+          %input.brand-filter{:type=>"checkbox",name: "filter[brand]",value: brand[0]}
+            =brand[0]

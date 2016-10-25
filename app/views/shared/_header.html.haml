@@ -73,8 +73,8 @@
       %p.pull-left.free-offer.free-offer-desktop
         Enjoy Free Express Shipping on orders $100+
         %a{:href => "#"} Details
-      %form.pull-right.search-box{:action => "#"}
-        %input{:type => "text"}/
+      %form.pull-right.search-box{:action => search_products_path()}
+        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}"}/
         %button{:type => "submit"}
           %i.fa.fa-search
     / BIG SCREEN SEARCH BOX AREA ENDS

@@ -1,0 +1,78 @@
+.sort-by-area
+  .sort-left
+    %h1.pull-left=@category.cat_name.upcase
+  / .sort-left ends
+  .sort-right.hidden-xs
+    .single-view-option.items
+      %a{:href => "#"}
+        %span
+          =@product_ls.total_count
+        items
+    .single-view-option.view-number.hidden-xs
+      %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+      %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+        %span 180
+    .single-view-option.view-pagi.hidden-xs
+      %span.current=perpage_item_of(@product_ls.total_count,@product_ls.current_page,@per_page)
+      of
+      %span.total=@product_ls.total_count
+    .single-view-option.pagi
+      .kaminari-paging
+        = paginate @product_ls
+    / .single-view-option.pagi ends
+  / .sort-right ends
+/ .sort-by-area ends
+.product-showcase
+  .row
+    .product-item-div
+      / SINGLE PRODUCT starts
+      -product_ls.each do |i|
+        .col-md-3.col-sm-4
+          .single-product
+            .product-img-wrapper
+              -if i.product_details.present?
+                -i.product_details.each_with_index do |detail,index|
+                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-#{index}", :src => detail.color_image}/
+              -else
+                %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => i.main_image_url}/
+            / .product-img-wrapper ends
+            .product-details-info
+              -if i.product_details.present?
+                %ul.coloring-ul
+                  -i.product_details.each_with_index do |detail,index|
+                    %li{"data-color" => "Black", "data-img" => "p-#{index}"}
+                      %a{:href => "#"}
+                        %img.img-responsive{:alt => "", :src => detail.product_image}/
+                
+              %strong
+                %a{:href => "#"}=i.short_desc
+              %span.reg-price
+                %strong 
+                  Reg. $
+                  =i.regular_price
+              %span.sale-price
+                %strong
+                  Ssle. $
+                  =i.sale_price
+          / .single-product ends
+        / .col-md-4 ends
+        / SINGLE PRODUCT ends
+      
+      / .col-md-4 ends
+      / SINGLE PRODUCT ends
+    .sort-right.sort-right-bottom
+      .single-view-option.items
+        %a{:href => "#"}
+          %span=product_ls.total_count
+          items
+      .single-view-option.view-number.hidden-xs
+        %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+        %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+          %span 180
+      .single-view-option.view-pagi.hidden-xs
+        %span.current=product_ls.current_page * @per_page.to_i
+        of
+        %span.total=product_ls.total_count
+      .single-view-option.pagi
+        .kaminari-paging
+          = paginate product_ls

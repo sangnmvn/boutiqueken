@@ -5,50 +5,68 @@
     .product-details-2-top
       / DETAILS 2 LEFT STARTS
       .details-2-left
-        .left-content a
+        .left-content.image-product-detail
+          =render "image_gallery"
       / DETAILS 2 LEFT ENDS
       / DETAILS 2 MIDDLE STARTS
       .details-2-middle
         / PRODUCT DETAILS 2 TOP STARTS
         .p-details-2-top
-          %h1 Alexander McQueen
-          %p Silk Blend Criss Cross Degrade Stich Peplum Top
+          %h1=@product.brand_name
+          %p=@product.short_desc
           %p.details-2-price
-            %span.del-price
-              %strong Was
-              %span
-                %del $198.00
+            -if @product.regular_price.present?
+              %span.del-price
+                %strong Was
+                %span
+                  %del 
+                    $
+                    =@product.regular_price
             %span.cur-price
               %strong Now
-              %span $148.00
+              %span 
+                $
+                =@product.sale_price
         / PRODUCT DETAILS 2 TOP ENDS
         / PRODUCT DETAILS 2 MIDDLE STARTS
         .p-details-2-middle
-          %p.coloring
-            %strong Color:
-            %span
-          %ul.coloring-ul
-            %li{"data-color" => "Black"}
-              %a{:href => "#"}
-                %img.img-responsive{:alt => "", :src => asset_path("img/color.png")}/
-            %li{"data-color" => "Gray"}
-              %a{:href => "#"}
-                %img.img-responsive{:alt => "", :src => asset_path("img/color-2.png")}/
-            %li{"data-color" => "Ash"}
-              %a{:href => "#"}
-                %img.img-responsive{:alt => "", :src => asset_path("img/color-3.png")}/
+          -if @product.product_details.present?
+            %p.coloring
+              %strong Color:
+              %span.width-150
+            -if @product.is_price_color == false
+              %ul.coloring-ul
+                -@product.product_details.each do |i|
+                  %li{"data-color" => i.color_name}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+            -else
+              %ul.coloring-ul
+                -group_price = 0
+                -@product.product_details.each do |i|
+                  -if group_price != i.price
+                    
+                    .seper-small
+                    %div
+                      %strong
+                        $
+                        = i.price
+                    .seper-small
+                  %li{"data-color" => i.color_name}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+              .seper-small
+              
           %p.sizing
             %strong Size
-            %a.pull-right{:href => "#"} Size Guide
+            -if @product.size_chart_id.present? || @product.size_chart_table.present?
+
+              %a.pull-right.btn-show-sizechart{:href => "javascript:;","size_id" =>size_chart_id_url(@product.size_chart_id)} Size Guide
           %ul.sizing-ul
-            %li
-              %a{:href => "#"} X-SMALL
-            %li
-              %a{:href => "#"} SMALL
-            %li
-              %a{:href => "#"} MEDIUM
-            %li
-              %a{:href => "#"} LARGE
+            -@product.list_sizes.each do |size|
+              %li
+                %a{:href => "#"}=size.upcase
+            
           %button.a-to-b ADD TO BAG
         / PRODUCT DETAILS 2 MIDDLE ENDS
         / PRODUCT DETAILS 2 LAST STARTS
@@ -58,199 +76,125 @@
               Details
               %i.fa.fa-plus.pull-right.rote-me{"aria-hidden" => "true"}
             %dd
-              %ul.ul-single-product-feat
-                %li Floral-print dress with flouncy dropped waist
-                %li Roundneck
-                %li Sleeveless
-                %li Piped detail
-                %li Dropped waist
-                %li Ruffled skirt
-                %li Concealed back zip
-                %li Silk lining
-                %li About 35" from shoulder to hem
-                %li Acrylic/polyamide
-                %li Dry clean
-                %li Made in Italy of imported fabric
-                %li Model shown is 5'10" (177cm) wearing US size 4
+              =@product.long_desc
             %dt
               Shipping &amp; Returns
               %i.fa.fa-plus.pull-right{"aria-hidden" => "true"}
             %dd
-              %ul.ul-single-product-feat
-                %li Floral-print dress with flouncy dropped waist
-                %li Roundneck
-                %li Sleeveless
-                %li Piped detail
-                %li Dropped waist
-                %li Ruffled skirt
-                %li Concealed back zip
-                %li Silk lining
-                %li About 35" from shoulder to hem
-                %li Acrylic/polyamide
-                %li Dry clean
-                %li Made in Italy of imported fabric
-                %li Model shown is 5'10" (177cm) wearing US size 4
+              =@product.shipping_return
         / PRODUCT DETAILS 2 LAST STARTS
       / DETAILS 2 MIDDLE ENDS
       / DETAILS 2 RIGHT STARTS
       .details-2-right
-        .vertical.hidden-xs.hidden-sm
-          %button.next
-            %i.fa.fa-angle-up{"aria-hidden" => "true"}
-          .carousel
-            %ul
-              / vertical-items starts
-              %li
-                %a{:href => "#"}
-                  .vertical-items
-                    %img.img-responsive{:alt => "", :src => "img/products/pd-3.jpg"}/
-                    %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-              / vertical-items ends
-              / vertical-items starts
-              %li
-                %a{:href => "#"}
-                  .vertical-items
-                    %img.img-responsive{:alt => "", :src => "img/products/pd-2.jpg"}/
-                    %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-              / vertical-items ends
-              / vertical-items starts
-              %li
-                %a{:href => "#"}
-                  .vertical-items
-                    %img.img-responsive{:alt => "", :src => "img/products/pd-4.jpg"}/
-                    %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-              / vertical-items ends
-              / vertical-items starts
-              %li
-                %a{:href => "#"}
-                  .vertical-items
-                    %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-                    %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-              / vertical-items ends
-              / vertical-items starts
-              %li
-                %a{:href => "#"}
-                  .vertical-items
-                    %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-                    %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-              / vertical-items ends
-          / .carousel ends
-          %button.prev
-            %i.fa.fa-angle-down{"aria-hidden" => "true"}
+        -if @product_related.present?
+          .vertical.hidden-xs.hidden-sm
+            %button.next
+              %i.fa.fa-angle-up{"aria-hidden" => "true"}
+            .carousel
+              %ul
+                - @product_related.each do |product|
+                  %li
+                    %a{:href => product_path(product)}
+                      .vertical-items
+                        %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
+                        %p=product.short_desc
+              
+            %button.prev
+              %i.fa.fa-angle-down{"aria-hidden" => "true"}
         / .vertical ends
       / DETAILS 2 RIGHT ENDS
     / PRODUCT DETAILS 2 TOP AREA ENDS
     / RECENT VIEW STARTS
+
+    -if @product.is_collection
+      .collection-list
+        %h1
+          Choose your item
+        -@product_childrens.each_with_index do|child,child_index|
+          .single-product
+            .product-img-wrapper.left-content-side
+              -if child.product_details.present?
+                -is_need_main = true
+                -child.product_details.each_with_index do |detail,index|
+                  - if detail.product_image.present?
+
+                    %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
+                    -is_need_main = false
+                -if is_need_main == true
+                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+              -else
+                %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+            .product-details-info.right-content-side
+              .row
+                .col-md-12.col-sm-12.col-xs-12
+                  %strong
+                    %a{:href=>product_path(child)}
+                      =child.short_desc
+                  .seper-small
+                  %strong Color:
+                  %span
+                  .seper-small
+                  -if child.product_details.present?
+                    %ul.coloring-ul
+                      -child.product_details.each_with_index do |detail,index|
+                        %li{"data-color" => "Black", "data-img" => "p-#{index}"}
+                          %a{:href => "#"}
+                            %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                .col-md-12.col-sm-12.col-xs-12
+                  -if child.regular_price.present? && child.regular_price > 0
+                    %span.del-price
+                      %span
+                        %del.price-txt 
+                          $
+                          =child.regular_price
+                  %span.price-txt 
+                    $
+                    =child.sale_price
+                .col-md-12.col-sm-12.col-xs-12
+                  %p.sizing
+                    %strong Size
+                  %ul.sizing-ul
+                    -child.list_sizes.each do |size|
+                      %li
+                        %a{:href => "javascript:;"}=size.upcase
+                .col-md-12.col-sm-12.col-xs-12
+                  %button.a-to-b.btn-medium ADD TO BAG
+          .clear-fix
+          -if @product_childrens.count >1
+            .dot-sperate
+            .clear-fix
+
     .customers-recent-view.recent-view
-      %h1 Customers Who Viewed This Item Also Viewed
+      -if @product_loved.present?
+        %h1 Customers Who Viewed This Item Also Viewed
+        .recent-view-all-item
+          / RECENT VIEW SINGLE ITEM
+          -@product_loved.each do |product|
+            %a{:href => product_path(product)}
+              .recent-view-single-item
+                %img.img-responsive{:alt => product.short_desc, :src => show_image_url(product.main_image_url)}/
+                %p=product.short_desc
+                %span.reg-price
+                  %strong
+                    Reg. $
+                    =product.regular_price
+                %span.sale-price
+                  %strong Reg. $
+                  =product.sale_price
+        
+    / RECENT VIEW STARTS
+    / RECENT VIEW STARTS
+    .recent-view.custom-recent-view.hide
+      %h1
+        Recent Views
       .recent-view-all-item
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-      / .recent-view-all-item ends
-    / RECENT VIEW STARTS
-    / RECENT VIEW STARTS
-    .recent-view
-      %h1 Recently Viewed
-      .recent-view-all-item
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-        / RECENT VIEW SINGLE ITEM
-        %a{:href => "#"}
-          .recent-view-single-item
-            %img.img-responsive{:alt => "", :src => "img/products/pd-1.jpg"}/
-            %p Slik Blend Criss Cross Degrade Stich Knit Skirt
-            %span.reg-price
-              %strong Reg. $69.00
-            %span.sale-price
-              %strong Reg. $44.00
-        / RECENT VIEW SINGLE ITEM ENDS
-      / .recent-view-all-item ends
-    / RECENT VIEW STARTS
-  / .container ends
-/ PRODUCTS AREA ENDS
+        .item
+          %ul#content-slider.content-slider
+            
+    .clear-fix
+=render "modal_size_chart"
+:javascript
+  var product_info = #{@product.to_json};
+  $(document).ready(function(){
+    ViewProduct.setview(product_info);
+  });
