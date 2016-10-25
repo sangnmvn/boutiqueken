@@ -13,10 +13,11 @@ class CategoriesController < ApplicationController
   	@left_navs = @category.left_navs
     @products = Product.where(:category_id => @category.id).page(page).per(@per_page)
     @filters = Filter.where(:category_id => @category.id).order("group_pos asc")
-    @product_ls = Product.where(:category_id => @category.id).page(page).per(@per_page)
+    @product_ls = Product.where(:category_id => @category.id).order("sale_price asc").page(page).per(@per_page)
   
     if request.xhr?
-      @product_ls = Product.where(:category_id => @category.id).page(page).per(@per_page)
+      @search = Product.filter_at_category(params,@page,@per_page)
+      @product_ls = @search.results
     end
 
   end
