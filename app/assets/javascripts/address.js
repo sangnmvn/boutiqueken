@@ -36,6 +36,66 @@ var ProductList = {
       });
     }
   },
+  init_filter_events: function(){
+    $(".color-filter").on("click",function(){
+      if($(this).hasClass("selected")){
+        $(this).removeClass("selected");
+      }else{
+        $(this).addClass("selected");  
+      }
+      ProductList.ajax_request();
+    });
+
+    $(".brand-filter").on("click",function(){
+      ProductList.ajax_request();
+    });
+
+
+    $(".size-filter").on("click",function(){
+      ProductList.ajax_request();
+    });
+
+    $(".price-filter").on("click",function(){
+      ProductList.ajax_request();
+    });
+
+
+  },
+  ajax_request: function(){
+    color_selected = new Array();
+    $(".color-filter.selected .item_icon").each(function(index){
+      color_name = $(this).attr("title");
+      color_selected.push(color_name);
+    });
+
+    brand_selected = new Array();
+    $('.brand-filter:checked').each(function(index){
+      brand_name = $(this).val();
+      brand_selected.push(brand_name);
+    });
+
+    price_selected = new Array();
+    $('.price-filter:checked').each(function(index){
+      price = $(this).val();
+      price_selected.push(price);
+    });
+
+    size_selected = new Array();
+    $('.size-filter:checked').each(function(index){
+      size = $(this).val().split(",")[1].trim();
+      size_selected.push(size);
+    });
+
+    per_page = $(".active-per").attr("data-length");
+
+    $.ajax({
+      method: "GET",
+      url: category_path,
+      data: {size_selected: size_selected,color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
+      }).done(function(data) {
+      
+      });
+  },
   reinit_per_page: function(){
     $(".per-page").on("click",function(){
         per_page = $(this).attr("data-length")
