@@ -1,25 +1,25 @@
-# require "socksify"
-# require "socksify/http"
+require "socksify"
+require "socksify/http"
 
 require "json"
 
 # Mechanize: call @agent.set_socks(addr, port) before using
 # any of it's methods;
-# class Mechanize::HTTP::Agent
-# public
-#   def set_socks addr, port
-#     set_http unless @http
-#     class << @http
-#       attr_accessor :socks_addr, :socks_port
+class Mechanize::HTTP::Agent
+public
+  def set_socks addr, port
+    set_http unless @http
+    class << @http
+      attr_accessor :socks_addr, :socks_port
 
-#       def http_class
-#         Net::HTTP.SOCKSProxy(socks_addr, socks_port)
-#       end
-#     end
-#     @http.socks_addr = addr
-#     @http.socks_port = port
-#   end
-# end
+      def http_class
+        Net::HTTP.SOCKSProxy(socks_addr, socks_port)
+      end
+    end
+    @http.socks_addr = addr
+    @http.socks_port = port
+  end
+end
 
 class Scrapper
 
@@ -48,8 +48,8 @@ class Scrapper
     #+ root url and proxy should be loaded from configuration
     #+ change country before scrapping
     @agent = Mechanize.new
-    #@agent.agent.set_socks('localhost', 8123)
-    @no_threads = 10
+    @agent.agent.set_socks('localhost', 8123)
+    @number_of_threads = 10
   end
 
   def import_full
@@ -61,10 +61,6 @@ class Scrapper
     scrape_seo_information
   end
 
-  def import_product
-    scrape_products
-  end
-
   def scrape_menu
     begin
       puts "[BEGIN] Scrapping menu and sub-menu"
@@ -73,6 +69,11 @@ class Scrapper
       page = @agent.get(@root_url)
 
       menu = page.search("#globalMastheadCategoryMenu")
+
+      if menu.count == 0
+        puts "[WARN] Cannot scrape menu because of changing in the site structure"
+        return
+      end
 
       puts "\nMain Menu"
       puts "---------"
@@ -109,8 +110,12 @@ class Scrapper
 
       cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
 
-      cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
+      if cat_divs.count == 0
+        puts "[WARN] Cannot scrape the sub menu because of chaninging in the site structure"
+        return
+      end
 
+      cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
         group_cat_name = ""
         pos = 0
 
@@ -162,6 +167,11 @@ class Scrapper
       page = @agent.get(@root_url)
 
       menu = page.search("#globalMastheadCategoryMenu")
+
+      if menu.count == 0
+        puts "[WARN] Cannot scrape the left nav because of chaninging in the site structure"
+        return
+      end
 
       menu.search("li").each do |mnu_item|
         cat_id = mnu_item.attributes["id"].value.split("_").last
@@ -634,7 +644,7 @@ class Scrapper
               puts "  - #{sub_box_type}"
 
               sub_box.search("a").each do |item|
-                puts "    * #{item.attributes["data-value"].text} "
+                #puts "    * #{item.attributes["data-value"].text} "
 
                 filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
                 filter.filter_ui_type = ui_type
@@ -647,9 +657,6 @@ class Scrapper
                 sub_box.search("a").each do |item|
                   displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
                   value = item.attributes["data-value"].text
-
-                  puts "displayname #{displayname}"
-                  puts "value #{value}"
 
                   filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
                 end
@@ -733,12 +740,12 @@ class Scrapper
     end
   end
 
-  def scrape_products(no_threads=10)
+  def scrape_products(number_of_threads=10)
     begin
 
-      @no_threads = no_threads
+      @number_of_threads = number_of_threads
 
-      puts "[BEGIN] Scrapping products by #{@no_threads} threads"
+      puts "[BEGIN] Scrapping products by #{@number_of_threads} threads"
       start_time = Time.now
 
       page = @agent.get(@root_url)
@@ -770,7 +777,7 @@ class Scrapper
     end
   end
 
-  def scrape_other_home_products()
+  def scrape_other_home_products
     begin
       puts "[BEGIN] Scrape products for Home essentials"
       start_time = Time.now
@@ -912,7 +919,7 @@ class Scrapper
           total_product += 1
           thread_count += 1
 
-          if thread_count == @no_threads || total_product == product_count
+          if thread_count == @number_of_threads || total_product == product_count
             threads.each {|t| t.join}
 
             threads = []
@@ -938,7 +945,9 @@ class Scrapper
 
   def scrape_product_or_product_collection_page(product_id, url, pos)
     begin
-      page = @agent.get(url)
+      agent = Mechanize.new
+
+      page = agent.get(url)
 
       product_main_data = page.search("#productMainData")
 
@@ -961,7 +970,9 @@ class Scrapper
     url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
 
     begin
-      product_thumbnail_page = @agent.get(url)
+      agent = Mechanize.new
+
+      product_thumbnail_page = agent.get(url)
 
       product_thumbnail = JSON.parse(
         replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
@@ -1028,7 +1039,9 @@ class Scrapper
     begin
       size_chart_canvas_url = "http://www1.macys.com/shop/catalog/product/canvassizechart/json?canvasId="
 
-      product_thumbnail_page = @agent.get(url)
+      agent = Mechanize.new
+
+      product_thumbnail_page = agent.get(url)
 
       product_thumbnail = JSON.parse(
         replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
@@ -1065,7 +1078,7 @@ class Scrapper
 
       if !size_chart_canvas_id.nil?
         # fetch size chart table
-        size_chart_page = @agent.get("#{size_chart_canvas_url}=#{size_chart_canvas_id}")
+        size_chart_page = agent.get("#{size_chart_canvas_url}=#{size_chart_canvas_id}")
         size_chart_json = size_chart_page.body
 
         if size_chart_canvas_url.blank?
@@ -1077,7 +1090,7 @@ class Scrapper
       size_chart_id = product_thumbnail["sizeChart"]
 
       # crawl 'customers also loved/shopped'
-      recommendations_page = @agent.post('http://www1.macys.com/sdp/rto/request/recommendations',{
+      recommendations_page = agent.post('http://www1.macys.com/sdp/rto/request/recommendations',{
           maxRecommendations: "15",
           requester: "MCOM-NAVAPP",
           timeout: "15000",
