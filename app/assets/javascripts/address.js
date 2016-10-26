@@ -240,12 +240,13 @@ var Product={
       $(".product-thumb-image[color-name='" + color_name + "']").removeClass("hide").addClass("active");
       $(".product-thumb-image[color-name='" + color_name + "']").trigger("click");
     });
-
-    $(".vertical .carousel").jCarouselLite({
+    setTimeout(function(){
+      $(".vertical .carousel").jCarouselLite({
         btnNext: ".vertical .next",
         btnPrev: ".vertical .prev",
         vertical: true
     });
+    },500)
 
 
     $(".btn-show-sizechart").on("click",function(){

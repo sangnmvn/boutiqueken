@@ -16,8 +16,10 @@
           %img{:src => show_image_50_50(i)}/
       -@product.product_details.each_with_index do |i,index|
         -if i.product_image.present?
+          -class_t = ''
+          -class_t = 'active' if list_addtion_images.count ==0
           -if index ==0
-            %a.elevatezoom-gallery.product-thumb-image.width-25.active{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
+            %a.elevatezoom-gallery.product-thumb-image.width-25{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#",class: class_t}
               %img{:src => show_image_50_50(i.product_image)}/
           -else 
             %a.elevatezoom-gallery.product-thumb-image.width-25.hide{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
