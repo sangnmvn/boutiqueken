@@ -36,9 +36,9 @@
               %span.width-150
             -if @product.is_price_color == false
               %ul.coloring-ul
-                -@product.product_details.each do |i|
+                -@product.product_details.each_with_index do |i,index|
                   %li{"data-color" => i.color_name}
-                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                    %a.color-picking.tt{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,class: index==0 ? 'active' : ''}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
             -else
               %ul.coloring-ul
@@ -77,6 +77,11 @@
               %i.fa.fa-plus.pull-right.rote-me{"aria-hidden" => "true"}
             %dd
               =@product.long_desc
+              -if @product.list_bullets.length >0
+                %ul.bullet-text
+                  -@product.list_bullets.each do |i|
+                    %li
+                      =i
             %dt
               Shipping &amp; Returns
               %i.fa.fa-plus.pull-right{"aria-hidden" => "true"}
@@ -98,6 +103,15 @@
                       .vertical-items
                         %img.img-responsive{:alt => product.short_desc, :src => show_image_small_slider(product.main_image_url)}/
                         %p=product.short_desc
+                        %span.reg-price
+                          %strong
+                            Reg. $
+                            =product.regular_price
+                        %span.sale-price
+                          %strong
+                            Reg. $
+                            =product.sale_price
+                        %br
               
             %button.prev
               %i.fa.fa-angle-down{"aria-hidden" => "true"}
@@ -179,8 +193,9 @@
                     Reg. $
                     =product.regular_price
                 %span.sale-price
-                  %strong Reg. $
-                  =product.sale_price
+                  %strong 
+                    Reg. $
+                    =product.sale_price
         
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS

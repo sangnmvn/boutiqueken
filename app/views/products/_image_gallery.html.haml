@@ -14,10 +14,14 @@
       -list_addtion_images.each_with_index do |i,index|
         %a.elevatezoom-gallery.width-25{"data-image" => show_image_product_detail(i), "data-update" => "", "data-zoom-image" => show_large_image_url(i), :href => "#", class: index==0 ? "active" : ""}
           %img{:src => show_image_50_50(i)}/
-      -@product.product_details.each do |i|
+      -@product.product_details.each_with_index do |i,index|
         -if i.product_image.present?
-          %a.elevatezoom-gallery.product-thumb-image.width-25.hide{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
-            %img{:src => show_image_50_50(i.product_image)}/
+          -if index ==0
+            %a.elevatezoom-gallery.product-thumb-image.width-25.active{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
+              %img{:src => show_image_50_50(i.product_image)}/
+          -else 
+            %a.elevatezoom-gallery.product-thumb-image.width-25.hide{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
+              %img{:src => show_image_50_50(i.product_image)}/
         
 
   .zoom-left

@@ -44,6 +44,11 @@ class Product < ActiveRecord::Base
   	
   end
 
+  def list_bullets
+    return [] if self.bullet_text.blank?
+    JSON.parse(self.bullet_text)
+  end
+
   def self.search_with_params(params_t,page,per_page)
     range_price = []
 

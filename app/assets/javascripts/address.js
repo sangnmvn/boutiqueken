@@ -195,7 +195,7 @@ var ViewProduct ={
 var Product={
   init: function(selector){
     if($(selector).length >0){
-      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active",loadingIcon: "/loader/ajax-loader.gif"}); 
+      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active"}); 
       // $("#zoom_03").bind("click", function(e) {  
       //   var ez =   $('#zoom_03').data('elevateZoom');
       //   ez.closeAll(); //NEW: This function force hides the lens, tint and window 

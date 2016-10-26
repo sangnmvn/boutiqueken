@@ -2879,7 +2879,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .details-2-middle{
   float: left;
-  width: 37%;
+  width: 36%;
   margin-right: 2%;
 }
 .details-2-right {
@@ -3503,8 +3503,11 @@ input[type=number]::-webkit-outer-spin-button {
 .image-product-detail{
   img{  
     max-width: 479px;
+    border-left: 2px solid transparent;
   }
-  .active img{border:2px solid #333 !important;}
+  .active img{
+    border-left: 2px solid red;
+  }
   #gallery_01{
   }
 }
@@ -3603,4 +3606,10 @@ input[type=number]::-webkit-outer-spin-button {
 
 .c-red{
   color: red;
+}
+
+.bullet_text{
+  list-style-type: disc;
+  padding-left: 27px;
+  padding-top: 10px;
 }
