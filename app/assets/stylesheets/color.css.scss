@@ -106,6 +106,14 @@ $url_0: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/multi.gi
 	  width: 50px;
     height: 60px;
     float: left;
+    .selected{
+      .item_icon{
+        border: 2px solid black;
+        background-clip: content-box;
+        padding: 2px;
+      }
+        
+    }
 
 	}
   .item{
@@ -168,6 +176,8 @@ $url_star_4: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rat
   .selected{
   	.item_icon{
   	  border: 2px solid black;
+      background-clip: content-box;
+      padding: 2px;
   	}
   }
 }

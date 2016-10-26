@@ -63,4 +63,28 @@ class Product < ActiveRecord::Base
   	end
     return list_product
   end
+
+
+  def self.filter_at_category(params_t,page,per_page)
+    if params_t[:color_selected].present? &&  params_t[:color_selected].include?("Multi")
+      params_t[:color_selected] = []
+    end
+
+    list_product = Product.search do
+      with(:brand_names,params_t[:brand_selected]) if params_t[:brand_selected].present?
+      with(:color_name,params_t[:color_selected]) if params_t[:color_selected].present?
+
+      if params_t[:price_selected].present?
+        params_t[:price_selected].each do |i|
+          start,finish = i.split("|")
+          puts start
+          puts finish
+          with(:sale_price,Range.new(start,finish)) if start.present? && finish.present?
+        end
+      end
+      order_by :sale_price, :asc
+      paginate :page => page, :per_page => per_page
+    end
+    return list_product
+  end
 end

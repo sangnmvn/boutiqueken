@@ -1,15 +1,29 @@
 -now_t = Time.now.to_i
--id = group_name.downcase.gsub(" ","") + "_#{now_t}_" + index.to_s
--puts group_name.downcase.strip
+-rands = rand(36**8).to_s(36)
+-id = group_name.downcase.gsub(" ","") + "_#{now_t}_#{rands}_" + index.to_s
+-file_filter = group_name.downcase.gsub(" ","");
 -if group_name.downcase.strip == "color"
-  %a{href: "#"}
+  %a.color-filter{href: "javascript:;"}
     %span.item_icon{title: i["name"]}
     %span.item
       =i["name"]
 -elsif group_name.downcase == "customer ratings"
-  %input{:type=>"checkbox",name: "filter",value: i[:value],id: id}
+  %input{:type=>"checkbox",name: "filter",value: i["value"],id: id}
   %span.item_review{title: i["name"]}
+-elsif group_name.downcase == "brand"
+  %input.brand-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
+  %label{:for =>id}
+    =i["name"]
+    
+-elsif group_name.downcase.gsub(" ","") == "bed size" || group_name.downcase.gsub(" ","") == "size"
+  %input.size-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
+  %label{:for =>id}
+    =i["name"]
+-elsif group_name.downcase.gsub(" ","") == "price" || group_name.downcase.gsub(" ","") == "price"
+  %input.price-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
+  %label{:for =>id}
+    =i["name"]
 -else
-  %input{:type=>"checkbox",name: "filter",value: i[:value],id: id}
+  %input{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
   %label{:for =>id}
     =i["name"]
