@@ -81,6 +81,11 @@ pos int,
 url text,
 CONSTRAINT products_pkey primary key (id));
 
+alter table products
+add column cust_rating text,
+add column macys_sale_price real,
+add column 
+
 drop table if exists product_price_details;
 create table product_price_details
 (  
@@ -92,7 +97,6 @@ color_image text,
 product_image text,  
 CONSTRAINT product_price_details_pkey primary key (id));
 
-
 drop table if exists featured_categories;
 create table featured_categories
 (  
@@ -102,7 +106,7 @@ parent_id int,
 image_url text,  
 category_id int,
 site_cat_id int,
-is_top_sale boolean,
+is_top_sale boolean default false,
 pos int,
 CONSTRAINT featured_categories_pkey primary key (id)
 );
@@ -136,11 +140,64 @@ CONSTRAINT seo_infos_pkey primary key (id)
 create index products_site_product_id_idx
 on products (site_product_id);
 
-create index products_site_product_id_idx
-on products (site_product_id);
+create index category_site_cat_id_idx
+on categories (site_cat_id);
 
 create index product_price_details_product_id_color_name_idx
 on product_price_details(product_id, color_name);
 
 create index filters_category_id_group_name_idx
 on filters(category_id, group_name);
+
+
+select sale_price, macys_sale_price, cust_rating from products limit 1
+
+truncate categories
+
+select * from categories
+where is_shown_in_menu and parent_id = 65
+
+select * from categories
+where parent_id = 1327
+order by pos;
+
+
+
+truncate products;
+truncate product_price_details;
+
+truncate left_navs;
+truncate featured_categories;
+
+truncate filters
+
+select * from featured_categories
+
+
+rails runner Scrapper.new.scrape_left_nav
+rails runner Scrapper.new.scrape_filters
+
+select * from categories
+where site_cat_id = 29891
+
+
+select * from left_navs
+where site_cat_id = 63574
+
+select * from products
+where site_product_id = 2967275
+
+select * from categories
+where site_cat_id = 31460
+
+select id, size_chart_id, site_product_id, size_chart_table from products
+where size_chart_table != '' and site_product_id = 2757441
+limit 100
+
+select count(1) from products
+
+"
+{
+"sizeChartMedia":{"brandName":"Style & Co","categoryName":"Dresses","tabs":["DRESSES- Style & CO"],"bazaarVoice":true,"intimates":false,"footer":"All measurements are approximate.","sizeChartData":[{"sizeChartTitle":"<p><strong>size chart</strong></p>", (...)"
+
+

@@ -25,7 +25,7 @@ class Scrapper
 
   FEATURE_CATE_LIMIT = {
     "HOME" => 4,
-    "ACTIVE" => 50
+    "ACTIVE" => 10
   }
 
   SITE_NAME = "Boutiqueken"
@@ -50,7 +50,6 @@ class Scrapper
 
     set_cookies(@agent)
 
-    #@agent.agent.set_socks('localhost', 8123)
     @number_of_threads = 10
   end
 
@@ -117,15 +116,15 @@ class Scrapper
         return
       end
 
+      pos = 0
+
       cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
         group_cat_name = ""
-        pos = 0
 
         cat_div.search("li").each do |leaf_cat|
           if leaf_cat.children.first.name == "label"
             group_cat_name = leaf_cat.children.first.text
             puts "- #{group_cat_name}"
-            pos = 0
           else
             if leaf_cat.search("a").count > 0
               cat_el = leaf_cat.search("a").first
@@ -263,11 +262,12 @@ class Scrapper
           site_cat_id = item.attributes["id"].text
 
           if site_cat_id.to_i == 0
-            puts "scrape_left_nav_brands - #{site_cat_id}"
-            puts "cat_name #{cat_name}"
+            #puts "scrape_left_nav_brands - #{site_cat_id}"
+            #puts "Cannot extract site_cat_id of cat_name #{cat_name}"
+            next
           end
 
-          cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -301,8 +301,6 @@ class Scrapper
       nav.each do |group_cat|
         group_cat_name = replace_macys_info(group_cat.search("span").first.text)
 
-        puts "+ #{group_cat_name}"
-
         group_pos += 1
         pos = 0
 
@@ -310,13 +308,13 @@ class Scrapper
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
           cat_name = replace_macys_info(cat.text)
           
-          puts "cat_name #{cat_name}"
-
           if site_cat_id.to_i == 0
-            puts "scrape_left_nav_others - #{site_cat_id}"
+            #puts "scrape_left_nav_others - #{site_cat_id}"
+            #puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s} - skipped"
+            next
           end
 
-          cat = Category.find_or_initialize_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -357,12 +355,29 @@ class Scrapper
         site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first
         image_url = f_cate_group.search("img").first.attributes["src"].text
 
-        if site_cat_id.to_i == 0
+        if site_cat_id.to_i == 0 && cat_name.nil?
           puts "scrape_kids_featured_cates - #{site_cat_id}"
-          puts "cat_name #{cat_name}"
+          puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+          next
         end
 
-        cat = Category.where(parent_id: root_cat.id, site_cat_id: site_cat_id).first
+        cat = Category.where(site_cat_id: site_cat_id).first unless site_cat_id.nil?
+        cat = Category.where(cat_name: cat_name).first if cat.nil? && !cat_name.nil?
+
+        if cat.nil?
+          puts "scrape_kids_featured_cates - Cannot find cat by cat_name #{cat_name} of root #{root_cat.cat_name}- at page #{page.uri.to_s}"
+
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id) unless site_cat_id.nil?
+          cat = Category.find_or_initialize_by(cat_name: cat_name) if cat.nil? && !cat_name.nil?
+
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = site_cat_id
+            cat.save
+          end
+        end
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
         f_cat.cat_name = cat_name
@@ -388,22 +403,41 @@ class Scrapper
       pos = 0
 
       f_cates.each do |f_cate|
-        f_cate_name = replace_macys_info(f_cate.attributes["alt"].text)
+        cat_name = replace_macys_info(f_cate.attributes["alt"].text)
 
-        unless ['go you macys active'].include? f_cate_name
+        unless ['go you macys active'].include? cat_name
 
-          if f_cate_name.blank?
-            puts "scrap_active_featured_cates - #{f_cate_name}"
+          if cat_name.blank?
+            puts "scrap_active_featured_cates - cat_name is blank - skipped"
+            next
           end
 
-          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, cat_name: f_cate_name)
-          f_cat.cat_name = f_cate_name
+          cat = Category.where(cat_name: cat_name).first
+
+          if cat.nil?
+            puts "Cannot find cat by cat_name #{cat_name} - at page #{page.uri.to_s}"
+           
+            cat = Category.find_or_initialize_by(cat_name: cat_name)
+
+            if cat.new_record?
+              cat.is_shown_in_menu = false
+              cat.cat_name = cat_name
+              cat.parent_id = root_cat.id
+              cat.site_cat_id = cat.site_cat_id unless cat.nil?
+              cat.save
+            end
+          end
+
+          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, cat_name: cat_name)
+          f_cat.cat_name = cat_name
+          f_cat.category_id = cat.id unless cat.nil?
           f_cat.parent_id = root_cat.id
           f_cat.pos = pos
           f_cat.save
 
           f_cate_count += 1
           pos += 1
+
           break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
         end
       end
@@ -426,16 +460,34 @@ class Scrapper
         site_cat_id = f_brand_el.attributes["href"].text.split("?CategoryID=").last
 
         if site_cat_id.to_i == 0
-          puts "scrap_brand_featured_brands - #{site_cat_id}"
-          puts "cat_name #{cat_name}"
+          puts "scrap_brand_featured_brands - #{site_cat_id} skipped"
+          puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+          next
         end
 
-        cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-        cat.site_cat_id = site_cat_id
-        cat.cat_name = cat_name
-        cat.parent_id = root_cat.id
-        cat.pos = pos
-        cat.save
+        cat = Category.where(cat_name: cat_name).first
+
+        if cat.nil?
+          puts "scrap_brand_featured_brands - Cannot find cat by site_cat_id #{site_cat_id} - at page #{page.uri.to_s}"
+
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = cat.site_cat_id unless cat.nil?
+            cat.save
+          end
+        end
+
+        f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+        f_cat.site_cat_id = site_cat_id
+        f_cat.category_id = cat.id unless cat.nil?
+        f_cat.cat_name = cat_name
+        f_cat.parent_id = root_cat.id
+        f_cat.pos = pos
+        f_cat.save
 
         pos += 1
       end
@@ -461,18 +513,38 @@ class Scrapper
         unless f_cate_ele.nil?
           cat_name = replace_macys_info(f_cate_ele.text)
           
-          if site_cat_id.to_i == 0
+          if site_cat_id.to_i == 0 && cat_name.nil?
             puts "scrape_others_featured_cates - #{site_cat_id}"
-            puts "cat_name #{cat_name}"
+            puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+            next
           end
 
-          cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-          cat.site_cat_id = site_cat_id
-          cat.cat_name = cat_name
-          cat.image_url = image_url
-          cat.parent_id = root_cat.id
-          cat.pos = pos
-          cat.save
+          cat = Category.where(site_cat_id: site_cat_id).first unless site_cat_id.nil?
+          cat = Category.where(cat_name: cat_name).first if cat.nil? && !cat_name.nil?
+
+          if cat.nil?
+            puts "scrape_others_featured_cates - Cannot find cat by cat_name #{cat_name} of root #{root_cat.cat_name}- at page #{page.uri.to_s}"
+
+            cat = Category.find_or_initialize_by(site_cat_id: site_cat_id) unless site_cat_id.nil?
+            cat = Category.find_or_initialize_by(cat_name: cat_name) if cat.nil? && !cat_name.nil?
+
+            if cat.new_record?
+              cat.is_shown_in_menu = false
+              cat.cat_name = cat_name
+              cat.parent_id = root_cat.id
+              cat.site_cat_id = site_cat_id
+              cat.save
+            end
+          end
+
+          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
+          f_cat.site_cat_id = site_cat_id
+          f_cat.cat_name = cat_name
+          f_cat.category_id = cat.id unless cat.nil?
+          f_cat.image_url = image_url
+          f_cat.parent_id = root_cat.id
+          f_cat.pos = pos
+          f_cat.save
 
           pos += 1
 
@@ -1001,8 +1073,12 @@ class Scrapper
 
       brand_name = product_thumbnail["brand"]
       price_range = product_thumbnail["price"]
+      cust_rating = product_thumbnail["custRatings"]
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
+
+      shipping_return = product_thumbnail["freeShipMessage"].to_json
+      free_ship_message = product_thumbnail["shippingReturnNotes"]
 
       cat = Category.where(site_cat_id: site_category_id).first
 
@@ -1030,6 +1106,9 @@ class Scrapper
       product.seo_title = seo_title
       product.seo_keywords = seo_keywords
       product.seo_desc = seo_desc
+      product.cust_rating = cust_rating
+      product.shipping_return = shipping_return
+      product.free_ship_message = free_ship_message
       product.save
 
       update_product_price_details(product)
@@ -1076,9 +1155,13 @@ class Scrapper
       sizes = product["sizesList"].to_json
 
       tiered_price = product["colorwayPrice"]["tieredPrice"]
-      regular_price, was_price, sale_price = extract_price_info(tiered_price)
+      regular_price, was_price, macys_sale_price = extract_price_info(tiered_price)
 
       product_atts = product_thumbnail["attributes"].to_json
+      cust_rating = product_thumbnail["custRatings"]
+      shipping_return = product_thumbnail["freeShipMessage"].to_json
+      free_ship_message = product_thumbnail["shippingReturnNotes"]
+
 
       size_chart_canvas_id = product_thumbnail["sizeChartCanvasId"]
 
@@ -1155,13 +1238,17 @@ class Scrapper
       product.is_price_color = true if !colorway_pricing_swatches.nil? && colorway_pricing_swatches.count > 1
       product.regular_price = regular_price
       product.was_price = was_price
-      product.sale_price = sale_price
+      product.sale_price = calculate_sale_price(macys_sale_price)
+      product.macys_sale_price = macys_sale_price
       product.size_chart_id = size_chart_id
       product.size_chart_table = size_chart_json
       product.url = product_url
       product.seo_title = seo_title
       product.seo_keywords = seo_keywords
       product.seo_desc = seo_desc
+      product.cust_rating = cust_rating
+      product.shipping_return = shipping_return
+      product.free_ship_message = free_ship_message
       product.save
 
       update_product_price_details(product)
@@ -1291,6 +1378,10 @@ class Scrapper
   end
 
   def set_cookies(agent)
+    if Rails.env.development?
+      agent.agent.set_socks('localhost', 8123)
+    end
+
     cookie = Mechanize::Cookie.new("shippingCountry", "US")
     cookie.domain = ".macys.com"
     cookie.path = "/"
@@ -1300,5 +1391,23 @@ class Scrapper
     cookie.domain = ".macys.com"
     cookie.path = "/"
     agent.cookie_jar.add(cookie)
+  end
+
+  def calculate_sale_price(macys_sale_price)
+    sale_price = macys_sale_price
+
+    if macys_sale_price < 100
+      sale_price -= sale_price * 0.1
+    elsif macys_sale_price >= 100 && macys_sale_price < 150
+      sale_price -= sale_price * 0.133
+    elsif macys_sale_price >= 150 && macys_sale_price < 200
+      sale_price -= sale_price * 0.155
+    elsif macys_sale_price >= 200 && macys_sale_price < 500
+      sale_price -= sale_price * 0.25
+    elsif macys_sale_price >= 500
+      sale_price -= sale_price * 0.3
+    end
+
+    return sale_price
   end
 end
