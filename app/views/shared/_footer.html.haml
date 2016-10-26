@@ -4,31 +4,38 @@
       .container
         .footer-top-inner
           %h4 Deals of the day
-          .f-left.pull-left
+          .width-30.pull-left
             %a{:href =>"javascript:;"}
               %p.image-footer
                 =image_tag("img/footer/brooks._V527797008_.jpg")
-              %p  
+              .none-link  
                 Shop Brooks Fall Running Essentials
-                %a{:href => "#"} Up to 60% off MSRP
-                %i.fa.fa-angle-right
-          / .f-left ends
-          .f-center.pull-left
+              .link
+                %a{:href => "#"}
+                  Up to 60% off MSRP
+                  %i.fa.fa-angle-right.fa-cus
+          .width-30.pull-left
             %a{:href =>"javascript:;"}
               %p.image-footer
                 =image_tag("img/footer/FB_2._V282166333_.jpg")
-              %p  
-                The Brand you need now
-                %a{:href => "#"} Up to 80% off MSRP
-                %i.fa.fa-angle-right
-          / .f-center ends
-          .f-right.pull-left
-            %a{:href =>"javascript:;"}
-              %p.image-footer
-                =image_tag("img/footer/static-3._V527804960_.jpg")
-              %p  
+              .margin-top
+                .none-link  
+                  The Brand you need now
+                .link  
+                  %a{:href => "#"}
+                    Up to 80% off MSRP
+                    %i.fa.fa-angle-right.fa-cus
+          .width-40.pull-left
+            .left-image
+              %a{:href =>"javascript:;"}
+                %p.image-footer.image-footer-180
+                  =image_tag("img/footer/static-3._V527804960_.jpg")
+            .right-content
+              .none-link
                 Winter Boots KhomBu, Northside, Totes and more!
+              .link
                 %a{:href => "#"} Up to 50% off MSRP
+          .clear-fix
           / .f-right ends
         / .footer-top-inner ends
       / .container ends
