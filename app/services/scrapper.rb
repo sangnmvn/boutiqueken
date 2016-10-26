@@ -1086,7 +1086,7 @@ class Scrapper
 
       if !size_chart_canvas_id.nil?
         # fetch size chart table
-        size_chart_page = agent.get("#{size_chart_canvas_url}=#{size_chart_canvas_id}")
+        size_chart_page = agent.get("#{size_chart_canvas_url}#{size_chart_canvas_id}")
         size_chart_json = size_chart_page.body
 
         if size_chart_canvas_url.blank?
