@@ -10,6 +10,10 @@ class Product < ActiveRecord::Base
     ]
   end
   
+  def should_generate_new_friendly_id?
+    new_record? || slug.blank?
+    #true
+  end
   searchable do
     text :short_desc, :default_boost => 2
     text :long_desc

@@ -21,7 +21,7 @@ class Category < ActiveRecord::Base
   end
 
   def should_generate_new_friendly_id?
-    # new_record? || slug.blank?
-    true
+    new_record? || slug.blank?
+    #true
   end
 end
