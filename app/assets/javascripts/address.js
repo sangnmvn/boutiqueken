@@ -82,12 +82,18 @@ var ProductList = {
       price_selected.push(price);
     });
 
+    size_selected = new Array();
+    $('.size-filter:checked').each(function(index){
+      size = $(this).val().split(",")[1].trim();
+      size_selected.push(size);
+    });
+
     per_page = $(".active-per").attr("data-length");
 
     $.ajax({
       method: "GET",
       url: category_path,
-      data: {color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
+      data: {size_selected: size_selected,color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
       }).done(function(data) {
       
       });

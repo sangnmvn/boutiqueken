@@ -160,7 +160,7 @@ ul{
 }
 
 .logo-wrapper {
-  border-bottom: 0.4rem solid #f8fbfd;
+  /*border-bottom: 0.4rem solid #f8fbfd;
   border-left: 0.4rem solid #f8fbfd;
   border-right: 0.4rem solid #f8fbfd;
   display: block;
@@ -168,7 +168,20 @@ ul{
   margin-right: 1rem;
   margin-top: -2.59rem;
   width: 10.2rem;
+  */
+  width: 44.2rem;
+  margin-top: 17px;
+  display: block;
+  height: 6.5rem;
+  margin-right: 1rem;
+  float: left;
 }
+.search-panel{
+  height: 6.5rem;
+  float: right;
+  padding-top: 2.5rem;
+}
+
 .main-navigation{
   display: block;
   overflow: hidden;
@@ -212,30 +225,50 @@ ul{
   border-top: 1px solid #000;
   margin-right: 1rem;
   padding-top: 1rem;
-  width: 71.5%;
+  width: 100%;
 }
 
 .search-box{
   position: relative;
 }
 .search-box input {
-  background: #cac6c6 none repeat scroll 0 0;
+  background: white none repeat scroll 0 0;
   border: medium none;
   color: #000;
   font-weight: 600;
-  height: 2.9rem;
+  height: 3.0rem;
   margin-top: 0.2rem;
   padding: 0.5rem 3.5rem 0.5rem 1rem;
-  width: 19.8rem;
+  width: 25.8rem;
+  border: 2px solid #CDCDCD;
 }
 .search-box button {
-  background: transparent none repeat scroll 0 0;
+  /*background: transparent none repeat scroll 0 0;
   border: medium none;
   color: #92959c;
   font-size: 2.4rem;
   position: absolute;
   right: 0rem;
-  top: -0.44rem;
+  top: -0.44rem;*/
+  
+  background: transparent none repeat scroll 0 0;
+  border: medium none;
+  color: #92959c;
+  font-size: 2.4rem;
+  /* position: absolute; */
+  right: 0rem;
+  /* top: 0.44rem; */
+  line-height: 31px;
+  height: 31px;
+  background-color: black;
+  vertical-align: -21%;
+  margin-left: -4px;
+  border: 1px solid #CDCDCD;
+  .fa-search{
+    vertical-align: middle;
+    height: 31px;
+    line-height: 22px;
+  }
 }
 .search-wrapper-medium-screen{
   display: none;
@@ -482,9 +515,16 @@ ul{
   border-top: 1px solid #000;
   display: block;
   font-weight: 600;
-  margin: 7rem auto 0rem;
-  padding-top: 5rem;
-  width: 90%;
+  /*margin: 7rem auto 0rem;*/
+  padding-top: 10px;
+  width: 100%;
+  .image-footer{
+    height: 80px;
+    img{
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
 }
 .rotate-image img {
   display: block;
@@ -501,7 +541,7 @@ ul{
 }
 .footer-top-inner a {
   font-weight: 700;
-  text-decoration: underline;
+  /*text-decoration: underline;*/
 }
 .f-center {
   width: 40%;
@@ -3486,3 +3526,60 @@ input[type=number]::-webkit-outer-spin-button {
   height: 10px;
 }
 
+.footer-top-inner{
+  .image-footer{
+    position: relative;
+    height: 140px;
+    img{
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+  }
+  .image-footer-180{
+    height: 180px;
+  }
+  .none-link{
+    font-weight: normal;
+    text-decoration: none;
+  }
+  .link{
+    text-transform: uppercase;
+    text-decoration: underline;
+    .fa-cus{
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  .margin-top{
+    text-align: center;
+  }
+
+  .left-image{
+    width: 60%;
+    float: left;
+  }
+  .right-content{
+    width: 40%;
+    float: left;
+    width: 40%;
+    float: left;
+    margin-top: 125px;
+    margin-left: -27px;
+  }
+
+  .width-30{
+    width: 30%;
+  }
+  .width-40{
+    width: 40%;
+  }
+}

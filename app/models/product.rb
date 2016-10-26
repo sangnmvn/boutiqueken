@@ -28,6 +28,10 @@ class Product < ActiveRecord::Base
     end
 
 
+    string :sizes_list,:multiple => true do 
+      sizes.to_s.split(",")
+    end
+
 
 
 

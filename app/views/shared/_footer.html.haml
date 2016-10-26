@@ -3,33 +3,39 @@
     .footer-top
       .container
         .footer-top-inner
-          .f-left.pull-left
-            .rotate-image
-              %img.img-responsive.pull-left{:alt => "rotate-img", :src => asset_path("img/rotate.png")}/
-            %h3 OUR NEW CATALOG IS HERE
-            %p
-              The latest issue now available online.
-              %a{:href => "#"} View Now
-          / .f-left ends
-          .f-center.pull-left
-            .exclusive.pull-left
-              %img{:alt => "saks-img", :src => asset_path("img/saks.png")}/
-              %img{:alt => "first-img", :src => asset_path("img/first.png")}/
-              %p Exclusive Rewards Card.
-            .start.pull-left
-              %h3
-                START GETTING
-                %br/
-                POINTS &amp; MORE
-              %p
-                from your first purchase with ourExclusive Rewards Card.
-                %a{:href => "#"} Apply Now
-          / .f-center ends
-          .f-right.pull-left
-            %form.pull-right{:action => "#"}
-              %label{:for => "sign-up-1"} SIGN UP FOR DAILY EMAILS
-              %input#sign-up-1{:placeholder => "Enter Email Address", :type => "text"}/
-              %button{:type => "submit"} GO
+          %h4 Deals of the day
+          .width-30.pull-left
+            %a{:href =>"javascript:;"}
+              %p.image-footer
+                =image_tag("img/footer/brooks._V527797008_.jpg")
+              .none-link  
+                Shop Brooks Fall Running Essentials
+              .link
+                %a{:href => "#"}
+                  Up to 60% off MSRP
+                  %i.fa.fa-angle-right.fa-cus
+          .width-30.pull-left
+            %a{:href =>"javascript:;"}
+              %p.image-footer
+                =image_tag("img/footer/FB_2._V282166333_.jpg")
+              .margin-top
+                .none-link  
+                  The Brand you need now
+                .link  
+                  %a{:href => "#"}
+                    Up to 80% off MSRP
+                    %i.fa.fa-angle-right.fa-cus
+          .width-40.pull-left
+            .left-image
+              %a{:href =>"javascript:;"}
+                %p.image-footer.image-footer-180
+                  =image_tag("img/footer/static-3._V527804960_.jpg")
+            .right-content
+              .none-link
+                Winter Boots KhomBu, Northside, Totes and more!
+              .link
+                %a{:href => "#"} Up to 50% off MSRP
+          .clear-fix
           / .f-right ends
         / .footer-top-inner ends
       / .container ends

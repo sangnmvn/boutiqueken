@@ -15,7 +15,7 @@
           %a{:href => "#"} 1.877.551.7257
         %li
           %a{:href => "#"}
-            Saks Bag(
+            My Bag(
             %span.bag-count> 0
             )
         -if current_user.present?
@@ -47,9 +47,16 @@
     / .container ends
   / .header-top ends
   .container
-    %a.logo-wrapper.pull-left{:href => "#"}
-      %img.img-responsive{:alt => "saks-logo", :src => asset_path("img/logo.png")}/
+
+    %a.logo-wrapper{:href => root_path}
+      %img.img-responsive{:alt => "boutiqueken-logo", :src => asset_path("boutiqueken_V1.png")}/
     / MOBILE OFFER TOP TEXT STARTS
+    .search-panel
+      %form.pull-right.search-box{:action => search_products_path()}
+        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}" ,:placeholder=>"What can we can help you find?"}/
+        %button{:type => "submit"}
+          %i.fa.fa-search
+    .clear-fix
     %p.pull-right.free-offer.free-offer-mobile.hidden-lg.hidden-md.hidden-sm
       Enjoy Free Express Shipping on orders $100+
       %a{:href => "#"} Details
@@ -59,8 +66,8 @@
       %p.pull-left.free-offer.free-offer-desktop.hidden-xs
         Enjoy Free Express Shipping on orders $100+
         %a{:href => "#"} Details
-      %form.pull-right.search-box{:action => "#"}
-        %input{:type => "text"}/
+      %form.pull-right.search-box{:action => search_products_path()}
+        %input{:type => "text",:placeholder=>"What can we can help you find?"}/
         %button{:type => "submit"}
           %i.fa.fa-search
     / MEDIUM SCREEN SEARCH BOX AREA ENDS
@@ -73,10 +80,10 @@
       %p.pull-left.free-offer.free-offer-desktop
         Enjoy Free Express Shipping on orders $100+
         %a{:href => "#"} Details
-      %form.pull-right.search-box{:action => search_products_path()}
-        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}"}/
-        %button{:type => "submit"}
-          %i.fa.fa-search
+      / %form.pull-right.search-box{:action => search_products_path()}
+      /   %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}"}/
+      /   %button{:type => "submit"}
+      /     %i.fa.fa-search
     / BIG SCREEN SEARCH BOX AREA ENDS
   / .container ends
 / HEADER ENDS
