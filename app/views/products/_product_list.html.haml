@@ -11,10 +11,10 @@
           %span
             =@products.total_count
           items
-      .single-view-option.view-number.hidden-xs
-        %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
-        %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
-          %span 180
+      / .single-view-option.view-number.hidden-xs
+      /   %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+      /   %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+      /     %span 180
       .single-view-option.view-pagi.hidden-xs
         %span.current=perpage_item_of(@products.total_count,@products.current_page,@per_page)
         of
@@ -34,7 +34,7 @@
             No data to display.
         -@products.each do |i|
           .col-md-3.col-sm-4
-            .single-product
+            .single-product{:onclick => "window.location = '#{product_path(i)}'"}
               .product-img-wrapper.left-content-side
                 -if i.product_details.present?
                   -is_need_main = true
@@ -78,9 +78,9 @@
             %span=@products.total_count
             items
         .single-view-option.view-number.hidden-xs
-          %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
-          %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
-            %span 180
+          / %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+          / %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+          /   %span 180
         .single-view-option.view-pagi.hidden-xs
           %span.current=perpage_item_of(@products.total_count,@products.current_page,@per_page)
           of

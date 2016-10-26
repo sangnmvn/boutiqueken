@@ -3,7 +3,10 @@
 .main-product-area.product-list
   .sort-by-area
     .sort-left
-      %h1.pull-left=@category.cat_name.upcase
+      %h1.pull-left
+        %span.c-red
+          =@product_ls.total_count.to_s
+        %span=" items in " + @category.cat_name.upcase
     / .sort-left ends
     .sort-right.hidden-xs
       .single-view-option.items
@@ -11,10 +14,10 @@
           %span
             =@product_ls.total_count
           items
-      .single-view-option.view-number.hidden-xs
-        %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
-        %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
-          %span 180
+      / .single-view-option.view-number.hidden-xs
+      /   %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+      /   %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+      /     %span 180
       .single-view-option.view-pagi.hidden-xs
         %span.current=perpage_item_of(@product_ls.total_count,@product_ls.current_page,@per_page)
         of
@@ -34,7 +37,7 @@
             No data to display.
         -@product_ls.each do |i|
           .col-md-3.col-sm-4
-            .single-product
+            .single-product{:onclick => "window.location = '#{product_path(i)}'"}
               .product-img-wrapper.left-content-side
                 -if i.product_details.present?
                   -is_need_main = true
@@ -52,8 +55,8 @@
                 -if i.product_details.present?
                   %ul.coloring-ul
                     -i.product_details.each_with_index do |detail,index|
-                      %li{"data-color" => "Black", "data-img" => "p-#{index}"}
-                        %a{:href => "#"}
+                      %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
+                        %a{:href => "javascript:;"}
                           %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
                   
                 %strong
@@ -78,9 +81,9 @@
             %span=@product_ls.total_count
             items
         .single-view-option.view-number.hidden-xs
-          %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
-          %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
-            %span 180
+          / %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
+          / %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
+          /   %span 180
         .single-view-option.view-pagi.hidden-xs
           %span.current=perpage_item_of(@product_ls.total_count,@product_ls.current_page,@per_page)
           of

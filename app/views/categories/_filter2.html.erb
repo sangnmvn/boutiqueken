@@ -23,7 +23,7 @@
               </span>
               <%sub_group_name = i.sub_group_name%>
             </strong>
-            <ul>
+            <ul class="max-h-200">
               <% filters = JSON.parse(i.filters) rescue []%>
               <% filters.each_with_index do |filtera,index|%>
                 <li class= "<%=determine_type(group_name)%>">
@@ -34,7 +34,7 @@
             </ul>
           </div>
         <%elsif i.sub_group_name.blank?%>
-          <ul>
+          <ul class="max-h-200">
             <% filters = JSON.parse(i.filters)%>
             <% filters.each_with_index do |filtera,index|%>
               <li class= "<%=determine_type(group_name)%>">
@@ -56,7 +56,7 @@
               </span>
               <%sub_group_name = i.sub_group_name%>
             </strong>
-            <ul>
+            <ul class="max-h-200">
               <% filters = JSON.parse(i.filters)%>
               <% filters.each_with_index do |filtera,index|%>
                 <li class= "<%=determine_type(group_name)%>">

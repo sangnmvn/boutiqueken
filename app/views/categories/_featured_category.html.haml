@@ -22,9 +22,9 @@
       .featured-items
         -@feature_categories.each do |i|
           .featured-single-item
-            %a{:href => category_path(i)}
+            %a{:href => category_path(i.category_id)}
               %img.img-responsive{:alt => "", :src => i.image_url}/
-            %a{:href => category_path(i)}
+            %a{:href => category_path(category_id)}
               %p=i.try(:cat_name)
       / featured item ends
     / featured-items ends

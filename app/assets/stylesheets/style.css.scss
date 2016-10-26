@@ -3024,6 +3024,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .product-item-div .single-product {
   margin-bottom: 2rem;
+  cursor: pointer;
 }
 .product-item-div .coloring-ul {
   margin-top: 1rem;
@@ -3041,9 +3042,12 @@ input[type=number]::-webkit-outer-spin-button {
   width: 2.4rem;
 }
 .product-item-div .coloring-ul .active img {
-  height: 3rem;
+  /*height: 3rem;
   margin-bottom: -0.3rem;
-  width: 3rem;
+  width: 3rem;*/
+  border: 2px solid black;
+  background-clip: content-box;
+  padding: 1px;
 }
 .main-product-area h1.pull-left {
   margin-top: 0;
@@ -3508,7 +3512,9 @@ input[type=number]::-webkit-outer-spin-button {
 .color-picking{
   &.active{
     img{
-      border: 2px dotted #333; 
+      border: 2px solid black;
+      background-clip: content-box;
+      padding: 1px; 
     }
     
   }
@@ -3593,4 +3599,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .four-col-menu{
   width: 82.2rem;
+}
+
+.c-red{
+  color: red;
 }

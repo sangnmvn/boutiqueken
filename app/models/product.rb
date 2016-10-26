@@ -11,6 +11,7 @@ class Product < ActiveRecord::Base
     text :brand_name
     text :sizes
     text :shipping_return
+    integer :category_id
     string :color_name,:multiple => true do
       result = []
       result = product_details.pluck(:color_name)
@@ -77,7 +78,7 @@ class Product < ActiveRecord::Base
     list_product = Product.search do
       with(:brand_names,params_t[:brand_selected]) if params_t[:brand_selected].present?
       with(:color_name,params_t[:color_selected]) if params_t[:color_selected].present?
-
+      with(:category_id,params_t[:category_id]) if params_t[:category_id].present?
       if params_t[:price_selected].present?
         params_t[:price_selected].each do |i|
           start,finish = i.split("|")

@@ -137,6 +137,10 @@ $url_star_3: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rat
 $url_star_4: url(//assets.macysassets.com/navapp/web20/assets/img/multifacet/rating_star_1.png);
 
 #filters {
+  .max-h-200{
+    max-height: 200px;
+    overflow: auto;
+  }
   .li-cus-review{
     .item_review[title*="5 "] {
       background: transparent $url_star_0 no-repeat right 1px;

@@ -9,8 +9,20 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %title Product Details
-    %meta{:content => "", :name => "description"}/
+    -if @category.present?
+      %title=@category.seo_title
+      %meta{:content => @category.seo_desc, :name => "description"}/
+      %meta{:content => @category.seo_keywords, :name => "keywords"}/
+    -elsif @product.present?
+      %title=@product.seo_title
+      %meta{:content => @product.seo_desc, :name => "description"}/
+      %meta{:content => @product.seo_keywords, :name => "keywords"}/
+    -else
+      %title Free SHIPPING, FREE RETURNS & FREE 3-DAY SHIPPING WORLDWIDE latest latest Designer Women's Apparel, Men's Apparel, Shoes, Handbags, Beauty and More. Boutiqueken.com
+
+      %meta{:content => "Free shipping. Free returns. All the time. Shop online for shoes, clothing, jewelry, dresses, makeup and more from top brands. Make returns in store or by mail.", :name => "description"}/
+      %meta{:content => "women&#039;s fashion, women&#039;s clothing, designer fashion, boutiqueken, boutiqueken.com", :name => "keywords"}/
+      
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
     / Place favicon.ico and apple-touch-icon.png in the root directory
     %link{:href => "http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}/

@@ -18,7 +18,7 @@ class ProductsController < ApplicationController
 
   def search
     @page = params[:page] || 1
-    @per_page = params[:per_page] || 60
+    @per_page = params[:per_page] || 100
     @search = Product.search_with_params(params,@page,@per_page)
     @products = @search.results
     @product_prices = ProductPriceDetail.where(:id =>@search.facet(:product_detail_ids).rows.map!{|col| col.value})
