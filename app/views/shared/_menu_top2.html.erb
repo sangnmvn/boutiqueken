@@ -1,0 +1,91 @@
+<nav class="main-navigation hidden-xs">
+  <ul>
+    <% @main_menus.each_with_index do |i,index_main| %>
+      <% if i.cat_name.present? %>
+        <li class="menu-item span-4 <%=index_main == 0 ? 'first-child' : '' %>">
+          <a href="<%= category_path(i.id) %>">
+            <%= i.cat_name.upcase %>
+          </a>
+          <%ms = i.children.where(:is_shown_in_menu => true).order("pos asc")%>
+          <% main_subs = ms.group_by(&:group_name) %>
+
+          <ul class="sub-menu designers-menu <%=determine_width_menu(ms.count)%>">
+            <li class="triangle"></li>
+            <% group_name ="" %>
+            <% max_items = 30 %>
+            <% count =0 %>
+            <% main_subs.keys.each_with_index do |key,index| %>
+
+              <%if index == 0%>
+                <li class="sub-menu-column">
+                  <% if group_name != key %>
+                    <b>
+                      <%= key %>
+                    </b>
+                    <% group_name = key %>
+                    <% count +=1 %>
+                    <ul>
+                      <% main_subs[key].each do |t| %>
+                        <li>
+                          <a href="<%= category_path(t.id) %>">
+                            <%= t.cat_name.capitalize %>
+                          </a>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% end %>
+                <%count += main_subs[key].count + 1%>
+              <%else%>
+                <%if count + main_subs[key].count >max_items%>
+                </li>
+                <%count =0%>
+                <li class="sub-menu-column">
+                  <% if group_name != key %>
+                    <b>
+                      <%= key %>
+                    </b>
+                    <% group_name = key %>
+                    <% count +=1 %>
+                    <ul>
+                      <% main_subs[key].each do |t| %>
+                        <li>
+                          <a href="<%= category_path(t.id) %>">
+                            <%= t.cat_name.capitalize %>
+                          </a>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% end %>
+                <%count += main_subs[key].count + 1%>
+              <%else%>
+                <% if group_name != key %>
+                    <b>
+                      <%= key %>
+                    </b>
+                    <% group_name = key %>
+                    <% count +=1 %>
+                    <ul>
+                      <% main_subs[key].each do |t| %>
+                        <li>
+                          <a href="<%= category_path(t.id) %>">
+                            <%= t.cat_name.capitalize %>
+                          </a>
+                        </li>
+                      <% end %>
+                    </ul>
+                    <%count += main_subs[key].count + 1%>
+                <%end%>
+              <%end%>
+
+              <%end%>
+
+            <% end %>
+            <%if main_subs.count >0%>
+              </li>
+            <%end%>
+          </ul>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</nav>

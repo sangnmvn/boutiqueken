@@ -6,8 +6,8 @@
         %i.fa.fa-chevron-down
           
     %ul
-      - @color_names.each do |color|
-        
+      - @color_names.each_with_index do |color,index|
+        -id = "color_" + index.to_s
         %li.li-color
           %a.color-filter{:href =>"javascript:;"}
             %span.item_icon{title: color[0]}
@@ -22,19 +22,24 @@
           
     %ul
       %li
-        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "0|49.9"}
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "0|49.9",id: "under_50"}
+        %label{:for =>"under_50"}
           ="Under $50"
       %li
-        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "50|99.9"}
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "50|99.9",id: "under_100"}
+        %label{:for =>"under_100"}
           ="$50 - $100"
       %li
-        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "100|249.9"}
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "100|249.9",id: "under_250"}
+        %label{:for =>"under_250"}
           ="$100 - $250"
       %li
-        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "250|499.9"}
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "250|499.9",id: "under_500"}
+        %label{:for =>"under_500"}
           ="$250 - $500"
       %li
-        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "500|-1"}
+        %input.price-filter{:type=>"checkbox",name: "filter[price]",value: "500|-1",id: "above_500" }
+        %label{:for =>"above_500"}
           ="Above $500"
   .single-product-cat
     %strong.trigger
@@ -43,7 +48,9 @@
         %i.fa.fa-chevron-down
           
     %ul
-      - @brands.each do |brand|
+      - @brands.each_with_index do |brand,index|
+        -id = "brand_" + index.to_s
         %li
-          %input.brand-filter{:type=>"checkbox",name: "filter[brand]",value: brand[0]}
+          %input.brand-filter{:type=>"checkbox",name: "filter[brand]",value: brand[0],id: id}
+          %label{:for =>id}
             =brand[0]

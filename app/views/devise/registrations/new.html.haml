@@ -53,7 +53,7 @@
             /   %input#confirm-password-2{:type => "password"}/
           / .single-account-block-password ends
           .single-account-block.single-account-block-email
-            %h4 EMAIL ADDRESS FOR SIGN-IN &amp; SAKS EMAIL UPDATE
+            %h4 EMAIL ADDRESS FOR SIGN-IN &amp; BoutiqueKen EMAIL UPDATE
             .email-input-block
               %label{:for => "email"} Email Address
               / %input#email{:required => "required", :type => "email"}/
@@ -64,24 +64,24 @@
             .checkbox-input-block
               / <input type="checkbox" id="checkbox" name="check">
               %label.control.control--checkbox
-                Yes, I would like to receive email updates about the latest trends, special events, new arrivals and exclusive offers from Saks Fifth Avenue.
+                Yes, I would like to receive email updates about the latest trends, special events, new arrivals and exclusive offers from BoutiqueKen.
                 / %input{:checked => "checked", :type => "checkbox"}/
                 =f.check_box :is_contact_reference,:checked =>true
                 %span.control__indicator
           / .single-account-block-check ends
-          .single-account-block.single-account-block-radio
-            %h4 ARE YOU CURRENTLY A SAKSFIRST MEMBER?
-            %p If so, you will be able to check the status of your SAKSFIRST Rewards online
-            .radio-input-block
-              %label.control.control--radio{:for => "no"}
-                No, I am not a SAKSFIRST
-                =f.radio_button :is_skas_member,false
-                %span.control__indicator
-              %label.control.control--radio{:for => "yes"}
-                Yes, I am a SAKSFIRST member
-                =f.radio_button :is_skas_member,true, checked: true
-                %span.control__indicator
-            %a{:href => "#"} What is SAKSFIRST?
+          / .single-account-block.single-account-block-radio
+          /   %h4 ARE YOU CURRENTLY A SAKSFIRST MEMBER?
+          /   %p If so, you will be able to check the status of your SAKSFIRST Rewards online
+          /   .radio-input-block
+          /     %label.control.control--radio{:for => "no"}
+          /       No, I am not a SAKSFIRST
+          /       =f.radio_button :is_skas_member,false
+          /       %span.control__indicator
+          /     %label.control.control--radio{:for => "yes"}
+          /       Yes, I am a SAKSFIRST member
+          /       =f.radio_button :is_skas_member,true, checked: true
+          /       %span.control__indicator
+          /   %a{:href => "#"} What is SAKSFIRST?
           / .single-account-block-radio ends
           .signup-submit-buttons
             %a.cancel-link{href: "#{root_path}"} Cancel

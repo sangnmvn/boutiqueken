@@ -118,4 +118,15 @@ module ApplicationHelper
     end
     
   end
+
+  def determine_width_menu(number_menu)
+    if number_menu <= 25
+      "two-col-menu"
+    elsif number_menu >=48 && number_menu <75
+      "three-col-menu"
+    elsif number_menu >75
+      "four-col-menu"
+    end 
+      
+  end
 end
