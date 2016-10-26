@@ -42,12 +42,14 @@ class Scrapper
 
   def initialize
     @root_url = 'https://www.macys.com'
-    @agent = Mechanize.new
 
     #TODO: 
     #+ root url and proxy should be loaded from configuration
     #+ change country before scrapping
     @agent = Mechanize.new
+
+    set_cookies(@agent)
+
     #@agent.agent.set_socks('localhost', 8123)
     @number_of_threads = 10
   end
@@ -947,6 +949,8 @@ class Scrapper
     begin
       agent = Mechanize.new
 
+      set_cookies(agent)
+
       page = agent.get(url)
 
       product_main_data = page.search("#productMainData")
@@ -971,6 +975,8 @@ class Scrapper
 
     begin
       agent = Mechanize.new
+
+      set_cookies(agent)
 
       product_thumbnail_page = agent.get(url)
 
@@ -1040,6 +1046,8 @@ class Scrapper
       size_chart_canvas_url = "http://www1.macys.com/shop/catalog/product/canvassizechart/json?canvasId="
 
       agent = Mechanize.new
+      
+      set_cookies(agent)
 
       product_thumbnail_page = agent.get(url)
 
@@ -1280,5 +1288,17 @@ class Scrapper
       puts e.message
       puts e.backtrace.first(10).join("\n")
     end
+  end
+
+  def set_cookies(agent)
+    cookie = Mechanize::Cookie.new("shippingCountry", "US")
+    cookie.domain = ".macys.com"
+    cookie.path = "/"
+    agent.cookie_jar.add(cookie)
+
+    cookie = Mechanize::Cookie.new("currency", "USD")
+    cookie.domain = ".macys.com"
+    cookie.path = "/"
+    agent.cookie_jar.add(cookie)
   end
 end
