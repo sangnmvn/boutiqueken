@@ -19,7 +19,7 @@ class Category < ActiveRecord::Base
   	if parent.present?
   		[
       	[parent.cat_name, :cat_name],
-        [parent.cat_name, :cat_name,:id]
+        [parent.cat_name,:id, :cat_name]
     	]
   	else
       [
