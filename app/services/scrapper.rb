@@ -31,7 +31,7 @@ class Scrapper
 
   SITE_NAME = "Boutiqueken"
   MAX_THREAD = 15
-  BATCH_SIZE = 50000
+  BATCH_SIZE = 25000
 
   HOME_SPECIAL_CATES = {
     "Dining & Entertaining": "http://www1.macys.com/catalog/index.ognc?CategoryID=7498&cm_sp=us_hdr-_-home-_-7498_dining-%26-entertaining_COL1",
@@ -63,6 +63,7 @@ class Scrapper
 
     @start_date = Time.now.strftime("%Y%m%d")
     FileUtils.mkdir_p("./tmp/#{@start_date}")
+    @current_cat_name = ""
   end
 
   def import_others
@@ -848,7 +849,7 @@ class Scrapper
     end
   end
 
-  def scrape_products(update_db=true, number_of_threads=10)
+  def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=10)
     begin
 
       @number_of_threads = number_of_threads
@@ -867,20 +868,42 @@ class Scrapper
         cat_name = replace_macys_info(anchor.text)
         cat_url = @root_url + anchor.attributes["href"].value
 
+        @current_cat_name = cat_name
+
         puts "Scrapping #{cat_name} products"
-        scrape_others_cat_products(cat_id, cat_url)
+
+        if !scrape_cat_name.nil?
+          if cat_name == scrape_cat_name
+            scrape_others_cat_products(cat_id, cat_url)
+
+            @current_file.flush unless @current_file.nil?
+            @ppd_current_file.flush unless @ppd_current_file.nil?
+
+            import_crawled_products_to_db(@start_date, cat_name, @current_batch)
+            import_product_price_details_to_db(@start_date, cat_name, @ppd_current_batch)
+
+            break
+          end
+        else
+          scrape_others_cat_products(cat_id, cat_url)
+
+          @current_file.flush unless @current_file.nil?
+          @ppd_current_file.flush unless @ppd_current_file.nil?
+
+          import_crawled_products_to_db(@start_date, cat_name, @current_batch)
+          import_product_price_details_to_db(@start_date, cat_name, @ppd_current_batch)
+
+          @current_batch = 0
+          @ppd_current_batch = 0
+        end
       end
 
       # Scrape products for home essentials
-      scrape_other_home_products()
-
-      @current_file.flush unless @current_file.nil?
-      @ppd_current_file.flush unless @ppd_current_file.nil?
+      if scrape_cat_name.nil?
+        scrape_other_home_products()
+      end
 
       if update_db
-        import_crawled_products_to_db(@start_date, @current_batch)
-        import_product_price_details_to_db(@start_date, @ppd_current_batch)
-
         update_products_after_import()
         update_product_price_details_after_import()
       end
@@ -1457,7 +1480,7 @@ class Scrapper
       if @number_of_products % BATCH_SIZE == 0
         @current_file.flush unless @current_file.nil?
 
-        @current_file = CSV.open("./tmp/#{@start_date}/products_batch_#{@current_batch}.csv", "wb")
+        @current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_products_batch_#{@current_batch}.csv", "wb")
         @current_batch += 1
       end
 
@@ -1471,7 +1494,7 @@ class Scrapper
     end
   end
 
-  def import_crawled_products_to_db(start_date, number_of_batches=0)
+  def import_crawled_products_to_db(start_date, current_cat_name, number_of_batches=0)
     begin
       return if number_of_batches <= 0
 
@@ -1479,7 +1502,7 @@ class Scrapper
         puts "Begin to import batch #{i}"
         start = Time.now
 
-        products = CSV.read("./tmp/#{start_date}/products_batch_#{i}.csv", 
+        products = CSV.read("./tmp/#{start_date}/#{current_cat_name}_products_batch_#{i}.csv", 
                             external_encoding: "ISO8859-1",
                             internal_encoding: "utf-8")
         
@@ -1524,7 +1547,7 @@ class Scrapper
       if @ppd_number_of_products % BATCH_SIZE == 0
         @ppd_current_file.flush unless @ppd_current_file.nil?
 
-        @ppd_current_file = CSV.open("./tmp/#{@start_date}/product_price_details_batch_#{@ppd_current_batch}.csv", "wb")
+        @ppd_current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_product_price_details_batch_#{@ppd_current_batch}.csv", "wb")
         @ppd_current_batch += 1
       end
 
@@ -1538,7 +1561,7 @@ class Scrapper
     end
   end
 
-  def import_product_price_details_to_db(start_date, number_of_batches=0)
+  def import_product_price_details_to_db(start_date, current_cat_name, number_of_batches=0)
     begin
       return if number_of_batches <= 0
 
@@ -1546,7 +1569,7 @@ class Scrapper
         puts "Begin to import product price details batch #{i}"
         start = Time.now
 
-        ppds = CSV.read("./tmp/#{start_date}/product_price_details_batch_#{i}.csv")
+        ppds = CSV.read("./tmp/#{start_date}/#{current_cat_name}_product_price_details_batch_#{i}.csv")
         
         ProductPriceDetail.transaction do
           columns = ProductPriceDetail.attribute_names
