@@ -49,7 +49,21 @@
                 %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
             / .product-img-wrapper ends
             .product-details-info.right-content-side
-              -if i.product_details.present?
+              -if i.product_details.count > 5
+                .horizal{class: "car_#{i.id}"}
+                  .auto-center
+                    %button.prev
+                      %i.fa.fa-angle-left{"aria-hidden" => "true"}
+                    .pull-left
+                      .carousel{"data-target" =>".car_#{i.id}"}
+                        %ul.coloring-ul
+                          -i.product_details.each_with_index do |detail,index|
+                            %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
+                              %a{:href => "javascript:;"}
+                                %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                  %button.next
+                    %i.fa.fa-angle-right{"aria-hidden" => "true"}
+              -else
                 %ul.coloring-ul
                   -i.product_details.each_with_index do |detail,index|
                     %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
