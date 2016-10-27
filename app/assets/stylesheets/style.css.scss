@@ -1387,7 +1387,7 @@ ul{
 .product-pagination{}
 
 .product-img-wrapper {
-  border-bottom: 1px solid #000;
+  
   margin-bottom: 1rem;
   position: relative;
 }
@@ -1412,6 +1412,7 @@ ul{
 }
 .product-img-wrapper img {
   margin: 0 auto;
+  border-bottom: 1px solid #000;
   /*width: 25.8rem;*/
   /*height: 34.3rem;*/
 }

@@ -18,7 +18,8 @@ class Category < ActiveRecord::Base
   	total_name = cat_name
   	if parent.present?
   		[
-      	[parent.cat_name, :cat_name]
+      	[parent.cat_name, :cat_name],
+        [parent.cat_name, :cat_name,:id]
     	]
   	else
       [

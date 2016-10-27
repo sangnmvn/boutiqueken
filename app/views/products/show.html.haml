@@ -209,15 +209,22 @@
               .recent-view-single-item
                 %img.img-responsive{:alt => product.short_desc, :src => show_image_cus_love(product.main_image_url)}/
                 %p=product.short_desc
-                %span.reg-price
-                  %strong
-                    Reg. $
-                    =show_price_digit(product.regular_price)
-                %span.sale-price
-                  %strong 
-                    Ssle. $
-                    =show_price_digit(product.sale_price)
-        
+                -if product.regular_price.present?
+                  %span.reg-price
+                    %strong
+                      Reg. $
+                      =show_price_digit(product.regular_price)
+                -if product.sale_price.present?
+                  %span.sale-price
+                    %strong 
+                      Ssle. $
+                      =show_price_digit(product.sale_price)
+
+                -elsif product.list_price_range.present?
+                  %span.sale-price
+                    %strong
+                      Ssle. $
+                      =product.list_price_range.join(" - ")
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
     .recent-view.custom-recent-view.hide

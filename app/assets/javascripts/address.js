@@ -168,10 +168,7 @@ var ViewProduct ={
         title = $("<p></p>").html(value.name).appendTo(div_single);
         if(regular_price !=""){
           reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
-        }else{
-          $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
         }
-
         if(sale_price !=""){
           sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);
         }
