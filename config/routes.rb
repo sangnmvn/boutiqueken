@@ -27,14 +27,14 @@ Rails.application.routes.draw do
     resources :addresses
   end
 
-  resources :products do 
+  resources :products,path: 'pro' do 
     collection do
       get 'search'
     end
   end
 
-  resources :categories do
-    resources :products, only: [:show]
+  resources :categories, path: 'cat' do
+    resources :products, path: 'pro', only: [:show]
   end
   #     member do
   #       get 'short'
