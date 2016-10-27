@@ -829,7 +829,7 @@ class Scrapper
     end
   end
 
-  def scrape_products(number_of_threads=10)
+  def scrape_products(update_db=true, number_of_threads=10)
     begin
 
       @number_of_threads = number_of_threads
@@ -862,12 +862,13 @@ class Scrapper
       @current_file.flush unless @current_file.nil?
       @ppd_current_file.flush unless @ppd_current_file.nil?
 
-      import_crawled_products_to_db(@start_date, @current_batch)
-      update_products_after_import()
+      if update_db
+        import_crawled_products_to_db(@start_date, @current_batch)
+        update_products_after_import()
 
-      import_product_price_details_to_db(@start_date, @ppd_current_batch)
-      update_product_price_details_after_import()
-
+        import_product_price_details_to_db(@start_date, @ppd_current_batch)
+        update_product_price_details_after_import()
+      end
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
