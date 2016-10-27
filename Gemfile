@@ -56,3 +56,4 @@ gem 'sunspot_rails'
 gem 'sunspot_solr' 
 
 gem 'activerecord-import'
+gem 'friendly_id'

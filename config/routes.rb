@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   #   resources :products
 
   # Example resource route with options:
+
+
   resources :users do
     member do
       get 'profile'
@@ -31,7 +33,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :categories 
+  resources :categories do
+    resources :products, only: [:show]
+  end
   #     member do
   #       get 'short'
   #       post 'toggle'

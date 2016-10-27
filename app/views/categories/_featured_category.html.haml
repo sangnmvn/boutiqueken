@@ -22,10 +22,17 @@
       .featured-items
         -@feature_categories.each do |i|
           .featured-single-item
-            %a{:href => category_path(i.category_id)}
-              %img.img-responsive{:alt => "", :src => i.image_url}/
-            %a{:href => category_path(category_id)}
-              %p=i.try(:cat_name)
+            -cat = Category.find(i.id) rescue nil
+            -if cat.present?
+              %a{:href => category_path(cat.friendly_id)}
+                %img.img-responsive{:alt => "", :src => i.image_url}/
+              %a{:href => category_path(cat.friendly_id)}
+                %p=i.try(:cat_name)
+            -else
+              %a{:href => category_path(i.category_id)}
+                %img.img-responsive{:alt => "", :src => i.image_url}/
+              %a{:href => category_path(i.category_id)}
+                %p=i.try(:cat_name)
       / featured item ends
     / featured-items ends
   / featured-categories-div starts
