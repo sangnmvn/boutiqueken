@@ -94,7 +94,7 @@ var ProductList = {
       method: "GET",
       url: category_path,
       data: {size_selected: size_selected,color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
-      }).done(function(data) {
+        }).done(function(data) {
       
       });
   },
@@ -136,6 +136,7 @@ var ViewProduct ={
     product["name"] =  product_info.short_desc;
     product["regular_price"] = product_info.regular_price;
     product["sale_price"] = product_info.sale_price;
+    product["price_range"] = product_info.list_price_range;
     list_views = jQuery.grep(list_views, function(obj) {
       console.log(obj.product_id);
       console.log(product.id);
@@ -159,13 +160,30 @@ var ViewProduct ={
       jQuery.each(list_views,function(index,value){
         regular_price = ViewProduct.show_price(value.regular_price);
         sale_price = ViewProduct.show_price(value.sale_price);
+        price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
         link_a = $("<a></a>").attr("href","/products/" + value.product_id);
         div_single = $("<div></div>").addClass("recent-view-single-item");
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
-        reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
-        sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);
+        if(regular_price !=""){
+          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
+        }else{
+          $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
+        }
+
+        if(sale_price !=""){
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);
+        }
+        else if(price_range !=""){
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
+        }
+        else{
+          $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
+        }
+
+        
+
 
         div_single.appendTo(link_a);
         link_a.appendTo(li);
@@ -186,7 +204,7 @@ var ViewProduct ={
     if(price == null){
       return "";
     }else{
-      return price;
+      return Number(price).toFixed();
     }
   }
 }
@@ -247,6 +265,13 @@ var Product={
         vertical: true
     });
     },500)
+    
+
+    $(".btn-chose-item").click(function() {
+        $('html,body').animate({
+            scrollTop: $(".collection-list").offset().top},
+            'slow');
+    });
 
 
     $(".btn-show-sizechart").on("click",function(){

@@ -103,4 +103,33 @@ class Product < ActiveRecord::Base
     end
     return list_product
   end
+
+
+  def parse_size_chart_table
+    return "" if self.size_chart_table.blank?
+    JSON.parse(self.size_chart_table)
+  end
+
+  def list_price_range
+    return "" if self.price_range.blank?
+    JSON.parse(self.price_range)
+  end
+
+  def list_child_site_ids
+    return [] if self.child_site_product_ids.blank?
+    JSON.parse(self.child_site_product_ids)
+    
+  end
+
+  def list_related_product_ids
+    return [] if self.related_products.blank?
+    JSON.parse(self.related_products)
+    
+  end
+
+  def list_related_loved_products_ids
+    
+    return [] if self.related_loved_products.blank?
+    JSON.parse(self.related_loved_products)
+  end
 end

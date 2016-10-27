@@ -58,14 +58,16 @@
                   
                 %strong
                   %a{:href => product_path(i)}=i.short_desc
-                %span.reg-price
-                  %strong 
-                    Reg. $
-                    =i.regular_price
-                %span.sale-price
-                  %strong
-                    Ssle. $
-                    =i.sale_price
+                -if i.regular_price.present?
+                  %span.reg-price
+                    %strong 
+                      Reg. $
+                      =show_price_digit(i.regular_price)
+                -if i.sale_price.present?
+                  %span.sale-price
+                    %strong
+                      Ssle. $
+                      =show_price_digit(i.sale_price)
             / .single-product ends
           / .col-md-4 ends
           / SINGLE PRODUCT ends

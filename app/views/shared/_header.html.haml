@@ -64,8 +64,9 @@
     / MEDIUM SCREEN SEARCH BOX AREA STARTS
     .search-wrapper.search-wrapper-medium-screen
       %p.pull-left.free-offer.free-offer-desktop.hidden-xs
-        Enjoy Free Express Shipping on orders $100+
-        %a{:href => "#"} Details
+        &nbsp;
+        / Enjoy Free Express Shipping on orders $100+
+        / %a{:href => "#"} Details
       %form.pull-right.search-box{:action => search_products_path()}
         %input{:type => "text",:placeholder=>"What can we can help you find?"}/
         %button{:type => "submit"}
@@ -78,8 +79,9 @@
     / BIG SCREEN SEARCH BOX AREA STARTS
     .search-wrapper.search-wrapper-big-screen
       %p.pull-left.free-offer.free-offer-desktop
-        Enjoy Free Express Shipping on orders $100+
-        %a{:href => "#"} Details
+        &nbsp;
+        / Enjoy Free Express Shipping on orders $100+
+        / %a{:href => "#"} Details
       / %form.pull-right.search-box{:action => search_products_path()}
       /   %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}"}/
       /   %button{:type => "submit"}
