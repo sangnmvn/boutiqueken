@@ -33,9 +33,15 @@ class Product < ActiveRecord::Base
       sizes.to_s.split(",")
     end
 
+    dynamic_string :filters, :multiple => true do
+      product_atts_key_pairs.inject({}) do |hash, e|
+        hash.merge(e[0].to_sym => e[1])
+      end
+    end
+  end
 
-
-
+  def product_atts_key_pairs
+    JSON.parse(product_atts).to_a
   end
 
   def list_sizes

@@ -12,8 +12,12 @@ seo_title text,
 seo_keywords text,
 seo_desc text,
 filters text, -- store json string
+slug text,
 CONSTRAINT categories_pkey primary key (id)
 );
+
+alter table categories
+add column slug text;
 
 drop table if exists left_navs;
 create table left_navs
@@ -47,13 +51,13 @@ regular_price real,
 was_price real,
 sale_price real,
 
-price_range real[],
+price_range text, -- array to json
 
 stock_status boolean,
 brand_name text,
 sizes text, -- store json string
-related_products int[],
-related_loved_products int[],
+related_products text, -- array to json
+related_loved_products text, -- array to json
 size_chart_id int,
 size_chart_table text, -- json
 checksum text, -- is used to detect modified product details
@@ -75,7 +79,7 @@ swatch_color_list text, -- json, color and color image mapping
 
 product_atts text, -- store json string
 is_collection boolean default false,
-child_site_product_ids int[],
+child_site_product_ids text, -- array to json
 video_id text,
 pos int,
 url text,
@@ -84,7 +88,8 @@ CONSTRAINT products_pkey primary key (id));
 alter table products
 add column cust_rating text,
 add column macys_sale_price real,
-add column 
+add column free_ship_message text,
+add column slug text;
 
 drop table if exists product_price_details;
 create table product_price_details
@@ -96,6 +101,9 @@ color_name text,
 color_image text,  
 product_image text,  
 CONSTRAINT product_price_details_pkey primary key (id));
+
+alter table product_price_details
+add column site_product_id int;
 
 drop table if exists featured_categories;
 create table featured_categories
@@ -149,55 +157,38 @@ on product_price_details(product_id, color_name);
 create index filters_category_id_group_name_idx
 on filters(category_id, group_name);
 
-
-select sale_price, macys_sale_price, cust_rating from products limit 1
-
-truncate categories
-
-select * from categories
-where is_shown_in_menu and parent_id = 65
-
-select * from categories
-where parent_id = 1327
-order by pos;
-
-
+truncate categories;
+truncate left_navs;
+truncate filters;
+truncate featured_categories;
 
 truncate products;
 truncate product_price_details;
 
-truncate left_navs;
-truncate featured_categories;
-
-truncate filters
-
-select * from featured_categories
-
-
-rails runner Scrapper.new.scrape_left_nav
-rails runner Scrapper.new.scrape_filters
-
 select * from categories
-where site_cat_id = 29891
+where cat_name ilike '%Bras%'
 
+select * from filters
+where id = 1440
+select count(1) from products
 
-select * from left_navs
-where site_cat_id = 63574
+update product_price_details p
+set product_id = c.id
+from products c
+where c.site_product_id = p.site_product_id;
+
+select * from product_price_details
+where product_id is null
 
 select * from products
-where site_product_id = 2967275
+where site_product_id = 2461400
 
-select * from categories
-where site_cat_id = 31460
-
-select id, size_chart_id, site_product_id, size_chart_table from products
-where size_chart_table != '' and site_product_id = 2757441
-limit 100
 
 select count(1) from products
 
-"
-{
-"sizeChartMedia":{"brandName":"Style & Co","categoryName":"Dresses","tabs":["DRESSES- Style & CO"],"bazaarVoice":true,"intimates":false,"footer":"All measurements are approximate.","sizeChartData":[{"sizeChartTitle":"<p><strong>size chart</strong></p>", (...)"
+select id from categories where site_cat_id = 225
 
+select * from left_navs
+where cat_name = 'Bras'
 
+        

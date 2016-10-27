@@ -45,9 +45,6 @@ class Scrapper
   def initialize
     @root_url = 'https://www.macys.com'
 
-    #TODO: 
-    #+ root url and proxy should be loaded from configuration
-    #+ change country before scrapping
     @agent = Mechanize.new
 
     set_cookies(@agent)
@@ -68,12 +65,10 @@ class Scrapper
     FileUtils.mkdir_p("./tmp/#{@start_date}")
   end
 
-  def import_full
+  def import_others
     scrape_menu
     scrape_left_nav
     scrape_filters
-    scrape_products
-
     scrape_seo_information
   end
 
@@ -83,6 +78,8 @@ class Scrapper
       start_time = Time.now
 
       page = @agent.get(@root_url)
+
+      set_cookies(@agent)
 
       menu = page.search("#globalMastheadCategoryMenu")
 
@@ -110,6 +107,7 @@ class Scrapper
         pos += 1
 
         puts "Scrapping sub-menu for #{cat_name}"
+
         scrape_sub_menu(cat, page)
       end
 
@@ -146,19 +144,22 @@ class Scrapper
 
               unless leaf_cat.attributes["id"].nil?
                 site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
+                site_cat_id = leaf_cat.attributes["id"].text.split("?id=").last.to_i if site_cat_id == 0
               
                 # remove clearance links
                 if cat_el.attributes["class"].nil?
                   cat_name = cat_el.text
 
-                  puts "  - #{cat_name} - site_cat_id #{site_cat_id}"
+                  puts "  - #{cat_name} - site_cat_id #{site_cat_id} - parent_id #{parent_cat.id}"
+
                   unless cat_name.blank?
-                    cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: parent_cat.id)
+                    cat = Category.find_or_create_by(site_cat_id: site_cat_id, cat_name: cat_name, parent_id: parent_cat.id, is_shown_in_menu: true)
                     cat.cat_name = replace_macys_info(cat_name)
                     cat.group_name = replace_macys_info(group_cat_name)
                     cat.site_cat_id = site_cat_id
                     cat.parent_id = parent_cat.id
                     cat.pos = pos
+                    cat.is_shown_in_menu = true
                     cat.save
 
                     pos += 1
@@ -322,7 +323,7 @@ class Scrapper
         group_cat.search("a").each do |cat|
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
           cat_name = replace_macys_info(cat.text)
-          
+
           if site_cat_id.to_i == 0
             #puts "scrape_left_nav_others - #{site_cat_id}"
             #puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s} - skipped"
@@ -696,6 +697,18 @@ class Scrapper
 
       if facets.empty?
         puts "Cannot find filters in this page #{url}"
+        puts "-> Scrape category list"
+
+        cat = Category.where(site_cat_id: site_cat_id).first
+
+        unless url.start_with?("http")
+          full_url = "#{@root_url}#{url}"
+        else
+          full_url = url
+        end
+
+        scrape_left_nav_details(cat, full_url)
+
         return
       end
 
@@ -717,6 +730,7 @@ class Scrapper
 
           box_type = replace_macys_info(box.attributes["aria-label"].text)
           ui_type = box.attributes["data-uitype"].text
+          filter_product_field_name = box.attributes["id"].text
 
           puts "+ #{box_type}"
 
@@ -741,6 +755,7 @@ class Scrapper
                 filter.group_pos = group_pos
                 filter.sub_group_name = sub_box_type
                 filter.sub_group_pos = sub_group_pos
+                filter.filter_product_field_name = filter_product_field_name
                 filter_values = []
 
                 sub_box.search("a").each do |item|
@@ -765,6 +780,7 @@ class Scrapper
             filter.group_pos = group_pos
             filter.sub_group_name = sub_box_type
             filter.sub_group_pos = 0
+            filter.filter_product_field_name = filter_product_field_name
             filter_values = []
 
             puts " - #{sub_box_type}"
@@ -786,6 +802,8 @@ class Scrapper
             filter.group_pos = group_pos
             filter.sub_group_name = sub_box_type
             filter.sub_group_pos = 1
+            filter.filter_product_field_name = filter_product_field_name
+
             filter_values = []
 
             puts " - #{sub_box_type}"
@@ -803,6 +821,7 @@ class Scrapper
             filter.filter_ui_type = ui_type
             filter.group_name = box_type
             filter.group_pos = group_pos
+            filter.filter_product_field_name = filter_product_field_name
 
             filter_values = []
 
@@ -849,24 +868,20 @@ class Scrapper
         cat_url = @root_url + anchor.attributes["href"].value
 
         puts "Scrapping #{cat_name} products"
-        start = Time.now
-
-        if cat_name == "WOMEN"
-          scrape_others_cat_products(cat_id, cat_url)
-        end
+        scrape_others_cat_products(cat_id, cat_url)
       end
 
       # Scrape products for home essentials
-      #scrape_other_home_products()
+      scrape_other_home_products()
 
       @current_file.flush unless @current_file.nil?
       @ppd_current_file.flush unless @ppd_current_file.nil?
 
       if update_db
         import_crawled_products_to_db(@start_date, @current_batch)
-        update_products_after_import()
-
         import_product_price_details_to_db(@start_date, @ppd_current_batch)
+
+        update_products_after_import()
         update_product_price_details_after_import()
       end
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
@@ -1105,8 +1120,6 @@ class Scrapper
       shipping_return = product_thumbnail["freeShipMessage"].to_json
       free_ship_message = product_thumbnail["shippingReturnNotes"]
 
-      #cat = Category.where(site_cat_id: site_category_id).first
-
       product = Product.new()
       
       product.site_product_id = site_product_id
@@ -1116,7 +1129,6 @@ class Scrapper
       product.main_image_url = main_image_url
       product.additional_images = additional_images
       product.site_cat_id = site_category_id
-      #product.category_id = cat.id unless cat.nil?
       product.video_id = video_id
       product.colorway_primary_images = colorway_primary_images
       product.colorway_additional_images = colorway_additional_images
@@ -1188,7 +1200,6 @@ class Scrapper
       shipping_return = product_thumbnail["freeShipMessage"].to_json
       free_ship_message = product_thumbnail["shippingReturnNotes"]
 
-
       size_chart_canvas_id = product_thumbnail["sizeChartCanvasId"]
 
       size_chart_json = ""
@@ -1239,7 +1250,6 @@ class Scrapper
         puts "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
       end    
 
-      #cat = Category.where(site_cat_id: site_category_id).first
       product = Product.new()
 
       product.site_product_id = site_product_id
@@ -1247,7 +1257,6 @@ class Scrapper
       product.long_desc = long_desc
       product.bullet_text = bullet_text
       product.site_cat_id = site_category_id
-      #product.category_id = cat.id unless cat.nil?
       product.video_id = video_id
       product.main_image_url = main_image_url
       product.additional_images = additional_images
@@ -1470,7 +1479,9 @@ class Scrapper
         puts "Begin to import batch #{i}"
         start = Time.now
 
-        products = CSV.read("./tmp/#{start_date}/products_batch_#{i}.csv")
+        products = CSV.read("./tmp/#{start_date}/products_batch_#{i}.csv", 
+                            external_encoding: "ISO8859-1",
+                            internal_encoding: "utf-8")
         
         Product.transaction do
           columns = Product.attribute_names
