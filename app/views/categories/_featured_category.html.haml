@@ -22,7 +22,7 @@
       .featured-items
         -@feature_categories.each do |i|
           .featured-single-item
-            -cat = Category.find(i.id) rescue nil
+            -cat = Category.find(i.category_id) rescue nil
             -if cat.present?
               %a{:href => category_path(cat.friendly_id)}
                 %img.img-responsive{:alt => "", :src => i.image_url}/
