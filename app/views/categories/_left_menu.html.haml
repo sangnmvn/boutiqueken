@@ -12,6 +12,7 @@
       %ul.ul-product-cat
         -main_subs[key].each do |i|
           -puts "----#{i.id}"
+          -cat = Category.find(i.category_id)
           %li
-            %a{:href => category_path(i.category_id)}=i.cat_name
+            %a{:href => category_path(cat.friendly_id)}=i.cat_name
       

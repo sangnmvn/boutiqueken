@@ -2,17 +2,16 @@ class Product < ActiveRecord::Base
   has_many :product_details,class_name: "ProductPriceDetail"
   
   extend FriendlyId
-  friendly_id :slug_candidates, use: :slugged
+  friendly_id :slug_candidates, use: [:slugged, :finders]
 
   def slug_candidates
     [
-      [:id,:short_desc]
+      [:short_desc]
     ]
   end
   
   def should_generate_new_friendly_id?
     new_record? || slug.blank?
-    #true
   end
   searchable do
     text :short_desc, :default_boost => 2

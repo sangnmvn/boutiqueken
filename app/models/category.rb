@@ -7,7 +7,7 @@ class Category < ActiveRecord::Base
   has_many :feature_categories
   
   extend FriendlyId
-  friendly_id :slug_candidates, use: :slugged
+  friendly_id :slug_candidates, use: [:slugged, :finders]
 
 
   def self.main_menus
@@ -15,13 +15,22 @@ class Category < ActiveRecord::Base
   end
 
   def slug_candidates
-    [
-      [:id,:cat_name]
-    ]
+  	total_name = cat_name
+  	if parent.present?
+  		[
+      	[parent.cat_name, :cat_name]
+    	]
+  	else
+      [
+        [:cat_name]
+      ]
+  	end
+    
   end
 
   def should_generate_new_friendly_id?
     new_record? || slug.blank?
-    #true
   end
+
+  
 end
