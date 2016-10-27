@@ -226,7 +226,7 @@ $.fn.jCarouselLite = function(o) {
 
         var running = false, animCss=o.vertical?"top":"left", sizeCss=o.vertical?"height":"width";
         var div = $(this), ul = $("ul", div), tLi = $("li", ul), tl = tLi.size(), v = o.visible;
-
+        o.start = 0;
         if(o.circular) {
             ul.prepend(tLi.slice(tl-v-1+1).clone())
               .append(tLi.slice(0,v).clone());
@@ -244,7 +244,7 @@ $.fn.jCarouselLite = function(o) {
         var ulSize = liSize * itemLength;                   // size of full ul(total length, not just for the visible items)
         var divSize = liSize * v;                           // size of entire div(total length for just the visible items)
 
-        li.css({width: li.width(), height: li.height()});
+        li.css({width: li.width(), height: li.outerHeight() + 10});
         ul.css(sizeCss, ulSize+"px").css(animCss, -(curr*liSize));
 
         div.css(sizeCss, divSize+"px");                     // Width of the DIV. length of visible images
@@ -335,7 +335,7 @@ function width(el) {
     return  el[0].offsetWidth + css(el, 'marginLeft') + css(el, 'marginRight');
 };
 function height(el) {
-    return el[0].offsetHeight + css(el, 'marginTop') + css(el, 'marginBottom');
+    return el[0].offsetHeight + css(el, 'marginTop') + css(el, 'marginBottom') + 10;
 };
 
 })(jQuery);

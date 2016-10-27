@@ -440,6 +440,7 @@
                         tH = 0;
                         tP = ((tHT) * 100) / elSize;
                     }
+                    tH +=20;
                     ob.css({
                         'height': tH + 'px',
                         'padding-bottom': tP + '%'

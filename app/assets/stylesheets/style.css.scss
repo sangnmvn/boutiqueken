@@ -2851,6 +2851,7 @@ input[type=number]::-webkit-outer-spin-button {
 .coloring-ul img {
   height: 3.2rem;
   width: 3.2rem;
+  border: 1px solid gray;
 }
 .coloring > span {
   color: gray;
@@ -3431,7 +3432,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .custom-recent-view{
   .recent-view-single-item{
-    max-height: 380px;
+    max-height: 390px;
     max-width: 159px;
     margin: 0 auto;
     img{
@@ -3616,4 +3617,31 @@ input[type=number]::-webkit-outer-spin-button {
   list-style-type: disc;
   padding-left: 27px;
   padding-top: 10px;
+}
+
+.padding-top-20{
+  
+}
+.product-list{
+  .horizal{
+    width: 100%;
+    margin: 0 auto;
+    .auto-center{
+      margin: 0 auto;
+      padding-left: 20px;
+    }
+    .next,.prev{
+      background: transparent none repeat scroll 0 0;
+      border: medium none;
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .next{
+      float: left;
+    }
+    .prev{
+      float: left;
+    }
+
+  }
 }
