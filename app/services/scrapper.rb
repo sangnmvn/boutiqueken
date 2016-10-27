@@ -2,6 +2,7 @@ require "socksify"
 require "socksify/http"
 
 require "json"
+require "csv"
 
 # Mechanize: call @agent.set_socks(addr, port) before using
 # any of it's methods;
@@ -30,6 +31,7 @@ class Scrapper
 
   SITE_NAME = "Boutiqueken"
   MAX_THREAD = 15
+  BATCH_SIZE = 50000
 
   HOME_SPECIAL_CATES = {
     "Dining & Entertaining": "http://www1.macys.com/catalog/index.ognc?CategoryID=7498&cm_sp=us_hdr-_-home-_-7498_dining-%26-entertaining_COL1",
@@ -51,6 +53,19 @@ class Scrapper
     set_cookies(@agent)
 
     @number_of_threads = 10
+
+    @mutex = Mutex.new
+    @current_batch = 0
+    @number_of_products = 0
+    @current_file = nil
+
+    @ppd_mutex = Mutex.new
+    @ppd_current_batch = 0
+    @ppd_number_of_products = 0
+    @ppd_current_file = nil
+
+    @start_date = Time.now.strftime("%Y%m%d")
+    FileUtils.mkdir_p("./tmp/#{@start_date}")
   end
 
   def import_full
@@ -844,6 +859,15 @@ class Scrapper
       # Scrape products for home essentials
       #scrape_other_home_products()
 
+      @current_file.flush unless @current_file.nil?
+      @ppd_current_file.flush unless @ppd_current_file.nil?
+
+      import_crawled_products_to_db(@start_date, @current_batch)
+      update_products_after_import()
+
+      import_product_price_details_to_db(@start_date, @ppd_current_batch)
+      update_product_price_details_after_import()
+
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
@@ -1059,7 +1083,7 @@ class Scrapper
       short_desc = product_thumbnail["productDescription"]
       long_desc = product_thumbnail["longDescription"]
       bullet_text = product_thumbnail["bulletText"].to_json
-      child_site_product_ids = product_thumbnail["childProductIds"]
+      child_site_product_ids = product_thumbnail["childProductIds"].to_json
       site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
       product_atts = product_thumbnail["attributes"].to_json
@@ -1072,7 +1096,7 @@ class Scrapper
       swatch_color_list = product_thumbnail["swatchColorList"].to_json
 
       brand_name = product_thumbnail["brand"]
-      price_range = product_thumbnail["price"]
+      price_range = product_thumbnail["price"].to_json
       cust_rating = product_thumbnail["custRatings"]
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
@@ -1080,9 +1104,9 @@ class Scrapper
       shipping_return = product_thumbnail["freeShipMessage"].to_json
       free_ship_message = product_thumbnail["shippingReturnNotes"]
 
-      cat = Category.where(site_cat_id: site_category_id).first
+      #cat = Category.where(site_cat_id: site_category_id).first
 
-      product = Product.find_or_create_by(site_product_id: site_product_id)
+      product = Product.new()
       
       product.site_product_id = site_product_id
       product.short_desc = short_desc
@@ -1091,7 +1115,7 @@ class Scrapper
       product.main_image_url = main_image_url
       product.additional_images = additional_images
       product.site_cat_id = site_category_id
-      product.category_id = cat.id unless cat.nil?
+      #product.category_id = cat.id unless cat.nil?
       product.video_id = video_id
       product.colorway_primary_images = colorway_primary_images
       product.colorway_additional_images = colorway_additional_images
@@ -1109,7 +1133,8 @@ class Scrapper
       product.cust_rating = cust_rating
       product.shipping_return = shipping_return
       product.free_ship_message = free_ship_message
-      product.save
+      
+      add_product_to_file(product)
 
       update_product_price_details(product)
     rescue Exception => e
@@ -1205,23 +1230,23 @@ class Scrapper
 
       if recommendations["status"] == "SUCCESS"
         related_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_A"]["recommendationVBList"]
-        related_product_ids = related_products.collect{|product| product["recommendedItemId"]}
+        related_product_ids = related_products.collect{|product| product["recommendedItemId"]}.to_json
 
         related_loved_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_B"]["recommendationVBList"]
-        related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}
+        related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}.to_json
       else
         puts "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
-      end
+      end    
 
-      cat = Category.where(site_cat_id: site_category_id).first
-      product = Product.find_or_create_by(site_product_id: site_product_id)
+      #cat = Category.where(site_cat_id: site_category_id).first
+      product = Product.new()
 
       product.site_product_id = site_product_id
       product.short_desc = short_desc
       product.long_desc = long_desc
       product.bullet_text = bullet_text
       product.site_cat_id = site_category_id
-      product.category_id = cat.id unless cat.nil?
+      #product.category_id = cat.id unless cat.nil?
       product.video_id = video_id
       product.main_image_url = main_image_url
       product.additional_images = additional_images
@@ -1249,7 +1274,8 @@ class Scrapper
       product.cust_rating = cust_rating
       product.shipping_return = shipping_return
       product.free_ship_message = free_ship_message
-      product.save
+
+      add_product_to_file(product)
 
       update_product_price_details(product)
 
@@ -1260,6 +1286,7 @@ class Scrapper
   end
 
   def update_product_price_details(product)
+
     product_img_map = {}
     color_img_map = {}
 
@@ -1283,23 +1310,25 @@ class Scrapper
         price = price_with_sign.gsub(/\$/,'')
 
         colors.each do |color_name, nothing|
-          ppd = ProductPriceDetail.find_or_create_by(product_id: product.id, price: price, color_name: color_name)
-          ppd.product_id = product.id
+          ppd = ProductPriceDetail.new
+          ppd.site_product_id = product.site_product_id
           ppd.price = price
           ppd.color_name = color_name
           ppd.color_image = color_img_map[color_name]
           ppd.product_image = product_img_map[color_name]
-          ppd.save
+          
+          add_product_price_details_to_file(ppd)
         end
       end
     else
       color_img_map.each do |color_name, color_img|
-        ppd = ProductPriceDetail.find_or_create_by(product_id: product.id, price: nil, color_name: color_name)
-        ppd.product_id = product.id
+        ppd = ProductPriceDetail.new
+        ppd.site_product_id = product.site_product_id
         ppd.color_name = color_name
         ppd.color_image = color_img
         ppd.product_image = product_img_map[color_name]
-        ppd.save
+        
+        add_product_price_details_to_file(ppd)
       end
     end
   end
@@ -1409,5 +1438,135 @@ class Scrapper
     end
 
     return sale_price
+  end
+
+  def add_product_to_file(product)
+    begin
+      @mutex.lock
+
+      if @number_of_products % BATCH_SIZE == 0
+        @current_file.flush unless @current_file.nil?
+
+        @current_file = CSV.open("./tmp/#{@start_date}/products_batch_#{@current_batch}.csv", "wb")
+        @current_batch += 1
+      end
+
+      @current_file << product.attributes.values unless product.nil?
+      @number_of_products += 1
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    ensure
+      @mutex.unlock
+    end
+  end
+
+  def import_crawled_products_to_db(start_date, number_of_batches=0)
+    begin
+      return if number_of_batches <= 0
+
+      for i in 0...number_of_batches
+        puts "Begin to import batch #{i}"
+        start = Time.now
+
+        products = CSV.read("./tmp/#{start_date}/products_batch_#{i}.csv")
+        
+        Product.transaction do
+          columns = Product.attribute_names
+          Product.import columns, products, validate: false
+        end
+
+        puts "Finished importing batch #{i} in #{Time.now - start}\n"
+      end
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    end
+  end
+
+  def update_products_after_import
+    begin
+      puts "Begin to update products"
+      start = Time.now
+
+      sql =<<-SQL 
+        update products p
+        set category_id = c.id
+        from categories c
+        where c.site_cat_id = p.site_cat_id;
+      SQL
+
+      Product.connection.execute(sql)
+
+      puts "Finished updating products in #{Time.now - start}"
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    end
+  end
+
+  def add_product_price_details_to_file(product_price_detail)
+    begin
+      @ppd_mutex.lock
+
+      if @ppd_number_of_products % BATCH_SIZE == 0
+        @ppd_current_file.flush unless @ppd_current_file.nil?
+
+        @ppd_current_file = CSV.open("./tmp/#{@start_date}/product_price_details_batch_#{@ppd_current_batch}.csv", "wb")
+        @ppd_current_batch += 1
+      end
+
+      @ppd_current_file << product_price_detail.attributes.values unless product_price_detail.nil?
+      @ppd_number_of_products += 1
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    ensure
+      @ppd_mutex.unlock
+    end
+  end
+
+  def import_product_price_details_to_db(start_date, number_of_batches=0)
+    begin
+      return if number_of_batches <= 0
+
+      for i in 0...number_of_batches
+        puts "Begin to import product price details batch #{i}"
+        start = Time.now
+
+        ppds = CSV.read("./tmp/#{start_date}/product_price_details_batch_#{i}.csv")
+        
+        ProductPriceDetail.transaction do
+          columns = ProductPriceDetail.attribute_names
+          ProductPriceDetail.import columns, ppds, validate: false
+        end
+
+        puts "Finished importing product price details batch #{i} in #{Time.now - start}\n"
+      end
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    end
+  end
+
+  def update_product_price_details_after_import
+    begin
+      puts "Begin to update product price details"
+      start = Time.now
+
+      sql =<<-SQL 
+        update product_price_details p
+        set product_id = c.id
+        from products c
+        where c.site_product_id = p.site_product_id;
+      SQL
+
+      ProductPriceDetail.connection.execute(sql)
+
+      puts "Finished updating product price details in #{Time.now - start}"
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    end
   end
 end
