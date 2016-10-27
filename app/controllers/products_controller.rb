@@ -7,12 +7,12 @@ class ProductsController < ApplicationController
   layout "devise"
 
   def show
-  	@product_related = Product.where(:site_product_id =>@product.related_products)
-    @product_loved = Product.where(:site_product_id =>@product.related_loved_products)
+  	@product_related = Product.where(:site_product_id =>@product.list_related_product_ids)
+    @product_loved = Product.where(:site_product_id =>@product.list_related_loved_products_ids)
 
     if @product.is_collection
 
-      @product_childrens = Product.where(:site_product_id =>@product.child_site_product_ids)
+      @product_childrens = Product.where(:site_product_id =>@product.list_child_site_ids)
     end
   end
 

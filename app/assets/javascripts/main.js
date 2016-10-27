@@ -139,8 +139,8 @@ $(document).ready(function(){
       $('.coloring').find('span').text(textColor);
     },
     mouseout : function(){
-      $('.coloring').find('span').text("");
-      }
+      // $('.coloring').find('span').text("");
+    }
   });
 
 //Product color

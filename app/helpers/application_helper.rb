@@ -129,4 +129,24 @@ module ApplicationHelper
     end 
       
   end
+
+
+
+  def show_price_digit(price)
+    number_with_precision(price, :precision => 2)
+  end
+
+
+  def determine_max_menu(menu_count)
+    if menu_count < 30
+      15
+    elsif menu_count < 50
+      20
+    elsif menu_count < 70
+      25
+    elsif menu_count > 70
+      30
+    end
+
+  end
 end
