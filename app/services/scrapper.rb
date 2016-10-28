@@ -913,7 +913,7 @@ class Scrapper
       end
 
       # Scrape products for home essentials
-      if scrape_cat_name.nil?
+      if scrape_cat_name.nil? || scrape_cat_name == "HOME"
         scrape_other_home_products()
       end
 
