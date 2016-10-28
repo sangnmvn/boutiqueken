@@ -1,0 +1,204 @@
+%body
+  %section.section-saks-bag
+    .container
+      .row
+        .col-sm-12.col-md-10
+          %header
+            %h1.pull-left Boutiqueken BAG
+            %ul.ul-saks-bag-top-list.pull-right
+              %li
+                %a{:href => "#"} 1.8777.551.7257
+              %li
+                %a{:href => "#"} Email
+              %li
+                %a{:href => "#"} Chat
+              %li
+                %a{:href => "#"} Shipping &amp; Returns
+          / DESKTOP TABLE MARKUP
+          .saks-bag-table
+            %table.table.table-bordered.hidden-xs
+              %thead
+                %tr
+                  %th{:scope => "row"} Items
+                  %th{:scope => "row"} Quantity
+                  %th{:scope => "row"} Status
+                  %th{:scope => "row"} Unit Price
+                  %th{:scope => "row"} Subtotal
+              %tbody
+                -@shopping_cart.shopping_cart_items.each do |i|
+                  %tr
+                    %td.saks-bag-item
+                      .saks-bag-item-img
+                        %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}/
+                      .product-details-info
+                        -product = i.product_price_detail.product
+                        %strong=product.short_desc
+                        / %p.pp-name Cropped Straight -leg Trousers
+                        / %p.pp-code 0448664000041200
+                        -if i.size.present?
+                          %p.pp-size
+                            %b Size:
+                            =i.size
+                        %p.pp-color
+                          %b Color:
+                          =i.product_price_detail.color_name
+                        / %p.pp-eligible
+                        /   %i.fa.fa-refresh{"aria-hidden" => "true"}
+                        /   Eligible
+                      / .product-details-info
+                    %td
+                      .saks-bag-item-qnt
+                        %span=i.quantity
+                      .saks-bag-item-qnt-text
+                        %p.pp-edit
+                          %i.fa.fa-pencil{"aria-hidden" => "true"}
+                          %a{:href => "#"} Edit
+                        %p.pp-remove
+                          %i.fa.fa-times{"aria-hidden" => "true"}
+                          %a{:href => "#"} Remove
+                      / .saks-bag-item-qnt-text
+                    %td In Stock
+                    %td=i.price
+                    %td=show_price_digit(i.price * i.quantity)
+            / DESKTOP TABLE MARKUP ENDS
+            / MOBILE TABLE MARKUP
+            %table.table.table-bordered.visible-xs
+              %tr
+                %th{:scope => "row"} Items
+                %td.saks-bag-item
+                  .saks-bag-item-img
+                    %img{:alt => "", :src => "img/products/p-18.jpg"}/
+                  .product-details-info
+                    %strong 3.1 Phillip  Lim
+                    %p.pp-name Cropped Straight -leg Trousers
+                    %p.pp-code 0448664000041200
+                    %p.pp-size
+                      %b Size:
+                      4
+                    %p.pp-color
+                      %b Color:
+                      Black
+                    %p.pp-eligible
+                      %i.fa.fa-refresh{"aria-hidden" => "true"}
+                      Eligible
+                  / .product-details-info
+              %tr
+                %th{:scope => "row"} Quantity
+                %td
+                  .saks-bag-item-qnt
+                    %span 1
+                  .saks-bag-item-qnt-text
+                    %p.pp-edit
+                      %i.fa.fa-pencil{"aria-hidden" => "true"}
+                      %a{:href => "#"} Edit
+                    %p.pp-later
+                      %i.fa.fa-heart{"aria-hidden" => "true"}
+                      %a{:href => "#"} Save For Later
+                    %p.pp-gift
+                      %i.fa.fa-gift{"aria-hidden" => "true"}
+                      %a{:href => "#"} Make This a Gift
+                    %p.pp-remove
+                      %i.fa.fa-times{"aria-hidden" => "true"}
+                      %a{:href => "#"} Remove
+                  / .saks-bag-item-qnt-text
+              %tr
+                %th{:scope => "row"} Status
+                %td In Stock
+              %tr
+                %th{:scope => "row"} Unit Price
+                %td $498.00
+              %tr
+                %th{:scope => "row"} Subtotal
+                %td $498.00
+            / MOBILE TABLE MARKUP ENDS
+          / saks-bag-checkout starts
+          .saks-bag-checkout
+            .row
+              .col-xs-12.col-sm-6
+                .saks-bag-shopping.saks-bag-promo
+                  .sign-in-col.sign-in-col-has-required
+                    %h4 Promo Code (s)
+                    .row
+                      .col-xs-12.col-sm-12
+                        %label{:for => "zip"}
+                          %i.fa.fa-question-circle{"aria-hidden" => "true"}
+                          Enter One Promo Code At A Time
+                      .info-form-group.col-sm-9
+                        .account-input-block
+                          %input#zip2{:type => "text"}/
+                        / .account-input-block ends
+                      / .info-form-group ends
+                      .info-form-group.col-sm-3
+                        %a{:href => "#"} Apply
+                      / .info-form-group ends
+              / col ends
+              .col-xs-12.col-sm-6
+                .saks-bag-shopping
+                  .sign-in-col.sign-in-col-has-required
+                    %h4 Estimated Shopping &amp; Handling
+                    .row
+                      .info-form-group.col-sm-3
+                        %label{:for => "zip3"} Zip Code
+                        %input#zip3{:type => "text"}/
+                      / .info-form-group ends
+                      .info-form-group.col-sm-9
+                        .account-input-block
+                          %label{:for => "zip"}
+                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
+                            Shipping Method
+                          .select
+                            %select#zip{:name => "zip"}
+                              %option{:selected => "selected", :value => ""} Please select state/province
+                              %option{:value => "0"} option 1
+                              %option{:value => "1"} option 2
+                              %option{:value => "2"} option 3
+                              %option{:value => "3"} option 4
+                            .select__arrow
+                          / .select ends
+                        / .account-input-block ends
+                      / .info-form-group ends
+                  / checkout-table starts
+                  %table.checkout-table
+                    %tr
+                      %td
+                        %b Item Total
+                      %td.text-right=@shopping_cart.total
+                    %tr
+                      %td
+                        %b Gift Wrap
+                      %td.text-right $0.00
+                    %tr
+                      %td
+                        %b Estimated Shopping &amp; Handling
+                      %td.text-right $0.00
+                    %tr
+                      %td
+                        %b Total Before Tax
+                      %td.text-right=@shopping_cart.total
+                    %tr.checkout-table-last
+                      %td
+                        %b Estimated Tax
+                      %td.text-right $0.00
+                    %tr.checkout-table-total
+                      %td
+                        %b Estimated Total
+                      %td.text-right
+                        %b=@shopping_cart.total
+                  / checkout-table ends
+                / .saks-bag-shopping
+              / col ends
+            / .row ends
+            .check-outing
+              .row
+                .col-xs-12.col-sm-8.col-md-9
+                  %p.check-out-info Availablity &amp; Pricing For Item Saks Bag Are Not Gurranted Untill Checkout Is Not Compleate
+                .col-xs-12.col-sm-4.col-md-3.text-right
+                  %button CHECKOUT
+                  %span.border
+              / .row ends
+            / .check-outing ends
+          / saks-bag-checkout ends
+        / .col-sm-10 ends
+      / .row ends
+    / .container ends
+  / SAKS BAG AREA ENDS

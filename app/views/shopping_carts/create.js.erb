@@ -1,0 +1,6 @@
+<%if @success == true %>
+	$.notify("Added to your bag","success");
+	$(".bag-count").html("<%= @shopping_cart.shopping_cart_items.count%>");
+<%else%>
+	$.notify("Please select product size","error");
+<%end%>

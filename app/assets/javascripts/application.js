@@ -30,3 +30,4 @@
 //= require lightslider
 //= require jquery.elevatezoom
 //= require search
+//= require notify.min

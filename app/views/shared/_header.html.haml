@@ -14,9 +14,9 @@
         %li
           %a{:href => "#"} 1.877.551.7257
         %li
-          %a{:href => "#"}
+          %a{:href => "#{shopping_carts_path}"}
             My Bag(
-            %span.bag-count> 0
+            %span.bag-count=@shopping_cart.shopping_cart_items.count
             )
         -if current_user.present?
           %li
@@ -58,8 +58,8 @@
           %i.fa.fa-search
     .clear-fix
     %p.pull-right.free-offer.free-offer-mobile.hidden-lg.hidden-md.hidden-sm
-      Enjoy Free Express Shipping on orders $100+
-      %a{:href => "#"} Details
+      / Enjoy Free Express Shipping on orders $100+
+      / %a{:href => "#"} Details
     / MOBILE OFFER TOP TEXT ENDS
     / MEDIUM SCREEN SEARCH BOX AREA STARTS
     .search-wrapper.search-wrapper-medium-screen

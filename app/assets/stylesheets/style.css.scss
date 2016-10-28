@@ -2946,6 +2946,10 @@ input[type=number]::-webkit-outer-spin-button {
   border: 2px solid black;
   background-clip: content-box;
 }
+.sizing-ul .active{
+  border: 2px solid black;
+  background-clip: content-box;
+}
 .sizing .pull-right {
   text-decoration: underline;
 }
@@ -3664,4 +3668,17 @@ input[type=number]::-webkit-outer-spin-button {
       left: 503px !important;
     }
   }
+}
+
+.a-to-bag {
+  background: #000 none repeat scroll 0 0;
+  border: 0.2rem solid #000;
+  color: #fff;
+  font-weight: 600;
+  margin-top: 5rem;
+  padding: 0.7rem;
+  text-align: center;
+  transition: all 0.3s ease 0s;
+  width: 100%;
+  display: block;
 }

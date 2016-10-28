@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
   before_filter :configure_permitted_parameters , if: :devise_controller?
   before_filter :get_main_menus
-
+  before_filter :extract_shopping_cart
   protected
 
   def layout_by_resource
@@ -33,6 +33,12 @@ class ApplicationController < ActionController::Base
 
   def get_main_menus
     @main_menus = Category.main_menus
+  end
+
+  def extract_shopping_cart
+    shopping_cart_id = session[:shopping_cart_id]
+    @shopping_cart = session[:shopping_cart_id] ? ShoppingCart.find(shopping_cart_id) : ShoppingCart.create
+    session[:shopping_cart_id] = @shopping_cart.id
   end
 
 end

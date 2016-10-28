@@ -12,11 +12,27 @@ var Address = {
 }
 
 $(function(){
+  var selected_detail_id = "";
   Address.init(".address-form");
   ProductList.init(".category-list");
   ViewProduct.init();
   ViewProduct.render();
   Product.init(".image-product-detail");
+
+  $(".a-to-bag").on("click",function(){
+    selected_detail_id = $(this).closest(".product-panel").find(".color-picking.active").attr("data-detail-id");
+    selected_size = $(this).closest(".product-panel").find(".size-picking.active").attr("data-value");
+
+    $.ajax({
+      method: "POST",
+      url: "/shopping_carts/",
+      data: {detail_id: selected_detail_id,size: selected_size},
+    }).done(function(data) {
+      
+    });
+  });
+
+
 });
 
 
@@ -142,7 +158,6 @@ var ViewProduct ={
     }
   },
   setview: function(product_info){
-    console.log(product_info);
     saved_cookies = Cookies.get("product-views");
     list_views = new Array();
     if(saved_cookies !=""){
@@ -158,11 +173,8 @@ var ViewProduct ={
     product["sale_price"] = product_info.sale_price;
     product["price_range"] = product_info.list_price_range;
     list_views = jQuery.grep(list_views, function(obj) {
-      console.log(obj.product_id);
-      console.log(product.id);
         return obj.product_id !== product_info.id;
     });
-    console.log(list_views);
     if(list_views.length<10){
       list_views.unshift(product);
     }else{
@@ -244,6 +256,15 @@ var Product={
 
   init_events: function(){
     var c_element;
+
+    
+
+    $(".size-picking").on("click",function(){
+      $('.size-picking.active').removeClass("active");
+
+      $(this).addClass("active");
+    });
+
     $(".color-picking").on("click",function(){
 
     //   data_image = $(this).attr("product-image");
@@ -269,7 +290,6 @@ var Product={
 
       color_name = $(this).attr("color-name");
       $(this).addClass("active");
-      console.log(color_name);
       $(".product-thumb-image").addClass("hide");
       $(".product-thumb-image active").removeClass("active");
       $(".product-thumb-image[color-name='" + color_name + "']").removeClass("hide").addClass("active");
@@ -292,9 +312,7 @@ var Product={
 
 
     $(".btn-show-sizechart").on("click",function(){
-      console.log("click");
       has_id = $(this).attr("size_id");
-      console.log(has_id);
       if(has_id){
         $(".modal-size-chart").find(".image-size-chart").attr("src",has_id);
         $(".modal-size-chart").find(".image-size-chart").removeClass("hide");
@@ -305,3 +323,5 @@ var Product={
 
   }
 }
+
+
