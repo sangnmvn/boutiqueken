@@ -77,7 +77,7 @@
 
                 .clear-fix
                 %strong
-                  %a{:href => category_product_path(@category,i.friendly_id)}=i.short_desc
+                  %a{:href => category_product_path(@category,f_id(i))}=i.short_desc
                 -if i.regular_price.present?
                   %span.reg-price
                     %strong 

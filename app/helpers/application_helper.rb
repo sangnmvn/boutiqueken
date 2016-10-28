@@ -149,4 +149,12 @@ module ApplicationHelper
     end
 
   end
+
+  def f_id(obj)
+    if obj.friendly_id?
+      obj.friendly_id
+    else
+      obj.id
+    end
+  end
 end

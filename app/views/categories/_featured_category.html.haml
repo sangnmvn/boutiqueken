@@ -7,7 +7,7 @@
         / popup single item
         -@top_sales_categories.each do |i|
           .popup-single-item
-            %a{:href => category_path(i)}
+            %a{:href => category_path(f_id(i))}
               %img{:alt => "product", :src => i.image_url}/
             %a{:href => category_path(i)}
               %p=i.category.cat_name
@@ -24,9 +24,9 @@
           .featured-single-item
             -cat = Category.find(i.category_id) rescue nil
             -if cat.present?
-              %a{:href => category_path(cat.friendly_id)}
+              %a{:href => category_path(f_id(cat))}
                 %img.img-responsive{:alt => "", :src => i.image_url}/
-              %a{:href => category_path(cat.friendly_id)}
+              %a{:href => category_path(f_id(cat))}
                 %p=i.try(:cat_name)
             -else
               %a{:href => category_path(i.category_id)}

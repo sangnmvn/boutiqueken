@@ -31,7 +31,7 @@
       / SINGLE PRODUCT starts
       -product_ls.each do |i|
         .col-md-3.col-sm-4
-          .single-product{:onclick => "window.location = '#{product_path(i.friendly_id)}'"}
+          .single-product{:onclick => "window.location = '#{product_path(f_id(i))}'"}
             .product-img-wrapper.left-content-side
               -if i.product_details.present?
                 -is_need_main = true

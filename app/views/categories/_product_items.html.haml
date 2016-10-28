@@ -35,7 +35,8 @@
           No data to display.
       -product_ls.each do |i|
         .col-md-3.col-sm-4
-          .single-product{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
+          / .single-product{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
+          .single-product  
             .product-img-wrapper.left-content-side
               -if i.product_details.present?
                 -is_need_main = true
@@ -71,7 +72,7 @@
                         %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
                 
               %strong
-                %a{:href => category_product_path(@category,i.friendly_id)}=i.short_desc
+                %a{:href => category_product_path(@category,f_id(i))}=i.short_desc
               -if i.regular_price.present?
                 %span.reg-price
                   %strong 

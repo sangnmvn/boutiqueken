@@ -2,8 +2,8 @@
   <ul>
     <% @main_menus.each_with_index do |i,index_main| %>
       <% if i.cat_name.present? %>
-        <li class="menu-item span-4 <%=index_main == 0 ? 'first-child' : '' %>">
-          <a href="<%= category_path(i.friendly_id) %>">
+        <li class="menu-item span-4 <%=index_main == 0 ? 'first-child' : '' %> <%=index_main == (@main_menus.count - 1)  ? 'last-child' : '' %>">
+          <a href="<%= category_path(f_id(i)) %>">
             <%= i.cat_name.upcase %>
           </a>
           <%ms = i.children.where(:is_shown_in_menu => true).order("pos asc")%>
@@ -27,7 +27,7 @@
                     <ul>
                       <% main_subs[key].each do |t| %>
                         <li>
-                          <a href="<%= category_path(t.friendly_id) %>">
+                          <a href="<%= category_path(f_id(t)) %>">
                             <%= t.cat_name.capitalize %>
                           </a>
                         </li>
@@ -49,7 +49,7 @@
                     <ul>
                       <% main_subs[key].each do |t| %>
                         <li>
-                          <a href="<%= category_path(t.friendly_id) %>">
+                          <a href="<%= category_path(f_id(t)) %>">
                             <%= t.cat_name.capitalize %>
                           </a>
                         </li>
@@ -67,7 +67,7 @@
                     <ul>
                       <% main_subs[key].each do |t| %>
                         <li>
-                          <a href="<%= category_path(t.friendly_id) %>">
+                          <a href="<%= category_path(f_id(t)) %>">
                             <%= t.cat_name.capitalize %>
                           </a>
                         </li>

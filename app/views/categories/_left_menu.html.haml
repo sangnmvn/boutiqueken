@@ -14,5 +14,5 @@
           -puts "----#{i.id}"
           -cat = Category.find(i.category_id)
           %li
-            %a{:href => category_path(cat.friendly_id)}=i.cat_name
+            %a{:href => category_path(f_id(cat))}=i.cat_name
       
