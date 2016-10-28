@@ -5,6 +5,8 @@
       .col-md-10.col-sm-12.col-xs-12.pull-right
         -if @category.parent_id.blank?
           =render "featured_category"
+        -elsif @feature_categories.present? && @feature_categories.count > 1
+          =render "featured_category"
         -else
           =render "product_list"
       .col-md-2.col-sm-12.col-xs-12
