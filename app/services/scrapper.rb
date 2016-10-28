@@ -694,6 +694,8 @@ class Scrapper
 
       page = @agent.get(url)
 
+      seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+
       facets = page.search("#facets")
 
       if facets.empty?
@@ -702,14 +704,21 @@ class Scrapper
 
         cat = Category.where(site_cat_id: site_cat_id).first
 
-        unless url.start_with?("http")
-          full_url = "#{@root_url}#{url}"
-        else
-          full_url = url
+        if cat.present?
+          cat.seo_title = seo_title
+          cat.seo_keywords = seo_keywords
+          cat.seo_desc = seo_desc
+          cat.save
+
+          unless url.start_with?("http")
+            full_url = "#{@root_url}#{url}"
+          else
+            full_url = url
+          end
+
+          scrape_left_nav_details(cat, full_url)
         end
-
-        scrape_left_nav_details(cat, full_url)
-
+        
         return
       end
 
@@ -722,6 +731,11 @@ class Scrapper
         puts "Could not find the cat: site_root_cat_id - #{site_root_cat_id} - site_cat_id - #{site_cat_id}"
         return
       end
+
+      cat.seo_title = seo_title
+      cat.seo_keywords = seo_keywords
+      cat.seo_desc = seo_desc
+      cat.save
 
       group_pos = 0
 
@@ -1399,21 +1413,26 @@ class Scrapper
   end
 
   def extract_seo_information(page)
-    seo_title = seo_keywords = seo_desc = ""
+    begin
+      seo_title = seo_keywords = seo_desc = ""
 
-    unless page.search("title").first.nil?
-      seo_title = replace_macys_info(page.search("title").first.text)
-    end
+      unless page.search("title").first.nil?
+        seo_title = replace_macys_info(page.search("title").first.text)
+      end
 
-    unless page.search(".//meta[@name='keywords']").first.nil?
-      seo_keywords = replace_macys_info(page.search(".//meta[@name='keywords']").first.attributes["content"].text)
+      unless page.search(".//meta[@name='keywords']").first.nil?
+        seo_keywords = replace_macys_info(page.search(".//meta[@name='keywords']").first.attributes["content"].text)
+      end
+      
+      unless page.search(".//meta[@name='description']").first.nil?
+        seo_desc = replace_macys_info(page.search(".//meta[@name='description']").first.attributes["content"].text)
+      end
+      
+      return seo_title, seo_keywords, seo_desc
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
     end
-    
-    unless page.search(".//meta[@name='description']").first.nil?
-      seo_desc = replace_macys_info(page.search(".//meta[@name='description']").first.attributes["content"].text)
-    end
-    
-    return seo_title, seo_keywords, seo_desc
   end
 
   def scrape_seo_information
