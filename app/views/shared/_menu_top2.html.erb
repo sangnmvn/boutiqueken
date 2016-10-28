@@ -2,17 +2,17 @@
   <ul>
     <% @main_menus.each_with_index do |i,index_main| %>
       <% if i.cat_name.present? %>
-        <li class="menu-item span-4 <%=index_main == 0 ? 'first-child' : '' %> <%=index_main == (@main_menus.count - 1)  ? 'last-child' : '' %>">
+        <li class="menu-item span-4 <%=index_main == 0 ? 'first-child' : '' %> <%=index_main == (@main_menus.count - 1)  ? 'last-child' : '' %> ">
           <a href="<%= category_path(f_id(i)) %>">
             <%= i.cat_name.upcase %>
           </a>
           <%ms = i.children.where(:is_shown_in_menu => true).order("pos asc")%>
           <% main_subs = ms.group_by(&:group_name) %>
 
-          <ul class="sub-menu designers-menu <%=determine_width_menu(ms.count)%>">
+          <ul class="sub-menu designers-menu <%=determine_width_menu(i)%> <%=determine_width_menu_class(i)%>">
             <li class="triangle"></li>
             <% group_name ="" %>
-            <% max_items = 30 %>
+            <% max_items = determine_width_menu_long(i) %>
             <% count =0 %>
             <% main_subs.keys.each_with_index do |key,index| %>
 

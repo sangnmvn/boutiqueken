@@ -119,18 +119,69 @@ module ApplicationHelper
     
   end
 
-  def determine_width_menu(number_menu)
-    if number_menu <= 25
-      "two-col-menu"
-    elsif number_menu >=48 && number_menu <75
-      "three-col-menu"
-    elsif number_menu >75
-      "four-col-menu"
-    end 
-      
+  def determine_width_menu(menu)
+     
+    map = [{:name=>"HOME",:value=> "four-col-menu"},
+            {:name=>"BED & BATH",:value=> "four-col-menu"},
+            {:name=>"WOMEN",:value=> "four-col-menu"},
+            {:name=>"MEN",:value=> "four-col-menu"},
+            {:name=>"JUNIORS",:value=> "four-col-menu"},
+            {:name=>"KIDS",:value=> "four-col-menu"},
+            {:name=>"ACTIVE",:value=> "three-col-menu"},
+            {:name=>"BEAUTY",:value=> "four-col-menu"},
+            {:name=>"SHOES",:value=> "three-col-menu"},
+            {:name=>"HANDBAGS",:value=> "three-col-menu"},
+            {:name=>"JEWELRY",:value=> "three-col-menu"},
+            {:name=>"WATCHES",:value=> "three-col-menu"},
+            {:name=>"BRANDS",:value=> "four-col-menu"}]
+
+    existed_menu = map.select{|x| x[:name] == menu.cat_name}
+    if existed_menu.present?
+      return existed_menu.first[:value]
+    end
   end
 
+  def determine_width_menu_long(menu)
+    map = [{:name=>"HOME",:value=> 20},
+            {:name=>"BED & BATH",:value=> 20},
+            {:name=>"WOMEN",:value=> 30},
+            {:name=>"MEN",:value=> 20},
+            {:name=>"JUNIORS",:value=> 20},
+            {:name=>"KIDS",:value=> 20},
+            {:name=>"ACTIVE",:value=> 25},
+            {:name=>"BEAUTY",:value=> 20},
+            {:name=>"SHOES",:value=> 20},
+            {:name=>"HANDBAGS",:value=> 20},
+            {:name=>"JEWELRY",:value=> 25},
+            {:name=>"WATCHES",:value=> 20},
+            {:name=>"BRANDS",:value=> 20}]
 
+    existed_menu = map.select{|x| x[:name] == menu.cat_name}
+    if existed_menu.present?
+      return existed_menu.first[:value].to_i
+    end
+  end
+
+  def determine_width_menu_class(menu)
+    map = [{:name=>"HOME",:value=> "home-menu"},
+            {:name=>"BED & BATH",:value=> "bed-menu"},
+            {:name=>"WOMEN",:value=> "women-menu"},
+            {:name=>"MEN",:value=> "men-menu"},
+            {:name=>"JUNIORS",:value=> "junior-menu"},
+            {:name=>"KIDS",:value=> "kids-menu"},
+            {:name=>"ACTIVE",:value=> "active-menu"},
+            {:name=>"BEAUTY",:value=> "beaty-menu"},
+            {:name=>"SHOES",:value=> "shoes-menu"},
+            {:name=>"HANDBAGS",:value=> "handbags-menu"},
+            {:name=>"JEWELRY",:value=> "jewelry-menu"},
+            {:name=>"WATCHES",:value=> "watches-menu"},
+            {:name=>"BRANDS",:value=> "brands-menu"}]
+
+    existed_menu = map.select{|x| x[:name] == menu.cat_name}
+    if existed_menu.present?
+      return existed_menu.first[:value]
+    end
+  end
 
   def show_price_digit(price)
     number_with_precision(price, :precision => 2)

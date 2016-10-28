@@ -3645,3 +3645,23 @@ input[type=number]::-webkit-outer-spin-button {
 
   }
 }
+
+.main-navigation{
+  .menu-item{
+
+    &.last-child{
+      .sub-menu{
+        left: -500px;
+        .triangle{
+          left: 503px !important;
+        }
+      }
+    }
+  }
+  .watches-menu,.jewelry-menu{
+    left: -500px;
+    .triangle{
+      left: 503px !important;
+    }
+  }
+}
