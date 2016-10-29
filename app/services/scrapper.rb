@@ -64,6 +64,8 @@ class Scrapper
     @start_date = Time.now.strftime("%Y%m%d")
     FileUtils.mkdir_p("./tmp/#{@start_date}")
     @current_cat_name = ""
+
+    @scrapped_site_cat_ids = {}
   end
 
   def import_others
@@ -677,7 +679,9 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_url = cat_el.attributes["href"].text
 
-              scrap_filters_for_subcat(site_root_cat_id, site_cat_id, site_cat_url)
+              root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
+
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url)
             end
           end
         end
@@ -688,7 +692,7 @@ class Scrapper
     end      
   end
 
-  def scrap_filters_for_subcat(site_root_cat_id, site_cat_id, url)
+  def scrape_filters_for_subcat(root_cat, site_cat_id, url)
     begin
       puts "Scrapping filters in #{url}"
 
@@ -717,6 +721,8 @@ class Scrapper
           end
 
           scrape_left_nav_details(cat, full_url)
+
+          scrape_filters_from_left_nav(cat, full_url)
         end
         
         return
@@ -724,11 +730,9 @@ class Scrapper
 
       boxes = facets.children
 
-      parent_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-      cat = Category.where(site_cat_id: site_cat_id, parent_id: parent_cat.id).first
+      cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id).first
 
       if cat.nil?
-        puts "Could not find the cat: site_root_cat_id - #{site_root_cat_id} - site_cat_id - #{site_cat_id}"
         return
       end
 
@@ -862,6 +866,30 @@ class Scrapper
       puts e.backtrace.first(10).join("\n")
     end
   end
+
+  def scrape_filters_from_left_nav(root_cat, url)
+    begin
+      page = @agent.get(url)
+      nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
+      
+      nav.each do |group_cat|
+        group_cat.search("a").each do |cat|
+          site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
+
+          if site_cat_id.to_i == 0
+            next
+          end
+
+          url = cat.attributes["href"].text
+
+          scrape_filters_for_subcat(root_cat, site_cat_id, url)
+        end
+      end
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end
+  end  
 
   def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=10)
     begin
@@ -1014,9 +1042,46 @@ class Scrapper
     end
   end
 
+  def scrape_products_for_left_cat(url, current_cat_name=nil)
+    begin
+      if current_cat_name.present?
+        @current_cat_name = current_cat_name
+      end
+
+      puts "[BEGIN] Scrapping products for left cates"
+      start = Time.now
+
+      agent = Mechanize.new
+
+      set_cookies(agent)
+
+      page = agent.get(url)
+
+      nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
+
+      nav.each do |group_cat|
+        group_cat.search("a").each do |cat|
+          site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
+          cat_url = cat.attributes["href"].text
+
+          scrape_products_per_subcat(site_cat_id, cat_url)        
+        end
+      end
+
+      puts "[END] Scrapping products for left cates in #{Time.now - start}"
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
   def scrape_products_per_subcat(site_cat_id, url)
     begin
-      
+      if @scrapped_site_cat_ids[site_cat_id].present?
+        puts "We scrapped products of this site_cat_id #{site_cat_id} - url #{url}"
+        return
+      end
+
       full_url = ""
 
       unless url.start_with?("http")
@@ -1035,7 +1100,8 @@ class Scrapper
 
       if product_count_el.empty?
         puts "[WARN] This page is not a product list page\n\n"
-        puts "url: #{url}"
+        puts "url: #{full_url}"
+        scrape_products_for_left_cat(full_url)
         return
       end
 
@@ -1055,7 +1121,7 @@ class Scrapper
 
         products.each do |product|
           total_product_t = total_product
-
+          
           threads[thread_count] = Thread.new {
 
             product_id = product.attributes["id"].text
@@ -1088,6 +1154,8 @@ class Scrapper
           page = @agent.get(url_paging)
         end
       end
+      
+      @scrapped_site_cat_ids[site_cat_id] = site_cat_id
     rescue Exception => e
       puts e.message
       puts e.backtrace.first(10).join("\n")
@@ -1205,6 +1273,19 @@ class Scrapper
 
       product_thumbnail_page = agent.get(url)
 
+      if product_thumbnail_page.present? && product_thumbnail_page.code != "200"
+        retry_times = 0
+
+        puts "Trying to get the url #{url}"
+
+        while retry_times < 3
+          product_thumbnail_page = agent.get(url)
+          break if product_thumbnail_page.code == "200"
+
+          retry_times += 1
+        end
+      end
+
       product_thumbnail = JSON.parse(
         replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
       )["productThumbnail"]
@@ -1278,11 +1359,15 @@ class Scrapper
       related_loved_product_ids = nil
 
       if recommendations["status"] == "SUCCESS"
-        related_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_A"]["recommendationVBList"]
-        related_product_ids = related_products.collect{|product| product["recommendedItemId"]}.to_json
+        begin
+          related_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_A"]["recommendationVBList"]
+          related_product_ids = related_products.collect{|product| product["recommendedItemId"]}.to_json
 
-        related_loved_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_B"]["recommendationVBList"]
-        related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}.to_json
+          related_loved_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_B"]["recommendationVBList"]
+          related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}.to_json
+        rescue
+          puts "Could not get related_products for site_product_id #{site_product_id} and site_cat_id #{site_product_id}"
+        end
       else
         puts "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
       end    
