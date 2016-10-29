@@ -66,6 +66,25 @@ class Scrapper
     @current_cat_name = ""
 
     @scrapped_site_cat_ids = {}
+    @existing_products = {}
+
+  end
+
+  def load_existing_products
+    begin
+      sql =%{
+        SELECT id, site_product_id FROM products;
+      } 
+
+      products = Product.connection.execute(sql)
+
+      products.each do |prod|
+        @existing_products[prod["site_product_id"].to_i] = prod["id"].to_i
+      end
+    rescue Exception => e
+      puts "Message: #{e.message}"
+      puts "Backtrace: #{e.backtrace}"
+    end
   end
 
   def import_others
@@ -897,6 +916,9 @@ class Scrapper
       @number_of_threads = number_of_threads
 
       puts "[BEGIN] Scrapping products by #{@number_of_threads} threads"
+
+      load_existing_products
+
       start_time = Time.now
 
       page = @agent.get(@root_url)
@@ -1122,25 +1144,27 @@ class Scrapper
         products.each do |product|
           total_product_t = total_product
           
-          threads[thread_count] = Thread.new {
-
-            product_id = product.attributes["id"].text
-
-            product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-
-            puts "#{total_product_t}/#{product_count} - #{product_url}"
-
-            scrape_product_or_product_collection_page(product_id, product_url, total_product_t)
-          }
-
+          tmp_product_id = product.attributes["id"].text
           total_product += 1
-          thread_count += 1
 
-          if thread_count == @number_of_threads || total_product == product_count
-            threads.each {|t| t.join}
+          if !@existing_products[tmp_product_id.to_i].present?
+            threads[thread_count] = Thread.new {
+              product_id = product.attributes["id"].text
 
-            threads = []
-            thread_count = 0
+              product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+              puts "#{total_product_t}/#{product_count} - #{product_url}"
+
+              scrape_product_or_product_collection_page(product_id, product_url, total_product_t)
+            }
+
+            thread_count += 1
+
+            if thread_count == @number_of_threads || total_product == product_count
+              threads.each {|t| t.join}
+
+              threads = []
+              thread_count = 0
+            end
           end
         end
 
