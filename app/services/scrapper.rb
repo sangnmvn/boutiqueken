@@ -1608,7 +1608,8 @@ class Scrapper
       if @number_of_products % BATCH_SIZE == 0
         @current_file.flush unless @current_file.nil?
 
-        @current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_products_batch_#{@current_batch}.csv", "wb")
+        @current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_products_batch_#{@current_batch}.csv", "wb", external_encoding: "ISO8859-1",
+                            internal_encoding: "utf-8")
         @current_batch += 1
       end
 
