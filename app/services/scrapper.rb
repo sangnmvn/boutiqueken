@@ -1158,13 +1158,13 @@ class Scrapper
             }
 
             thread_count += 1
+          end
 
-            if thread_count == @number_of_threads || total_product == product_count
-              threads.each {|t| t.join}
+          if thread_count == @number_of_threads || total_product == product_count
+            threads.each {|t| t.join}
 
-              threads = []
-              thread_count = 0
-            end
+            threads = []
+            thread_count = 0
           end
         end
 
@@ -1314,7 +1314,7 @@ class Scrapper
         replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
       )["productThumbnail"]
 
-      product = JSON.parse(replace_macys_info(data.children.first.text))
+      product = JSON.parse(replace_macys_info(data.children.first.text.strip).encode('UTF-8', :invalid => :replace, :undef => :replace))
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
 
@@ -1537,6 +1537,10 @@ class Scrapper
         seo_desc = replace_macys_info(page.search(".//meta[@name='description']").first.attributes["content"].text)
       end
       
+      seo_title = seo_title.encode('UTF-8', :invalid => :replace, :undef => :replace)
+      seo_keywords = seo_keywords.encode('UTF-8', :invalid => :replace, :undef => :replace)
+      seo_desc = seo_desc.encode('UTF-8', :invalid => :replace, :undef => :replace)
+
       return seo_title, seo_keywords, seo_desc
     rescue Exception => e
       puts "Message: #{e.message}"
