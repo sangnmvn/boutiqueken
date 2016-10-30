@@ -1280,7 +1280,7 @@ class Scrapper
 
       update_product_price_details(product)
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at url: #{url}"
+      puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
       puts e.backtrace.first(10).join("\n")
     end
   end
@@ -1436,7 +1436,7 @@ class Scrapper
       update_product_price_details(product)
 
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at url: #{url}"
+      puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
       puts e.backtrace.first(10).join("\n")
     end
   end
@@ -1612,8 +1612,7 @@ class Scrapper
       if @number_of_products % BATCH_SIZE == 0
         @current_file.flush unless @current_file.nil?
 
-        @current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_products_batch_#{@current_batch}.csv", "wb", external_encoding: "ISO8859-1",
-                            internal_encoding: "utf-8")
+        @current_file = CSV.open("./tmp/#{@start_date}/#{@current_cat_name}_products_batch_#{@current_batch}.csv", "wb")
         @current_batch += 1
       end
 
