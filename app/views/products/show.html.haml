@@ -146,7 +146,7 @@
         %h1
           Choose your item
         -@product_childrens.each_with_index do|child,child_index|
-          .single-product
+          .single-product.product-panel
             .product-img-wrapper.left-content-side
               -if child.product_details.present?
                 -is_need_main = true
@@ -172,7 +172,7 @@
                   -if child.product_details.present?
                     %ul.coloring-ul
                       -child.product_details.each_with_index do |detail,index|
-                        %li.color-picking{"data-color" => "Black", "data-img" => "p-#{index}" ,class: index==0 ? 'active' : ''}
+                        %li.color-picking{"data-color" => "Black", "data-img" => "p-#{index}" ,class: index==0 ? 'active' : '',"data-detail-id": detail.id}
                           %a{:href => "javascript:;"}
                             %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
                 .col-md-12.col-sm-12.col-xs-12
@@ -190,11 +190,10 @@
                   %p.sizing
                     %strong Size
                   %ul.sizing-ul
-                    -child.list_sizes.each do |size|
-                      %li
-                        %a{:href => "javascript:;"}=size.upcase
+                    -child.list_sizes.each_with_index do |size,index|
+                      %a.size-picking{:href => "javascript:;","data-value" =>size.upcase,class: index==0 ? 'active' : ''}=size.upcase
                 .col-md-12.col-sm-12.col-xs-12
-                  %button.a-to-b.btn-medium ADD TO BAG
+                  %button.a-to-b.btn-medium.a-to-bag ADD TO BAG
           .clear-fix
           -if @product_childrens.count >1
             .dot-sperate
