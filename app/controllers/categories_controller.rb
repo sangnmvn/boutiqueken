@@ -8,7 +8,7 @@ class CategoriesController < ApplicationController
   layout "devise"
   def show
     @page = params[:page] || 1
-    @per_page = params[:per_page] || 20
+    @per_page = params[:per_page] || 100
   	@feature_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>false)
   	@top_sales_categories = FeaturedCategory.where(:parent_id => @category.id,:is_top_sale =>true)
   	@left_navs = @category.left_navs
