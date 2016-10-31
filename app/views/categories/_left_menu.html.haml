@@ -4,15 +4,15 @@
   -group_name = ""
   - main_subs = @left_navs.group_by(&:group_name)
   -main_subs.keys.each do |key|
-    .single-product-cat
-      %strong.trigger
-        =key.upcase
-        %span
-          %i.fa.fa-chevron-down
-      %ul.ul-product-cat
-        -main_subs[key].each do |i|
-          -puts "----#{i.id}"
-          -cat = Category.find(i.category_id)
-          %li
-            %a{:href => category_path(f_id(cat))}=i.cat_name
+    -if key.present?
+      .single-product-cat
+        %strong.trigger
+          =key.upcase
+          %span
+            %i.fa.fa-chevron-down
+        %ul.ul-product-cat
+          -main_subs[key].each do |i|
+            -cat = Category.find(i.category_id)
+            %li
+              %a{:href => category_path(f_id(cat))}=i.cat_name
       

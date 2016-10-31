@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   end
 
   resource :shopping_carts
+  resources :shopping_cart_items, only: [:update]
   #     member do
   #       get 'short'
   #       post 'toggle'

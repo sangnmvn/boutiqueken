@@ -144,7 +144,7 @@ module ApplicationHelper
   def determine_width_menu_long(menu)
     map = [{:name=>"HOME",:value=> 20},
             {:name=>"BED & BATH",:value=> 20},
-            {:name=>"WOMEN",:value=> 30},
+            {:name=>"WOMEN",:value=> 28},
             {:name=>"MEN",:value=> 20},
             {:name=>"JUNIORS",:value=> 20},
             {:name=>"KIDS",:value=> 20},
