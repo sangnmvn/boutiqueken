@@ -37,7 +37,7 @@
         .col-md-3.col-sm-4
           / .single-product{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
           .single-product  
-            .product-img-wrapper.left-content-side
+            .product-img-wrapper.left-content-side{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
               -if i.product_details.present?
                 -is_need_main = true
                 -i.product_details.each_with_index do |detail,index|
@@ -74,12 +74,12 @@
               %strong
                 %a{:href => category_product_path(@category,f_id(i))}=i.short_desc
               -if i.regular_price.present?
-                %span.reg-price
+                %span.reg-price{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
                   %strong 
                     Reg. $
                     =show_price_digit(i.regular_price)
               -if i.sale_price.present?
-                %span.sale-price
+                %span.sale-price{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
                   %strong
                     Sale. $
                     =show_price_digit(i.sale_price)
