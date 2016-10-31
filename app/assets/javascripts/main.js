@@ -16,18 +16,33 @@ $(document).ready(function(){
   });
 
   //Mobile menu
-  $('.m-trigger').on('click', function(){
-  	$('.main-navigation-mobile').css({
-  		'right'   : '0',
-  		'display' : 'block'
-  	});
+  // $('.m-trigger').on('click', function(){
+  // 	$('.main-navigation-mobile').css({
+  // 		'right'   : '0',
+  // 		'display' : 'block'
+  // 	});
+  // });
+  // $('.close-close').find('span').on('click', function(){
+  // 	$('.main-navigation-mobile').css({
+  // 		'right'   : '-32rem',
+  // 		'display' : 'none'
+  // 	});
+  // });
+
+  //Mobile menu
+  $('.m-trigger, .close-close a').on('click', function(e){
+    e.preventDefault()
+
+    $('body').toggleClass('navbar-open');
+
+    if ( $('.m-trigger .fa').hasClass('fa-bars') ) {
+      $('.m-trigger .fa').removeClass('fa-bars').addClass('fa-times');
+    } else {
+      $('.m-trigger .fa').removeClass('fa-times').addClass('fa-bars');
+    }
   });
-  $('.close-close').find('span').on('click', function(){
-  	$('.main-navigation-mobile').css({
-  		'right'   : '-32rem',
-  		'display' : 'none'
-  	});
-  });
+
+  $.sidebarMenu($('.sidebar-menu'));
 
   //input required
   setTimeout(function(){

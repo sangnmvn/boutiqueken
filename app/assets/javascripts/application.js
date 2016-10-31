@@ -31,3 +31,4 @@
 //= require jquery.elevatezoom
 //= require search
 //= require notify.min
+//= require sidebar-menu.js
