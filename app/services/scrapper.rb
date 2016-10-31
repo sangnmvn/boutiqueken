@@ -1140,6 +1140,8 @@ class Scrapper
 
       current_page = 1
 
+      url_paging = full_url
+
       while (product_count > 0 && total_product < product_count)
         products = page.search(".//li[@class='productThumbnail borderless']")
 
@@ -1147,6 +1149,9 @@ class Scrapper
 
         threads = []
         thread_count = 0
+
+        #puts "total products in this page: #{products.count}"
+        #puts "url_paging: #{url_paging}"
 
         products.each do |product|
           total_product_t = total_product
@@ -1161,13 +1166,16 @@ class Scrapper
               product_id = product.attributes["id"].text
 
               product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-              puts "#{total_product_t}/#{product_count} - #{product_url}"
+              puts "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
               scrape_product_or_product_collection_page(product_id, product_url, total_product_t)
             }
 
             thread_count += 1
             @existing_products[key] = 0
+          else
+            #puts "Existing product key #{key}"
+            #puts "#{total_product_t}/#{product_count}/#{current_page} - #{"#{@root_url}#{product.search("a").first.attributes["href"].text}"}"
           end
 
           if thread_count == @number_of_threads || total_product == product_count
@@ -1230,18 +1238,26 @@ class Scrapper
       set_cookies(agent)
 
       product_thumbnail_page = agent.get(url)
+      product_thumbnail_data = product_thumbnail_page.body.encode("UTF-8",'binary',invalid: :replace, undef: :replace, replace: "")
+      product_thumbnail_data = product_thumbnail_data.gsub(/\t/,'')
 
       product_thumbnail = JSON.parse(
-        replace_macys_info(CGI.unescapeHTML(product_thumbnail_page.body.gsub(/\t/,'')))
+        replace_macys_info(product_thumbnail_data)
       )["productThumbnail"]
 
-      short_desc = product_thumbnail["productDescription"]
-      long_desc = product_thumbnail["longDescription"]
-      bullet_text = product_thumbnail["bulletText"].to_json
+      short_desc = CGI.unescapeHTML(product_thumbnail["productDescription"])
+      long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
+      bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
       child_site_product_ids = product_thumbnail["childProductIds"].to_json
       site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
-      product_atts = product_thumbnail["attributes"].to_json
+      product_atts = product_thumbnail["attributes"].collect {|i|
+        if i.is_a?(Array) 
+            i.collect{|y| CGI.unescapeHTML(y)}
+        else
+            CGI.unescapeHTML(i)
+          end
+      }.to_json
 
       main_image_url = product_thumbnail["imageSource"]
       additional_images = product_thumbnail["additionalImages"].to_json
@@ -1256,8 +1272,8 @@ class Scrapper
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
 
-      shipping_return = product_thumbnail["freeShipMessage"].to_json
-      free_ship_message = product_thumbnail["shippingReturnNotes"]
+      shipping_return = CGI.unescapeHTML(product_thumbnail["freeShipMessage"])
+      free_ship_message = product_thumbnail["shippingReturnNotes"].collect{|i| CGI.unescapeHTML(i)}.to_json
 
       product = Product.new()
       
@@ -1320,19 +1336,22 @@ class Scrapper
         end
       end
 
+      product_thumbnail_data = product_thumbnail_page.body.encode("UTF-8",'binary',invalid: :replace, undef: :replace, replace: "")
+
       product_thumbnail = JSON.parse(
-        replace_macys_info(CGI.unescapeHTML(product_thumbnail_page.body))
+        replace_macys_info(product_thumbnail_data)
       )["productThumbnail"]
 
-      product_data = CGI.unescapeHTML(data.children.first.text.gsub(/\t/,""))
+      product_data = data.children.first.text.encode("UTF-8",'binary',invalid: :replace, undef: :replace, replace: "").gsub(/\t/,"")
+
       product = JSON.parse(replace_macys_info(product_data))
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
 
       # product description
-      short_desc = product_thumbnail["productDescription"]
-      long_desc = product_thumbnail["longDescription"]
-      bullet_text = product_thumbnail["bulletText"].to_json
+      short_desc = CGI.unescapeHTML(product_thumbnail["productDescription"])
+      long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
+      bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
       site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
 
@@ -1342,16 +1361,29 @@ class Scrapper
       colorway_additional_images = product_thumbnail["colorwayAdditionalImages"].to_json
       colorway_pricing_swatches = product["colorwayPricingSwatches"]
       swatch_color_list = product_thumbnail["swatchColorList"].to_json
-      brand_name = product_thumbnail["brand"]
+      brand_name = CGI.unescapeHTML(product_thumbnail["brand"])
       sizes = product["sizesList"].to_json
 
       tiered_price = product["colorwayPrice"]["tieredPrice"]
       regular_price, was_price, macys_sale_price = extract_price_info(tiered_price)
 
-      product_atts = product_thumbnail["attributes"].to_json
+      begin
+        product_atts = product_thumbnail["attributes"].collect {|i|
+          if i.is_a?(Array) 
+              i.collect{|y| CGI.unescapeHTML(y)}
+          else
+              CGI.unescapeHTML(i)
+            end
+        }.to_json
+      rescue Exception => ex
+        puts "Message: #{ex.message}"
+        puts "Backtrace: #{ex.backtrace}"
+        puts "Data: #{product_thumbnail["attributes"]}"
+      end
+
       cust_rating = product_thumbnail["custRatings"]
-      shipping_return = product_thumbnail["freeShipMessage"].to_json
-      free_ship_message = product_thumbnail["shippingReturnNotes"]
+      shipping_return = CGI.unescapeHTML(product_thumbnail["freeShipMessage"])
+      free_ship_message = product_thumbnail["shippingReturnNotes"].collect{|i| CGI.unescapeHTML(i)}.to_json
 
       size_chart_canvas_id = product_thumbnail["sizeChartCanvasId"]
 
@@ -1453,50 +1485,54 @@ class Scrapper
   end
 
   def update_product_price_details(product)
+    begin
+      product_img_map = {}
+      color_img_map = {}
 
-    product_img_map = {}
-    color_img_map = {}
+      product_img_map = JSON.parse(product.colorway_primary_images) if (product.colorway_primary_images != 'null')
+      color_imgs = JSON.parse(product.swatch_color_list)
+      color_img_map = {}
 
-    product_img_map = JSON.parse(product.colorway_primary_images) if (product.colorway_primary_images != 'null')
-    color_imgs = JSON.parse(product.swatch_color_list)
-    color_img_map = {}
-
-    color_imgs.each do |color_img|
-      color_img.each do |k, v|
-        unless ["spriteIndex","spritePosition"].include? k
-          color_img_map[k] = v
+      color_imgs.each do |color_img|
+        color_img.each do |k, v|
+          unless ["spriteIndex","spritePosition"].include? k
+            color_img_map[k] = v
+          end
         end
       end
-    end
 
-    unless product.colorway_pricing_swatches.nil?
-      # price and color mapping
-      h = JSON.parse(product.colorway_pricing_swatches)
+      unless product.colorway_pricing_swatches.nil?
+        # price and color mapping
+        h = JSON.parse(product.colorway_pricing_swatches)
 
-      h.each do |price_with_sign, colors|
-        price = price_with_sign.gsub(/\$/,'')
+        h.each do |price_with_sign, colors|
+          price = price_with_sign.gsub(/\$/,'')
 
-        colors.each do |color_name, nothing|
+          colors.each do |color_name, nothing|
+            ppd = ProductPriceDetail.new
+            ppd.site_product_id = product.site_product_id
+            ppd.price = price
+            ppd.color_name = color_name
+            ppd.color_image = color_img_map[color_name]
+            ppd.product_image = product_img_map[color_name]
+            
+            add_product_price_details_to_file(ppd)
+          end
+        end
+      else
+        color_img_map.each do |color_name, color_img|
           ppd = ProductPriceDetail.new
           ppd.site_product_id = product.site_product_id
-          ppd.price = price
           ppd.color_name = color_name
-          ppd.color_image = color_img_map[color_name]
+          ppd.color_image = color_img
           ppd.product_image = product_img_map[color_name]
           
           add_product_price_details_to_file(ppd)
         end
       end
-    else
-      color_img_map.each do |color_name, color_img|
-        ppd = ProductPriceDetail.new
-        ppd.site_product_id = product.site_product_id
-        ppd.color_name = color_name
-        ppd.color_image = color_img
-        ppd.product_image = product_img_map[color_name]
-        
-        add_product_price_details_to_file(ppd)
-      end
+    rescue Exception => e
+      puts "[EXCEPTION] #{e.message} - at product url: #{product.url}"
+      puts e.backtrace.join("\n")
     end
   end
 
