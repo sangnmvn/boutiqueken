@@ -9,17 +9,23 @@
   width: 177px;
 }
 .details-2-left {
-  width: 41%;
+  width: 49%;
 }
-
+.details-2-right{
+  display: none;
+}
 }
 @media only screen and (max-width: 991px) {
 .details-2-left {
-  width: 48%;
+  width: 75%;
 }
 .details-2-middle {
   margin-right: 0;
-  width: 50%;
+  width: 75%;
+  margin-top: 3rem;
+}
+.details-2-right{
+  display: none;
 }
 }
 @media only screen and (max-width: 767px) {
@@ -53,6 +59,9 @@
 }
 .recent-view h1 {
   font-size: 2.2rem;
+}
+.details-2-right{
+  display: none;
 }
 }
 /* All Mobile Sizes (devices and browser) 360*640 */
