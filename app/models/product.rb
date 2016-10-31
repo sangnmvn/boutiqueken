@@ -100,7 +100,7 @@ class Product < ActiveRecord::Base
     list_product = Product.search do
       with(:brand_names,params_t[:brand_selected]) if params_t[:brand_selected].present?
       with(:color_name,params_t[:color_selected]) if params_t[:color_selected].present?
-      with(:category_id,params_t[:category_id]) if params_t[:category_id].present?
+      with(:site_cat_id,params_t[:category_id]) if params_t[:category_id].present?
       if params_t[:price_selected].present?
         params_t[:price_selected].each do |i|
           start,finish = i.split("|")

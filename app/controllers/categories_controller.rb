@@ -17,7 +17,7 @@ class CategoriesController < ApplicationController
     @product_ls = Product.where(:site_cat_id => @category.site_cat_id).order("sale_price asc").page(@page).per(@per_page)
   
     if request.xhr?
-      params[:category_id] = @category.id
+      params[:category_id] = @category.site_cat_id
       @search = Product.filter_at_category(params,@page,@per_page)
       @product_ls = @search.results
     end
