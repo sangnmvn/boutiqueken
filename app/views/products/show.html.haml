@@ -125,12 +125,12 @@
                         -if product.sale_price.present?
                           %span.sale-price
                             %strong
-                              Ssle. $
+                              Sale. $
                               =show_price_digit(product.sale_price)
                         -if product.list_price_range.present?
                           %span.sale-price
                             %strong
-                              Ssle. $
+                              Sale. $
                               =product.list_price_range.join(" - ")
                         %br
               
@@ -217,13 +217,13 @@
                 -if product.sale_price.present?
                   %span.sale-price
                     %strong 
-                      Ssle. $
+                      Sale. $
                       =show_price_digit(product.sale_price)
 
                 -elsif product.list_price_range.present?
                   %span.sale-price
                     %strong
-                      Ssle. $
+                      Sale. $
                       =product.list_price_range.join(" - ")
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS

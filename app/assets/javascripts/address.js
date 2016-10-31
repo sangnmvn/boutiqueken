@@ -216,10 +216,10 @@ var ViewProduct ={
           reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
         }
         if(sale_price !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + sale_price + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. $" + sale_price + "</strong>").appendTo(div_single);
         }
         else if(price_range !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Ssle. $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
         }
         else{
           $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
