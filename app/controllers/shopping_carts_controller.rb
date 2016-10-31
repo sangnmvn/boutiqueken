@@ -1,6 +1,6 @@
 class ShoppingCartsController < ApplicationController
   before_filter :extract_shopping_cart
-
+  layout "devise"
   def create
     @product = ProductPriceDetail.find(params[:detail_id])
     quantity = params[:quantity] || 1
