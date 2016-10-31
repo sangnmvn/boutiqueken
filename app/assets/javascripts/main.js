@@ -92,17 +92,17 @@ $(document).ready(function(){
   });
 
   //My Account navigation
-  $('.ul-account li').find('a').on('click', function(){
-    $(this).closest('li').addClass('active').siblings().removeClass('active');
-  });
+  // $('.ul-account li').find('a').on('click', function(){
+  //   $(this).closest('li').addClass('active').siblings().removeClass('active');
+  // });
   //Information Area Hide/Show
-  $('.ul-account li').find('a').on('click', function(e){
-    e.preventDefault();
-    var ulA = $(this).data('account');
-    $('.all-informations-wrapper').find('.single-account').filter("[data-account='" + ulA + "']").siblings('.single-account').removeClass('show');
-    $('.all-informations-wrapper').find('.single-account').filter("[data-account='" + ulA + "']").addClass('show');
-    // $('.all-informations-wrapper').find('.single-account').filter("[id='" + ulA + "']").siblings().hide();
-  });
+  // $('.ul-account li').find('a').on('click', function(e){
+  //   e.preventDefault();
+  //   var ulA = $(this).data('account');
+  //   $('.all-informations-wrapper').find('.single-account').filter("[data-account='" + ulA + "']").siblings('.single-account').removeClass('show');
+  //   $('.all-informations-wrapper').find('.single-account').filter("[data-account='" + ulA + "']").addClass('show');
+  //   // $('.all-informations-wrapper').find('.single-account').filter("[id='" + ulA + "']").siblings().hide();
+  // });
 
   //Change password trigger
   setTimeout(function(){
