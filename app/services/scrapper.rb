@@ -73,13 +73,18 @@ class Scrapper
   def load_existing_products
     begin
       sql =%{
-        SELECT id, site_product_id FROM products;
+        SELECT id, site_cat_id, site_product_id FROM products;
       } 
 
       products = Product.connection.execute(sql)
 
       products.each do |prod|
-        @existing_products[prod["site_product_id"].to_i] = prod["id"].to_i
+        site_cat_id = prod["site_cat_id"]
+        site_product_id = prod["site_product_id"]
+
+        key = "#{site_cat_id}\t#{site_product_id}"
+
+        @existing_products[key] = prod["id"].to_i
       end
     rescue Exception => e
       puts "Message: #{e.message}"
@@ -1053,7 +1058,9 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_url = cat_el.attributes["href"].text
 
-              scrape_products_per_subcat(site_cat_id, site_cat_url)
+              if site_cat_id == 29891
+                scrape_products_per_subcat(site_cat_id, site_cat_url)
+              end
             end
           end
         end
@@ -1147,7 +1154,9 @@ class Scrapper
           tmp_product_id = product.attributes["id"].text
           total_product += 1
 
-          if !@existing_products[tmp_product_id.to_i].present?
+          key = "#{site_cat_id}\t#{tmp_product_id}"
+
+          if !@existing_products[key].present?
             threads[thread_count] = Thread.new {
               product_id = product.attributes["id"].text
 
@@ -1158,6 +1167,7 @@ class Scrapper
             }
 
             thread_count += 1
+            @existing_products[key] = 0
           end
 
           if thread_count == @number_of_threads || total_product == product_count
