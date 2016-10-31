@@ -26,7 +26,7 @@
                   %th{:scope => "row"} Subtotal
               %tbody
                 -@shopping_cart.shopping_cart_items.each do |i|
-                  %tr
+                  %tr{class: "cart_item_#{i.id}"}
                     %td.saks-bag-item
                       .saks-bag-item-img
                         %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}/
@@ -46,20 +46,28 @@
                         /   %i.fa.fa-refresh{"aria-hidden" => "true"}
                         /   Eligible
                       / .product-details-info
-                    %td
+                    %td{:class =>"td_#{i.id}"}
+
                       .saks-bag-item-qnt
                         %span=i.quantity
                       .saks-bag-item-qnt-text
                         %p.pp-edit
                           %i.fa.fa-pencil{"aria-hidden" => "true"}
-                          %a{:href => "#"} Edit
+                          %a.edit-q-link{:href => "javascript:;","data-p"=>"td_#{i.id}"}Edit
+                        %p.edit-quantity.hide
+                          .form-edit.hide
+                            =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
+                              =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
+                              =f.submit "update",class: ""
+                              =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
                         %p.pp-remove
                           %i.fa.fa-times{"aria-hidden" => "true"}
-                          %a{:href => "#"} Remove
+                          =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
+                          / %a{:href => "#{shopping_carts_path}","data-remote" =>} Remove
                       / .saks-bag-item-qnt-text
                     %td In Stock
                     %td=i.price
-                    %td=show_price_digit(i.price * i.quantity)
+                    %td=show_price_digit(i.price * i.quantity.to_i)
             / DESKTOP TABLE MARKUP ENDS
             / MOBILE TABLE MARKUP
             %table.table.table-bordered.visible-xs

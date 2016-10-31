@@ -38,6 +38,28 @@ class ShoppingCartsController < ApplicationController
   def show
     # @product_detail = ProductPriceDetail.find(@shopping_cart.item_id)
     # @product = @product_detail.product
+    
+  end
+
+  def update
+    @item = @shopping_cart.shopping_cart_items.where(:id => params[:item_id]).first
+    @success = true
+    if @item.present? && params[:shopping_cart_item][:quantity].present?
+      @success = @item.update_attributes({:quantity => params[:shopping_cart_item][:quantity]})
+    else
+      @success = false
+    end
+  end
+
+
+  def destroy
+    @item = @shopping_cart.shopping_cart_items.where(:id => params[:item_id]).first
+    @success = true
+    if @item.present?
+      @success = @item.destroy
+    else
+      @success = false
+    end
   end
 
   private

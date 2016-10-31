@@ -33,6 +33,20 @@ $(function(){
   });
 
 
+  $(".edit-q-link").on("click",function(){
+    parent = $(this).attr("data-p");
+    $("." + parent + " .form-edit").removeClass("hide");
+    $("." + parent + " .pp-edit").hide();
+    $("." + parent + " .saks-bag-item-qnt").hide();
+  });
+
+  $(".btn-cancel-edit").on("click",function(){
+    parent = $(this).attr("data-p");
+    $("." + parent + " .pp-edit").show();
+    $("." + parent + " .form-edit").addClass("hide");
+    $("." + parent + " .saks-bag-item-qnt").show();
+  });
+
 });
 
 

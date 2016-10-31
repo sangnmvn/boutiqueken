@@ -1,0 +1,6 @@
+<%if @success %>
+$(".td_<%=@item.id%> .pp-edit").show();
+$(".td_<%=@item.id%> .saks-bag-item-qnt").show();
+$(".td_<%=@item.id%> .saks-bag-item-qnt span").html("<%=@item.quantity%>");
+$(".td_<%=@item.id%> .form-edit").addClass("hide");
+<%end%>
