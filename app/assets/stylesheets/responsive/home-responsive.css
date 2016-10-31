@@ -429,6 +429,9 @@ body>section>.container{
 #filters{
   display: none;
 }
+.left-cate{
+  display: none;
+}
 .free-offer-mobile {
   margin-top: -7rem;
   width: 75%;

@@ -234,11 +234,30 @@ var ViewProduct ={
       });
 
       $(".recent-view").removeClass("hide");
-      $("#content-slider").lightSlider({
+      body_width = $("body").width();
+      item_num = 6;
+      if(body_width <= 991){
+        item_num = 3;
+      }
+     
+       var sli = $("#content-slider").lightSlider({
                 loop:false,
                 keyPress:true,
-                item: 6
+                item: item_num
             });
+      $(window).resize(function(){
+        body_width = $("body").width();
+        item_num = 6;
+        if(body_width <= 991){
+          item_num = 3;
+        }
+        sli.destroy();
+        sli = $("#content-slider").lightSlider({
+                  loop:false,
+                  keyPress:true,
+                  item: item_num
+              });
+      });
     }
     
 

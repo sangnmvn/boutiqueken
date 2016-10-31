@@ -29,8 +29,8 @@
   width: 100%;
 }
 .left-content {
-  height: 40rem;
-  width: 34rem;
+  /*height: 40rem;
+  width: 34rem;*/
 }
 .product-details-2-top {
   padding-top: 2rem;
@@ -38,7 +38,7 @@
 .details-2-middle {
   margin-right: 0;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
 .recent-view-all-item > a {
   margin: 1%;
