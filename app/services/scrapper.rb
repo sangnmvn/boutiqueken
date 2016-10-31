@@ -1058,9 +1058,9 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_url = cat_el.attributes["href"].text
 
-              if site_cat_id == 29891
-                scrape_products_per_subcat(site_cat_id, site_cat_url)
-              end
+              #if site_cat_id == 29891
+              scrape_products_per_subcat(site_cat_id, site_cat_url)
+              #end
             end
           end
         end
