@@ -22,6 +22,7 @@ class Product < ActiveRecord::Base
     text :sizes
     text :shipping_return
     integer :category_id
+    string :site_cat_id
     string :color_name,:multiple => true do
       result = []
       result = product_details.pluck(:color_name)
