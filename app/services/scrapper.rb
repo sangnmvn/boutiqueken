@@ -1232,7 +1232,7 @@ class Scrapper
       product_thumbnail_page = agent.get(url)
 
       product_thumbnail = JSON.parse(
-        replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
+        replace_macys_info(CGI.unescapeHTML(product_thumbnail_page.body.gsub(/\t/,'')))
       )["productThumbnail"]
 
       short_desc = product_thumbnail["productDescription"]
@@ -1321,10 +1321,11 @@ class Scrapper
       end
 
       product_thumbnail = JSON.parse(
-        replace_macys_info(product_thumbnail_page.body.encode('UTF-8', :invalid => :replace, :undef => :replace))
+        replace_macys_info(CGI.unescapeHTML(product_thumbnail_page.body))
       )["productThumbnail"]
 
-      product = JSON.parse(replace_macys_info(data.children.first.text.strip).encode('UTF-8', :invalid => :replace, :undef => :replace))
+      product_data = CGI.unescapeHTML(data.children.first.text.gsub(/\t/,""))
+      product = JSON.parse(replace_macys_info(product_data))
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(product_page)
 
@@ -1547,9 +1548,9 @@ class Scrapper
         seo_desc = replace_macys_info(page.search(".//meta[@name='description']").first.attributes["content"].text)
       end
       
-      seo_title = seo_title.encode('UTF-8', :invalid => :replace, :undef => :replace)
-      seo_keywords = seo_keywords.encode('UTF-8', :invalid => :replace, :undef => :replace)
-      seo_desc = seo_desc.encode('UTF-8', :invalid => :replace, :undef => :replace)
+      seo_title = CGI.unescapeHTML(seo_title)
+      seo_keywords = CGI.unescapeHTML(seo_keywords)
+      seo_desc = CGI.unescapeHTML(seo_desc)
 
       return seo_title, seo_keywords, seo_desc
     rescue Exception => e
