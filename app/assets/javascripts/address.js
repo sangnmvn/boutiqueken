@@ -332,7 +332,10 @@ var Product={
       $(".vertical .carousel").jCarouselLite({
         btnNext: ".vertical .next",
         btnPrev: ".vertical .prev",
-        vertical: true
+        vertical: true,
+        start: 0,
+        visible: 3,
+        circular: false,
     });
     },500)
     

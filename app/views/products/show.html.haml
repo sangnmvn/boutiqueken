@@ -69,7 +69,7 @@
           -if @product.list_sizes.present?
             %p.sizing
               %strong Size
-              -if @product.size_chart_id.present? || @product.size_chart_table.present?
+              -if @product.size_chart_id.present?
 
                 %a.pull-right.btn-show-sizechart{:href => "javascript:;","size_id" =>size_chart_id_url(@product.size_chart_id),"size_table" =>@product.size_chart_table} Size Guide
             %ul.sizing-ul
@@ -107,9 +107,10 @@
       .details-2-right
         -if @product_related.present? && @product_related.count > 0
           .vertical.hidden-xs.hidden-sm
-            %button.next
-              %i.fa.fa-angle-up{"aria-hidden" => "true"}
-            .carousel
+            -if @product_related.count > 0
+              %button.next
+                %i.fa.fa-angle-up{"aria-hidden" => "true"}
+            %div{class: @product_related.count > 3 ? "carousel" : ""}
               %ul
                 - @product_related.each do |product|
                   %li.padding-top-20
@@ -133,9 +134,9 @@
                               Sale. $
                               =product.list_price_range.join(" - ")
                         %br
-              
-            %button.prev
-              %i.fa.fa-angle-down{"aria-hidden" => "true"}
+            -if @product_related.count > 0
+              %button.prev
+                %i.fa.fa-angle-down{"aria-hidden" => "true"}
         / .vertical ends
       / DETAILS 2 RIGHT ENDS
     / PRODUCT DETAILS 2 TOP AREA ENDS
