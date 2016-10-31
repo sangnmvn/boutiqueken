@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   resources :categories, path: 'cat' do
     resources :products, path: 'pro', only: [:show]
   end
+
+  resource :shopping_carts
   #     member do
   #       get 'short'
   #       post 'toggle'
