@@ -1168,7 +1168,7 @@ class Scrapper
               product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
               puts "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
-              scrape_product_or_product_collection_page(product_id, product_url, total_product_t)
+              scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
             }
 
             thread_count += 1
@@ -1204,7 +1204,7 @@ class Scrapper
     end
   end
 
-  def scrape_product_or_product_collection_page(product_id, url, pos)
+  def scrape_product_or_product_collection_page(product_id, url, pos, site_cat_id)
     begin
       agent = Mechanize.new
 
@@ -1215,12 +1215,12 @@ class Scrapper
       product_main_data = page.search("#productMainData")
 
       unless product_main_data.empty?
-        scrape_product_page(page, product_id, product_main_data.first, pos, url)
+        scrape_product_page(page, product_id, product_main_data.first, pos, url, site_cat_id)
       else 
         pdp_main_data = page.search("#pdpMainData")
 
         unless pdp_main_data.empty?
-          scrape_product_collection_page(page, product_id, pos, url)
+          scrape_product_collection_page(page, product_id, pos, url, site_cat_id)
         end
       end
     rescue Exception => e 
@@ -1229,7 +1229,7 @@ class Scrapper
     end      
   end
 
-  def scrape_product_collection_page(product_page, site_product_id, pos, product_url)
+  def scrape_product_collection_page(product_page, site_product_id, pos, product_url, site_cat_id)
     url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
 
     begin
@@ -1249,7 +1249,7 @@ class Scrapper
       long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
       bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
       child_site_product_ids = product_thumbnail["childProductIds"].to_json
-      site_category_id = product_thumbnail["categoryId"]
+      #site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
       product_atts = product_thumbnail["attributes"].collect {|i|
         if i.is_a?(Array) 
@@ -1283,7 +1283,7 @@ class Scrapper
       product.bullet_text = bullet_text
       product.main_image_url = main_image_url
       product.additional_images = additional_images
-      product.site_cat_id = site_category_id
+      product.site_cat_id = site_cat_id
       product.video_id = video_id
       product.colorway_primary_images = colorway_primary_images
       product.colorway_additional_images = colorway_additional_images
@@ -1311,7 +1311,7 @@ class Scrapper
     end
   end
 
-  def scrape_product_page(product_page, site_product_id, data, pos, product_url)
+  def scrape_product_page(product_page, site_product_id, data, pos, product_url, site_cat_id)
     url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
 
     begin
@@ -1352,7 +1352,7 @@ class Scrapper
       short_desc = CGI.unescapeHTML(product_thumbnail["productDescription"])
       long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
       bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
-      site_category_id = product_thumbnail["categoryId"]
+      #site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
 
       main_image_url = product_thumbnail["imageSource"]
@@ -1445,7 +1445,7 @@ class Scrapper
       product.short_desc = short_desc
       product.long_desc = long_desc
       product.bullet_text = bullet_text
-      product.site_cat_id = site_category_id
+      product.site_cat_id = site_cat_id
       product.video_id = video_id
       product.main_image_url = main_image_url
       product.additional_images = additional_images
