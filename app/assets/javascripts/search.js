@@ -19,6 +19,20 @@ var Search = {
         $(this).addClass("active-per");
         Search.ajax_request();
       });
+
+      $(".product-list .carousel").each(function(){
+      id = $(this).attr("data-target");
+      btn_next = id + " .next";
+      btn_pre = id + " .prev";
+      $(this).jCarouselLite({
+        vertical: false,
+        start: 0,
+        visible: 5,
+        circular: false,
+        btnNext: btn_next,
+        btnPrev: btn_pre
+      });
+    });
     }
   },
   ajax_request: function(){
