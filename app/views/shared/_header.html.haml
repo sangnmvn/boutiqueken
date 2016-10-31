@@ -14,9 +14,9 @@
         %li
           %a{:href => "#"} 1.877.551.7257
         %li
-          %a{:href => "#"}
+          %a{:href => "#{shopping_carts_path}"}
             My Bag(
-            %span.bag-count> 0
+            %span.bag-count=@shopping_cart.shopping_cart_items.count
             )
         -if current_user.present?
           %li
@@ -40,9 +40,9 @@
         %li
           %a{:href => "#"}
             %i.fa.fa-shopping-cart{"aria-hidden" => "true"}
-        %li.m-trigger
-          %a{:href => "#"}
-            %i.fa.fa-bars{"aria-hidden" => "true"}
+        / %li.m-trigger
+        /   %a{:href => "#"}
+        /     %i.fa.fa-bars{"aria-hidden" => "true"}
       / MOBILE TOP LINKS ENDS
     / .container ends
   / .header-top ends
@@ -51,15 +51,15 @@
     %a.logo-wrapper{:href => root_path}
       %img.img-responsive{:alt => "boutiqueken-logo", :src => asset_path("boutiqueken_V1.png")}/
     / MOBILE OFFER TOP TEXT STARTS
-    .search-panel
+    .search-panel.search-wrapper-big-screen
       %form.pull-right.search-box{:action => search_products_path()}
         %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}" ,:placeholder=>"What can we can help you find?"}/
         %button{:type => "submit"}
           %i.fa.fa-search
     .clear-fix
     %p.pull-right.free-offer.free-offer-mobile.hidden-lg.hidden-md.hidden-sm
-      Enjoy Free Express Shipping on orders $100+
-      %a{:href => "#"} Details
+      / Enjoy Free Express Shipping on orders $100+
+      / %a{:href => "#"} Details
     / MOBILE OFFER TOP TEXT ENDS
     / MEDIUM SCREEN SEARCH BOX AREA STARTS
     .search-wrapper.search-wrapper-medium-screen
@@ -68,9 +68,12 @@
         / Enjoy Free Express Shipping on orders $100+
         / %a{:href => "#"} Details
       %form.pull-right.search-box{:action => search_products_path()}
-        %input{:type => "text",:placeholder=>"What can we can help you find?"}/
+        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}" ,:placeholder=>"What can we can help you find?"}/
         %button{:type => "submit"}
           %i.fa.fa-search
+        %a.m-trigger.pull-right{:href => "#"}
+          %i.fa.fa-bars{"aria-hidden" => "true"}
+
     / MEDIUM SCREEN SEARCH BOX AREA ENDS
     / DESKTOP NAVIGATION STARTS
     =render "shared/menu_top2"

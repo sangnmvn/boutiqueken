@@ -37,7 +37,7 @@
                   =@product.list_price_range.join(" - ")
         / PRODUCT DETAILS 2 TOP ENDS
         / PRODUCT DETAILS 2 MIDDLE STARTS
-        .p-details-2-middle
+        .p-details-2-middle.product-panel
           -if @product.product_details.present?
             %p.coloring
               %strong Color:
@@ -47,7 +47,7 @@
               %ul.coloring-ul
                 -@product.product_details.each_with_index do |i,index|
                   %li{"data-color" => i.color_name}
-                    %a.color-picking.tt{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,class: index==0 ? 'active' : ''}
+                    %a.color-picking.tt{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,class: index==0 ? 'active' : '', "data-detail-id": i.id}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
             -else
               %ul.coloring-ul
@@ -62,7 +62,7 @@
                         = show_price_digit(i.price)
                     .seper-small
                   %li{"data-color" => i.color_name}
-                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
               .seper-small
               
@@ -73,14 +73,15 @@
 
                 %a.pull-right.btn-show-sizechart{:href => "javascript:;","size_id" =>size_chart_id_url(@product.size_chart_id),"size_table" =>@product.size_chart_table} Size Guide
             %ul.sizing-ul
-              -@product.list_sizes.each do |size|
+              -@product.list_sizes.each_with_index do |size,index|
                 %li
-                  %a{:href => "javascript:;"}=size.upcase
+                  %a.size-picking{:href => "javascript:;","data-value" =>size.upcase,class: index==0 ? 'active' : ''}=size.upcase
           
           -if @product.is_collection
             %button.a-to-b.btn-chose-item CHOSE YOUR ITEMS
           -else  
-            %button.a-to-b ADD TO BAG
+            %button.a-to-bag ADD TO BAG
+            =#link_to "ADD TO BAG",shopping_carts_path,class: "a-to-bag",remote: true,:method =>"POST"
         / PRODUCT DETAILS 2 MIDDLE ENDS
         / PRODUCT DETAILS 2 LAST STARTS
         .p-details-2-last
@@ -111,7 +112,7 @@
             .carousel
               %ul
                 - @product_related.each do |product|
-                  %li
+                  %li.padding-top-20
                     %a{:href => product_path(product)}
                       .vertical-items
                         %img.img-responsive{:alt => product.short_desc, :src => show_image_small_slider(product.main_image_url)}/

@@ -1,0 +1,25 @@
+%nav.main-navigation-mobile.hidden-lg.hidden-md.hidden-sm
+  %ul.sidebar-menu
+    - @main_menus.each do |i|
+      -if i.cat_name.present?
+        %li.treeview
+          %a{:href =>  category_path(i.friendly_id)}
+            %span=i.cat_name.upcase
+            %i.fa.fa-angle-right.pull-right
+          -main_subs = i.children.where(:is_shown_in_menu => true).group_by(&:group_name)
+          -group_name =""
+          %ul.treeview-menu
+            -main_subs.keys.each do |key|
+              %li
+                - if group_name != key
+                  %a{:href => "javascript:;"}
+                    %span=key
+                    %i.fa.fa-angle-right.pull-right
+                    -group_name = key
+                %ul.treeview-menu
+                  - main_subs[key].each do |t|
+                    %li
+                      %a{href: category_path(t.id)}=t.cat_name.capitalize
+      
+        
+/ MOBILE NAVIGATION ENDS
