@@ -622,7 +622,7 @@ class Scrapper
         start = Time.now
 
         scrape_filters_details(cat_id, cat_url)
-
+        
         puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
       end
 
@@ -701,6 +701,7 @@ class Scrapper
 
             unless leaf_cat.attributes["id"].nil?
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
+              site_cat_id = leaf_cat.attributes["id"].text.split("?id=").last.split("&").first.to_i if site_cat_id == 0
               site_cat_url = cat_el.attributes["href"].text
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
@@ -790,8 +791,6 @@ class Scrapper
               puts "  - #{sub_box_type}"
 
               sub_box.search("a").each do |item|
-                #puts "    * #{item.attributes["data-value"].text} "
-
                 filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
                 filter.filter_ui_type = ui_type
                 filter.group_name = box_type
