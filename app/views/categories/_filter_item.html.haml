@@ -15,15 +15,20 @@
   %label{:for =>id}
     =i["name"]
     
--elsif group_name.downcase.gsub(" ","") == "bed size" || group_name.downcase.gsub(" ","") == "size"
-  %input.size-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
-  %label{:for =>id}
-    =i["name"]
+
 -elsif group_name.downcase.gsub(" ","") == "price" || group_name.downcase.gsub(" ","") == "price"
   %input.price-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
   %label{:for =>id}
     =i["name"]
 -else
-  %input{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
+  -value = i["value"]
+  -if field_name.include?("SIZE") && value.split(",").count>1
+    -value = value.split(",")[1].strip
+
+  %input.filter-item{:type=>"checkbox",name: "filter",value: value,id: id, "data-filter" =>file_filter,"filter-field" =>field_name}
   %label{:for =>id}
     =i["name"]
+/ -elsif group_name.downcase.gsub(" ","") == "bed size" || group_name.downcase.gsub(" ","") == "size"
+/   %input.size-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
+/   %label{:for =>id}
+/     =i["name"]

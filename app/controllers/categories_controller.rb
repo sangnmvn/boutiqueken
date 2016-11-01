@@ -15,12 +15,15 @@ class CategoriesController < ApplicationController
     @products = Product.where(:site_cat_id => @category.site_cat_id).page(@page).per(@per_page)
     @filters = Filter.where(:category_id => @category.id).order("group_pos asc, sub_group_pos asc")
     @product_ls = Product.where(:site_cat_id => @category.site_cat_id).order("sale_price asc").page(@page).per(@per_page)
-  
+    #list filter_name
+    @filter_names = @filters.pluck(:filter_product_field_name).uniq
     if request.xhr?
       params[:category_id] = @category.site_cat_id
-      @search = Product.filter_at_category(params,@page,@per_page)
+      @search = Product.filter_at_category(params,@page,@per_page,@filter_names)
       @product_ls = @search.results
     end
+
+
 
   end
 

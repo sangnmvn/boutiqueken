@@ -91,6 +91,10 @@ var ProductList = {
       ProductList.ajax_request();
     });
 
+    $(".filter-item").on("click",function(){
+      ProductList.ajax_request();
+    });
+
     $(".product-list .carousel").each(function(){
       id = $(this).attr("data-target");
       btn_next = id + " .next";
@@ -140,10 +144,20 @@ var ProductList = {
 
     per_page = $(".active-per").attr("data-length");
 
+    filter = {}
+    $.each(filter_names, function(i, item) {
+      checked_item = new Array();
+      list_checked =$("#filters input[filter-field='"+ item +"']:checked");
+      $(list_checked).each(function(){
+        checked_item.push($(this).val());
+      })
+      filter[item] = checked_item;
+    });
+
     $.ajax({
       method: "GET",
       url: category_path,
-      data: {size_selected: size_selected,color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
+      data: {filter: filter, size_selected: size_selected,color_selected: color_selected,brand_selected: brand_selected,price_selected: price_selected,per_page: per_page},
         }).done(function(data) {
       
       });

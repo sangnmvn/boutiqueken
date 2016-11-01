@@ -40,11 +40,11 @@ class Product < ActiveRecord::Base
     end
 
 
-    string :sizes_list,:multiple => true do 
-      sizes.to_s.split(",")
+    string :sizes_list,:multiple => true ,:stored => true do 
+      list_sizes
     end
 
-    dynamic_string :filters, :multiple => true do
+    dynamic_string :filters, :multiple => true,:stored=>true do
       product_atts_key_pairs.inject({}) do |hash, e|
         hash.merge(e[0].to_sym => e[1])
       end
@@ -92,14 +92,17 @@ class Product < ActiveRecord::Base
   end
 
 
-  def self.filter_at_category(params_t,page,per_page)
+  def self.filter_at_category(params_t,page,per_page,filter_names)
     if params_t[:color_selected].present? &&  params_t[:color_selected].include?("Multi")
       params_t[:color_selected] = []
     end
 
+    #search = Product.search do  dynamic("filters") do     with("SPORT").any_of(['Yoga'])  endend.results
+
     list_product = Product.search do
       with(:brand_names,params_t[:brand_selected]) if params_t[:brand_selected].present?
       with(:color_name,params_t[:color_selected]) if params_t[:color_selected].present?
+      # with(:sizes_list,params_t[:size_selected]) if params_t[:size_selected].present?
       with(:site_cat_id,params_t[:category_id]) if params_t[:category_id].present?
       if params_t[:price_selected].present?
         params_t[:price_selected].each do |i|
@@ -109,6 +112,18 @@ class Product < ActiveRecord::Base
           with(:sale_price,Range.new(start,finish)) if start.present? && finish.present?
         end
       end
+      if params_t[:filter].present?
+        filter_names.each do |i|
+          if params_t[:filter][i.to_sym].present?
+            dynamic("filters") do
+              with(i.to_sym).any_of(params_t[:filter][i.to_sym])
+            end
+            
+          end
+
+        end
+      end
+
       order_by :sale_price, :asc
       paginate :page => page, :per_page => per_page
     end
