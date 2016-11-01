@@ -222,7 +222,7 @@ var ViewProduct ={
         sale_price = ViewProduct.show_price(value.sale_price);
         price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
-        link_a = $("<a></a>").attr("href","/products/" + value.product_id);
+        link_a = $("<a></a>").attr("href","/pro/" + value.product_id);
         div_single = $("<div></div>").addClass("recent-view-single-item");
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
@@ -344,33 +344,38 @@ var Product={
     });
 
     //load image
-    var $images = $('.vertical .carousel img');
-    var loaded_images_count = 0;
+    // images = $('.vertical .carousel img');
+    // loaded_images_count = 0;
 
-    $images.load(function(){
-        loaded_images_count++;
+    // images.one("load",function(){
+    //     loaded_images_count++;
+    //     console.log(loaded_images_count);
+    //     console.log(images.length);
+    //     if (loaded_images_count == images.length) {
+    //         alert("tt");
+    //         $(".vertical .carousel").removeClass("hide");
+    //         $(".vertical .carousel").jCarouselLite({
+    //           btnNext: ".vertical .next",
+    //           btnPrev: ".vertical .prev",
+    //           vertical: true,
+    //           start: 0,
+    //           visible: 3,
+    //           circular: false,
+    //       });
 
-        if (loaded_images_count == $images.length) {
-            $(".vertical .carousel").jCarouselLite({
-              btnNext: ".vertical .next",
-              btnPrev: ".vertical .prev",
-              vertical: true,
-              start: 0,
-              visible: 3,
-              circular: false,
-          });
-        }
-    });
-    // setTimeout(function(){
-    //   $(".vertical .carousel").jCarouselLite({
-    //     btnNext: ".vertical .next",
-    //     btnPrev: ".vertical .prev",
-    //     vertical: true,
-    //     start: 0,
-    //     visible: 3,
-    //     circular: false,
+          
+    //     }
     // });
-    // },500)
+    setTimeout(function(){
+      $(".vertical .carousel").jCarouselLite({
+        btnNext: ".vertical .next",
+        btnPrev: ".vertical .prev",
+        vertical: true,
+        start: 0,
+        visible: 3,
+        circular: false,
+    });
+    },500)
     
 
     $(".btn-chose-item").click(function() {

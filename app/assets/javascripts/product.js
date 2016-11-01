@@ -235,8 +235,8 @@ document.getElementById('toggle-zoom').addEventListener('click', toggleZoom);
 }
 
 
-window.addEventListener('load', showFirst);
-window.addEventListener('resize', largeImageHeight);
+// window.addEventListener('load', showFirst);
+// window.addEventListener('resize', largeImageHeight);
 $(document).ready(function () {
   // Works only on `data-parsley-validate`.
   if($('.validate-form').length >0){
