@@ -427,6 +427,7 @@ class Scrapper
         f_cat.parent_id = root_cat.id
         f_cat.site_cat_id = site_cat_id
         f_cat.category_id = cat.id unless cat.nil?
+        f_cat.image_url = image_url
         f_cat.pos = pos
         f_cat.save
 
