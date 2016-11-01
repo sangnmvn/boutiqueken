@@ -3,7 +3,7 @@
     - @main_menus.each do |i|
       -if i.cat_name.present?
         %li.treeview
-          %a{:href =>  category_path(i.friendly_id)}
+          %a{:href =>  category_path(f_id(i))}
             %span=i.cat_name.upcase
             %i.fa.fa-angle-right.pull-right
           -main_subs = i.children.where(:is_shown_in_menu => true).group_by(&:group_name)

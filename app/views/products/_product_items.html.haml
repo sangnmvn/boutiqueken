@@ -32,7 +32,7 @@
       -product_ls.each do |i|
         .col-md-3.col-sm-4
           .single-product
-            .product-img-wrapper.left-content-side{:onclick => "window.location = '#{product_path(i.friendly_id)}'"}
+            .product-img-wrapper.left-content-side{:onclick => "window.location = '#{product_path(f_id(i))}'"}
               -if i.product_details.present?
                 -is_need_main = true
                 -i.product_details.each_with_index do |detail,index|
@@ -71,12 +71,12 @@
               %strong
                 %a{:href => product_path(i)}=i.short_desc
               -if i.regular_price.present?
-                %span.reg-price{:onclick => "window.location = '#{product_path(i.friendly_id)}'"}
+                %span.reg-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong 
                     Reg. $
                     =show_price_digit(i.regular_price)
               -if i.sale_price.present?
-                %span.sale-price{:onclick => "window.location = '#{product_path(i.friendly_id)}'"}
+                %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong
                     Sale. $
                     =show_price_digit(i.sale_price)
