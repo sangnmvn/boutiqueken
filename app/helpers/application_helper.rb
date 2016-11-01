@@ -202,7 +202,7 @@ module ApplicationHelper
   end
 
   def f_id(obj)
-    if obj.friendly_id?
+    if obj.friendly_id? || obj.slug.present?
       obj.friendly_id
     else
       obj.id

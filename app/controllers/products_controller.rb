@@ -7,8 +7,8 @@ class ProductsController < ApplicationController
   layout "devise"
 
   def show
-  	@product_related = Product.where(:site_product_id =>@product.list_related_product_ids)
-    @product_loved = Product.where(:site_product_id =>@product.list_related_loved_products_ids)
+  	@product_related = Product.where(:site_product_id =>@product.list_related_product_ids).group(:id,:site_product_id)
+    @product_loved = Product.where(:site_product_id =>@product.list_related_loved_products_ids).group(:id,:site_product_id)
 
     if @product.is_collection
 

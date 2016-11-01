@@ -1,3 +1,12 @@
+$(document).ajaxSend(function(event, request, settings) {
+    $('#loading-indicator').show();
+});
+
+$(document).ajaxComplete(function(event, request, settings) {
+    $('#loading-indicator').hide();
+});
+
+
 var Address = {
   init: function(selector){
     if($(selector).length >0){
@@ -116,6 +125,21 @@ var ProductList = {
     //     btnPrev: $(this).parent().parent().find(".prev")
     // });
 
+  },
+  reinit_carousel: function(){
+    $(".product-list .carousel").each(function(){
+      id = $(this).attr("data-target");
+      btn_next = id + " .next";
+      btn_pre = id + " .prev";
+      $(this).jCarouselLite({
+        vertical: false,
+        start: 0,
+        visible: 5,
+        circular: false,
+        btnNext: btn_next,
+        btnPrev: btn_pre
+      });
+    });
   },
   ajax_request: function(){
     color_selected = new Array();

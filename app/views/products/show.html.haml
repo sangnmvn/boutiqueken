@@ -105,15 +105,15 @@
       / DETAILS 2 MIDDLE ENDS
       / DETAILS 2 RIGHT STARTS
       .details-2-right
-        -if @product_related.present? && @product_related.count > 0
+        -if @product_related.present? && @product_related.length > 0
           .vertical.hidden-xs.hidden-sm
-            -if @product_related.count > 0
+            -if @product_related.length > 0
               %button.next
                 %i.fa.fa-angle-up{"aria-hidden" => "true"}
-            %div{class: @product_related.count > 3 ? "carousel" : ""}
+            %div{class: @product_related.length > 3 ? "carousel" : ""}
               %ul
                 - @product_related.each do |product|
-                  %li.padding-top-20
+                  %li.padding-top-20.min-261
                     %a{:href => product_path(product)}
                       .vertical-items
                         %img.img-responsive{:alt => product.short_desc, :src => show_image_small_slider(product.main_image_url)}/
@@ -134,7 +134,7 @@
                               Sale. $
                               =product.list_price_range.join(" - ")
                         %br
-            -if @product_related.count > 0
+            -if @product_related.length > 0
               %button.prev
                 %i.fa.fa-angle-down{"aria-hidden" => "true"}
         / .vertical ends
