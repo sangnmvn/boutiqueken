@@ -1,0 +1,66 @@
+#modal-shopping-item.modal.modal-shopping-item{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document"}
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h4.modal-title
+          =@shopping_cart.shopping_cart_items.count.to_s + " "
+          ITEMS IN YOUR BAG
+      .modal-body{:style=>"display:none"}
+        .head-section
+          %a{:href =>shopping_carts_path}
+            View My Bag
+          .check-outing
+            %button CHECKOUT
+        .item-list
+          %table.table.hidden-xs.tb-notborder
+            -@shopping_cart.shopping_cart_items.order("updated_at desc").each_with_index do |i,index|
+              -if index == 1
+                %tr{class: "sp-previous"}
+                  %td{colspan: "2"}
+                    PREVIOUSLY ADD ITEMS
+              %tr{class: "cart_item_#{i.id}"}
+                %td.saks-bag-item
+                  .saks-bag-item-img
+                    -if i.has_color
+                      %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                    -else
+                      %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                  .product-details-info
+                    -if i.has_color
+                      -product = i.product_price_detail.product
+                    -else
+                      -product = i.product
+                    %strong=product.short_desc
+                    / %p.pp-name Cropped Straight -leg Trousers
+                    / %p.pp-code 0448664000041200
+                    -if i.size.present?
+                      %p.pp-size
+                        %b Size:
+                        =i.size
+                    -if i.has_color
+                      %p.pp-color
+                        %b Color:
+                        =i.product_price_detail.color_name
+                    %p.pp-color
+                      %b Quantity:
+                      =i.quantity
+                %td
+                  In stock
+            %tr
+              %tr{class: "sp-total"}
+                %td{colspan: "2"}
+                  %div.left-total
+                    1 ITEM ADDED TO YOUR BAG
+                  %div.right-total
+                    Estimated Total: $
+                    =@shopping_cart.total
+
+
+
+        .head-section
+          %a{:href =>shopping_carts_path}
+            View My Bag
+          .check-outing
+            %button CHECKOUT

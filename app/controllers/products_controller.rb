@@ -7,9 +7,10 @@ class ProductsController < ApplicationController
   layout "devise"
 
   def show
-  	@product_related = Product.where(:site_product_id =>@product.list_related_product_ids)
-    @product_loved = Product.where(:site_product_id =>@product.list_related_loved_products_ids)
-
+  	# @product_related = Product.where(:site_product_id =>@product.list_related_product_ids).group(:site_product_id,:id)
+   #  @product_loved = Product.where(:site_product_id =>@product.list_related_loved_products_ids).group(:site_product_id,:id)
+   @product_related = Product.select("distinct on (site_product_id) *").where(:site_product_id => @product.list_related_product_ids)
+   @product_loved = Product.select("distinct on (site_product_id) *").where(:site_product_id => @product.list_related_loved_products_ids)
     if @product.is_collection
 
       @product_childrens = Product.where(:site_product_id =>@product.list_child_site_ids)

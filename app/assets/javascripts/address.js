@@ -1,3 +1,12 @@
+$(document).ajaxSend(function(event, request, settings) {
+    $('#loading-indicator').show();
+});
+
+$(document).ajaxComplete(function(event, request, settings) {
+    $('#loading-indicator').hide();
+});
+
+
 var Address = {
   init: function(selector){
     if($(selector).length >0){
@@ -22,11 +31,15 @@ $(function(){
   $(".a-to-bag").on("click",function(){
     selected_detail_id = $(this).closest(".product-panel").find(".color-picking.active").attr("data-detail-id");
     selected_size = $(this).closest(".product-panel").find(".size-picking.active").attr("data-value");
-
+    has_color = true;
+    if(selected_detail_id == null){
+      has_color = false;
+      selected_detail_id = $(this).closest(".product-panel").attr("data-detail-id");
+    }
     $.ajax({
       method: "POST",
       url: "/shopping_carts/",
-      data: {detail_id: selected_detail_id,size: selected_size},
+      data: {detail_id: selected_detail_id,size: selected_size,has_color: has_color},
     }).done(function(data) {
       
     });
@@ -116,6 +129,21 @@ var ProductList = {
     //     btnPrev: $(this).parent().parent().find(".prev")
     // });
 
+  },
+  reinit_carousel: function(){
+    $(".product-list .carousel").each(function(){
+      id = $(this).attr("data-target");
+      btn_next = id + " .next";
+      btn_pre = id + " .prev";
+      $(this).jCarouselLite({
+        vertical: false,
+        start: 0,
+        visible: 5,
+        circular: false,
+        btnNext: btn_next,
+        btnPrev: btn_pre
+      });
+    });
   },
   ajax_request: function(){
     color_selected = new Array();
@@ -384,6 +412,9 @@ var Product={
             'slow');
     });
 
+    $('.modal-shopping-item').on('hide.bs.modal', function () {
+      $(this).find(".modal-body").hide();
+    });
 
     $(".btn-show-sizechart").on("click",function(){
       has_id = $(this).attr("size_id");

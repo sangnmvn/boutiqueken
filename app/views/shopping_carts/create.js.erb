@@ -1,6 +1,28 @@
 <%if @success == true %>
-	$.notify("Added to your bag","success");
 	$(".bag-count").html("<%= @shopping_cart.shopping_cart_items.count%>");
+	<%if params[:has_color] == true%>
+		$(".product_need_<%=@product.product.id%>").addClass("hide");
+	<%else%>
+		$(".product_need_<%=@product.id%>").addClass("hide");
+	<%end%>
+	$(".div-for-shop").html("<%=j render 'modal_item'%>");
+	$(".modal-shopping-item").modal({
+  backdrop: true
+});
+	$('.modal-shopping-item').on('show.bs.modal', function () {
+		$(".modal-backdrop").remove();
+		left = $(".section-products-details-2-area .container").offset().left;
+		wid = $(".section-products-details-2-area .container").outerWidth();
+		left_modal = left + wid - 450;
+		$(".modal-shopping-item .modal-dialog").css("margin-left", left_modal);
+	});
+
+	$(".modal-shopping-item").modal("show");
+	$(".modal-shopping-item .modal-body").slideDown(1000)
 <%else%>
-	$.notify("Please select product size","error");
+	<%if params[:has_color] == true%>
+	$(".product_need_<%=@product.product.id%>").removeClass("hide");
+	<%else%>
+		$(".product_need_<%=@product.id%>").removeClass("hide");
+	<%end%>
 <%end%>

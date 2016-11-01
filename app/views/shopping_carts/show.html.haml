@@ -29,9 +29,15 @@
                   %tr{class: "cart_item_#{i.id}"}
                     %td.saks-bag-item
                       .saks-bag-item-img
-                        %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}/
+                        -if i.has_color
+                          %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                        -else
+                          %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
                       .product-details-info
-                        -product = i.product_price_detail.product
+                        -if i.has_color
+                          -product = i.product_price_detail.product
+                        -else
+                          -product = i.product
                         %strong=product.short_desc
                         / %p.pp-name Cropped Straight -leg Trousers
                         / %p.pp-code 0448664000041200
@@ -39,9 +45,10 @@
                           %p.pp-size
                             %b Size:
                             =i.size
-                        %p.pp-color
-                          %b Color:
-                          =i.product_price_detail.color_name
+                        -if i.has_color
+                          %p.pp-color
+                            %b Color:
+                            =i.product_price_detail.color_name
                         / %p.pp-eligible
                         /   %i.fa.fa-refresh{"aria-hidden" => "true"}
                         /   Eligible
