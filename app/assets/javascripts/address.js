@@ -342,16 +342,35 @@ var Product={
       $(".product-thumb-image[color-name='" + color_name + "']").removeClass("hide").addClass("active");
       $(".product-thumb-image[color-name='" + color_name + "']").trigger("click");
     });
-    setTimeout(function(){
-      $(".vertical .carousel").jCarouselLite({
-        btnNext: ".vertical .next",
-        btnPrev: ".vertical .prev",
-        vertical: true,
-        start: 0,
-        visible: 3,
-        circular: false,
+
+    //load image
+    var $images = $('.vertical .carousel img');
+    var loaded_images_count = 0;
+
+    $images.load(function(){
+        loaded_images_count++;
+
+        if (loaded_images_count == $images.length) {
+            $(".vertical .carousel").jCarouselLite({
+              btnNext: ".vertical .next",
+              btnPrev: ".vertical .prev",
+              vertical: true,
+              start: 0,
+              visible: 3,
+              circular: false,
+          });
+        }
     });
-    },500)
+    // setTimeout(function(){
+    //   $(".vertical .carousel").jCarouselLite({
+    //     btnNext: ".vertical .next",
+    //     btnPrev: ".vertical .prev",
+    //     vertical: true,
+    //     start: 0,
+    //     visible: 3,
+    //     circular: false,
+    // });
+    // },500)
     
 
     $(".btn-chose-item").click(function() {
