@@ -5,8 +5,6 @@ class ShoppingCartsController < ApplicationController
     @product = ProductPriceDetail.find(params[:detail_id])
     quantity = params[:quantity] || 1
     @success = true
-    puts "====REQUIRE SIZE"
-    puts @product.require_size
     if @product.require_size == true && params[:size].blank?
       @success = false
     else

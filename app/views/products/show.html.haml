@@ -52,7 +52,7 @@
             -else
               %ul.coloring-ul
                 -group_price = 0
-                -@product.product_details.each do |i|
+                -@product.product_details.each_with_index do |i,index|
                   -if group_price != i.price
                     
                     .seper-small
@@ -60,9 +60,10 @@
                       %strong
                         $
                         = show_price_digit(i.price)
+                        -group_price = i.price
                     .seper-small
                   %li{"data-color" => i.color_name}
-                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id}
+                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
               .seper-small
               
@@ -79,8 +80,11 @@
           
           -if @product.is_collection
             %button.a-to-b.btn-chose-item CHOSE YOUR ITEMS
-          -else  
-            %button.a-to-bag ADD TO BAG
+          -else
+            .sep-ad-tobag
+            .alert-chosing-size.hide{class: "product_need_#{@product.id}"}
+              Please select product size.  
+            %button.a-to-bag{class: "product_#{@product.id}"} ADD TO BAG
             =#link_to "ADD TO BAG",shopping_carts_path,class: "a-to-bag",remote: true,:method =>"POST"
         / PRODUCT DETAILS 2 MIDDLE ENDS
         / PRODUCT DETAILS 2 LAST STARTS
@@ -194,7 +198,10 @@
                     -child.list_sizes.each_with_index do |size,index|
                       %a.size-picking{:href => "javascript:;","data-value" =>size.upcase,class: index==0 ? 'active' : ''}=size.upcase
                 .col-md-12.col-sm-12.col-xs-12
-                  %button.a-to-b.btn-medium.a-to-bag ADD TO BAG
+                  .sep-ad-tobag
+                  .alert-chosing-size.hide{class: "product_need_#{@product.id}"}
+                    Please select product size.  
+                  %button.a-to-b.btn-medium.a-to-bag{class: "product_#{child.id}"} ADD TO BAG
           .clear-fix
           -if @product_childrens.count >1
             .dot-sperate

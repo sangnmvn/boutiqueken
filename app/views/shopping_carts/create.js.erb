@@ -1,6 +1,8 @@
 <%if @success == true %>
 	$.notify("Added to your bag","success");
 	$(".bag-count").html("<%= @shopping_cart.shopping_cart_items.count%>");
+	$(".product_need_<%=@product.product.id%>").addClass("hide");
 <%else%>
-	$.notify("Please select product size","error");
+
+	$(".product_need_<%=@product.product.id%>").removeClass("hide");
 <%end%>
