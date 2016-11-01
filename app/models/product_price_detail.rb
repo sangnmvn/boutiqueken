@@ -1,5 +1,5 @@
 class ProductPriceDetail < ActiveRecord::Base
-  belongs_to :product
+  belongs_to :product,class_name: "Product", foreign_key: "site_product_id",primary_key: "site_product_id"
   belongs_to :category
   def get_price
   	if self.price.present?

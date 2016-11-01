@@ -2,26 +2,49 @@ class ShoppingCartsController < ApplicationController
   before_filter :extract_shopping_cart
   layout "devise"
   def create
-    @product = ProductPriceDetail.find(params[:detail_id])
-    quantity = params[:quantity] || 1
-    @success = true
-    if @product.require_size == true && params[:size].blank?
-      @success = false
-    else
-      if params[:size].present?
-        is_existed = @shopping_cart.shopping_cart_items.where(:item_id =>@product.id,:size => params[:size]).first
-        if is_existed
-          is_existed.quantity += quantity;
-          is_existed.save
-        else
-          item = @shopping_cart.shopping_cart_items.create(item: @product, price: @product.get_price, quantity: quantity,size: params[:size])
-
-        end
+    if params[:has_color].present? && (params[:has_color] == true || params[:has_color] == "true")
+      @product = ProductPriceDetail.find(params[:detail_id])
+      @success = false and return if @product.blank?
+      quantity = params[:quantity] || 1
+      @success = true
+      if @product.require_size == true && params[:size].blank?
+        @success = false
       else
-        item = @shopping_cart.add(@product, @product.get_price,quantity)
+        if params[:size].present?
+          is_existed = @shopping_cart.shopping_cart_items.where(:item_id =>@product.id,:size => params[:size]).first
+          if is_existed
+            is_existed.quantity += quantity;
+            is_existed.save
+          else
+            item = @shopping_cart.shopping_cart_items.create(item: @product, price: @product.get_price, quantity: quantity,size: params[:size])
+
+          end
+        else
+          item = @shopping_cart.add(@product, @product.get_price,quantity)
+        end
+      end
+    else
+      @product = Product.find(params[:detail_id])
+      @success = false and return if @product.blank?
+      quantity = params[:quantity] || 1
+      @success = true
+      if @product.list_sizes.present? && params[:size].blank?
+        @success = false
+      else
+        if params[:size].present?
+          is_existed = @shopping_cart.shopping_cart_items.where(:item_id =>@product.id,:size => params[:size],:has_color => false).first
+          if is_existed
+            is_existed.quantity += quantity;
+            is_existed.save
+          else
+            item = @shopping_cart.shopping_cart_items.create(item: @product, price: @product.sale_price, quantity: quantity,size: params[:size],:has_color => false)
+
+          end
+        else
+          item = @shopping_cart.add(@product, @product.sale_price,quantity)
+        end
       end
     end
-
     
     
     

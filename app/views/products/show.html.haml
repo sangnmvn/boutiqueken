@@ -37,7 +37,7 @@
                   =@product.list_price_range.join(" - ")
         / PRODUCT DETAILS 2 TOP ENDS
         / PRODUCT DETAILS 2 MIDDLE STARTS
-        .p-details-2-middle.product-panel
+        .p-details-2-middle.product-panel{"data-detail-id" => @product.id}
           -if @product.product_details.present?
             %p.coloring
               %strong Color:
@@ -151,7 +151,7 @@
         %h1
           Choose your item
         -@product_childrens.each_with_index do|child,child_index|
-          .single-product.product-panel
+          .single-product.product-panel{"data-detail-id" => child.id}
             .product-img-wrapper.left-content-side
               -if child.product_details.present?
                 -is_need_main = true
@@ -244,7 +244,8 @@
             
     .clear-fix
 =render "modal_size_chart"
-=render "shopping_carts/modal_item"
+.div-for-shop
+  =render "shopping_carts/modal_item"
 :javascript
   var product_info = #{@product.to_json};
   $(document).ready(function(){

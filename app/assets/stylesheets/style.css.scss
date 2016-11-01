@@ -3724,6 +3724,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 /*Modal item*/
 .modal-shopping-item{
+  overflow: inherit !important; 
   .modal-dialog{
     width: 415px;
   }

@@ -1,4 +1,4 @@
-#modal-shopping-item.modal.modal-shopping-item{:role => "dialog", :tabindex => "-1",backdrop: false}
+#modal-shopping-item.modal.modal-shopping-item{:role => "dialog", :tabindex => "-1"}
   .modal-dialog{:role => "document"}
     .modal-content
       .modal-header
@@ -23,9 +23,15 @@
               %tr{class: "cart_item_#{i.id}"}
                 %td.saks-bag-item
                   .saks-bag-item-img
-                    %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                    -if i.has_color
+                      %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                    -else
+                      %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
                   .product-details-info
-                    -product = i.product_price_detail.product
+                    -if i.has_color
+                      -product = i.product_price_detail.product
+                    -else
+                      -product = i.product
                     %strong=product.short_desc
                     / %p.pp-name Cropped Straight -leg Trousers
                     / %p.pp-code 0448664000041200
@@ -33,11 +39,13 @@
                       %p.pp-size
                         %b Size:
                         =i.size
+                    -if i.has_color
+                      %p.pp-color
+                        %b Color:
+                        =i.product_price_detail.color_name
                     %p.pp-color
-                      %b Color:
-                      =i.product_price_detail.color_name
-                    .saks-bag-item-qnt
-                      %span=i.quantity
+                      %b Quantity:
+                      =i.quantity
                 %td
                   In stock
             %tr
