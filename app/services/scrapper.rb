@@ -1194,7 +1194,6 @@ class Scrapper
           page = @agent.get(url_paging)
         end
       end
-      
       @scrapped_site_cat_ids[site_cat_id] = site_cat_id
     rescue Exception => e
       puts e.message
@@ -1247,6 +1246,8 @@ class Scrapper
       long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
       bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
       child_site_product_ids = product_thumbnail["childProductIds"].to_json
+      child_site_products = product_thumbnail["childProducts"]
+
       #site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
       product_atts = product_thumbnail["attributes"].collect {|i|
@@ -1303,13 +1304,51 @@ class Scrapper
       add_product_to_file(product)
 
       update_product_price_details(product)
+
+      # scrape child products
+      scrape_child_products_in_collection(site_cat_id, site_product_id, child_site_products, product_url)
+
     rescue Exception => e
       puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
       puts e.backtrace.first(10).join("\n")
     end
   end
 
-  def scrape_product_page(product_page, site_product_id, data, pos, product_url, site_cat_id)
+  def scrape_child_products_in_collection(site_cat_id, site_product_id, child_site_products, product_url)
+    begin
+      
+      return if child_site_products.nil?
+
+      puts "[BEGIN] Scrapping child products of collection #{product_url}"
+
+      agent = Mechanize.new
+      
+      set_cookies(agent)
+
+      pos = 0
+
+      child_site_products.each do |prod|
+        product_id = prod["ID"]
+        url = "#{@root_url}#{prod["semanticURL"]}"
+
+        puts "Scrapping child product of product #{site_product_id}: #{url}"
+
+        page = agent.get(url)
+
+        product_main_data = page.search("#productMainData")
+
+        scrape_product_page(page, product_id, product_main_data.first, pos, url, site_cat_id, true)
+        
+        pos += 1
+      end
+      puts "[END] Scrapping child products of collection #{product_url}"
+    rescue Exception => e
+      puts "[EXCEPTION] #{e.message} - at product_url: #{product_url}"
+      puts e.backtrace.first(10).join("\n")
+    end
+  end
+
+  def scrape_product_page(product_page, site_product_id, data, pos, product_url, site_cat_id, is_child=false)
     url = "http://www1.macys.com/shop/catalog/product/newthumbnail/json?productId=#{site_product_id}&source=100"
 
     begin
@@ -1471,6 +1510,7 @@ class Scrapper
       product.cust_rating = cust_rating
       product.shipping_return = shipping_return
       product.free_ship_message = free_ship_message
+      product.is_child = is_child
 
       add_product_to_file(product)
 

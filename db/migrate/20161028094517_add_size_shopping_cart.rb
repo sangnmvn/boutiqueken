@@ -1,5 +1,5 @@
 class AddSizeShoppingCart < ActiveRecord::Migration
   def change
-  	add_column :shopping_cart_items, :size, :string
+  	add_column :products, :size, :string
   end
 end
