@@ -224,7 +224,7 @@ class Scrapper
         anchor = mnu_item.search("a").first
         cat_url = @root_url + anchor.attributes["href"].value
 
-        cat = Category.where(site_cat_id: cat_id).first
+        cat = Category.where(site_cat_id: cat_id, parent_id:nil).first
         scrape_left_nav_details(cat, cat_url)
       end
 
