@@ -1,7 +1,18 @@
 <%if @success == true %>
-	$.notify("Added to your bag","success");
 	$(".bag-count").html("<%= @shopping_cart.shopping_cart_items.count%>");
 	$(".product_need_<%=@product.product.id%>").addClass("hide");
+	$(".modal-shopping-item").modal({
+  backdrop: false
+});
+	$('.modal-shopping-item').on('show.bs.modal', function () {
+		left = $(".section-products-details-2-area .container").offset().left;
+		wid = $(".section-products-details-2-area .container").outerWidth();
+		left_modal = left + wid - 450;
+		$(".modal-shopping-item .modal-dialog").css("margin-left", left_modal);
+	});
+
+	$(".modal-shopping-item").modal("show");
+	$(".modal-shopping-item .modal-body").slideDown(1000)
 <%else%>
 
 	$(".product_need_<%=@product.product.id%>").removeClass("hide");

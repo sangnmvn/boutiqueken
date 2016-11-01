@@ -32,7 +32,7 @@
             -elsif @product.list_price_range.present?
               %span.cur-price
                 %strong Now
-                %span 
+                %span.auto-width 
                   $
                   =@product.list_price_range.join(" - ")
         / PRODUCT DETAILS 2 TOP ENDS
@@ -244,6 +244,7 @@
             
     .clear-fix
 =render "modal_size_chart"
+=render "shopping_carts/modal_item"
 :javascript
   var product_info = #{@product.to_json};
   $(document).ready(function(){

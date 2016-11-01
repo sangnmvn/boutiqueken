@@ -408,6 +408,9 @@ var Product={
             'slow');
     });
 
+    $('.modal-shopping-item').on('hide.bs.modal', function () {
+      $(this).find(".modal-body").hide();
+    });
 
     $(".btn-show-sizechart").on("click",function(){
       has_id = $(this).attr("size_id");
