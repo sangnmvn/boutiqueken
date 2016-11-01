@@ -1058,9 +1058,7 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_url = cat_el.attributes["href"].text
 
-              #if site_cat_id == 29891
               scrape_products_per_subcat(site_cat_id, site_cat_url)
-              #end
             end
           end
         end
@@ -1352,7 +1350,7 @@ class Scrapper
       short_desc = CGI.unescapeHTML(product_thumbnail["productDescription"])
       long_desc = CGI.unescapeHTML(product_thumbnail["longDescription"])
       bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
-      #site_category_id = product_thumbnail["categoryId"]
+      site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
 
       main_image_url = product_thumbnail["imageSource"]
