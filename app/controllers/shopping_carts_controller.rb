@@ -1,6 +1,7 @@
 class ShoppingCartsController < ApplicationController
   before_filter :extract_shopping_cart
   layout "devise"
+  before_filter :authenticate_user!, :only =>[:billing]
   def create
     if params[:has_color].present? && (params[:has_color] == true || params[:has_color] == "true")
       @product = ProductPriceDetail.find(params[:detail_id])
@@ -81,6 +82,19 @@ class ShoppingCartsController < ApplicationController
     else
       @success = false
     end
+  end
+
+
+  def billing
+    @default_billing = current_user.default_billing_address
+    @default_shipping = current_user.default_shipping_address
+    @order = Order.new({:user_id => current_user.id})
+    if @default_billing.present?
+      @order.build_shipping_address(@default_shipping.dup.attributes)
+    else
+      @order.build_shipping_address
+    end
+
   end
 
   private

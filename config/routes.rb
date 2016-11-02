@@ -37,7 +37,14 @@ Rails.application.routes.draw do
     resources :products, path: 'pro', only: [:show]
   end
 
-  resource :shopping_carts
+  resource :shopping_carts do 
+    collection do
+      get "billing"
+    end
+  end
+
+  resources :orders
+
   resources :shopping_cart_items, only: [:update]
   #     member do
   #       get 'short'
