@@ -612,15 +612,15 @@ class Scrapper
 
           puts "url #{cat_url}"
 
-          if cat_name == "WATCHES"
+          #if cat_name == "WATCHES"
             scrape_filters_details(cat_id, @root_url)
-          end
+          #end
           
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
           # if cat_name == "WOMEN"
-          #   max_deep = 2
-          #   scrape_filters_from_left_nav(cat, cat_url, max_deep)
+             max_deep = 2
+             scrape_filters_from_left_nav(cat, cat_url, max_deep)
           # end
 
           puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
@@ -669,11 +669,11 @@ class Scrapper
 
               puts "cat_name: -------> #{cat_name}"
 
-              if site_cat_id == 57386
+              #if site_cat_id == 57386
                 root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
                 max_deep = 2
                 scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
-              end
+              #end
             end
           else
             puts "leaf_cat: #{leaf_cat}"
