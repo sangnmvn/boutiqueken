@@ -175,7 +175,7 @@ class Scrapper
               
                 # remove clearance links
                 if cat_el.attributes["class"].nil?
-                  cat_name = cat_el.text
+                  cat_name = replace_macys_info(cat_el.text)
 
                   puts "  - #{cat_name} - site_cat_id #{site_cat_id} - parent_id #{parent_cat.id}"
 
@@ -226,6 +226,7 @@ class Scrapper
 
         cat = Category.where(site_cat_id: cat_id, parent_id:nil).first
         max_deep = 2
+
         scrape_left_nav_details(cat, cat_url, max_deep)
       end
 
@@ -246,24 +247,39 @@ class Scrapper
 
       # crawl left nav
       puts "\nScrapping Left Nav of #{url}"
-      if root_cat.cat_name == 'BRANDS'
-        scrape_left_nav_brands(root_cat, page)
-      else
+
+      nav_sub_cat = page.search("#firstNavSubCat")
+
+      if nav_sub_cat.present?
         scrape_left_nav_others(root_cat, page, deep)
+      else
+        scrape_left_nav_brands(root_cat, page)
       end
 
       # crawl feature categories
       puts "\nScrapping Feature Categories #{url}"
       
-      if root_cat.cat_name == "KIDS"
-        scrape_kids_featured_cates(root_cat, page)
-      elsif root_cat.cat_name == 'ACTIVE'
-        scrap_active_featured_cates(root_cat, page)
-      elsif root_cat.cat_name == 'BRANDS'
-        scrap_brand_featured_brands(root_cat, page)
-      else
+      kid = ".//div[@class='flexPool flexPoolMargin']"
+      active = "map"
+
+      if nav_sub_cat.present?
         scrape_others_featured_cates(root_cat, page)
+      elsif page.search(kid).present?
+        scrape_kids_featured_cates(root_cat, page)
+      elsif page.search(active).search("area").present?
+        scrap_active_featured_cates(root_cat, page)
+      else
+        scrap_brand_featured_brands(root_cat, page)
       end
+
+      # if root_cat.cat_name == "KIDS"
+      # elsif root_cat.cat_name == 'ACTIVE'
+      #   scrap_active_featured_cates(root_cat, page)
+      # elsif root_cat.cat_name == 'BRANDS'
+      #   scrap_brand_featured_brands(root_cat, page)
+      # else
+      #   scrape_others_featured_cates(root_cat, page)
+      # end
 
       # update seo information for root_cat
       seo_title, seo_keywords, seo_desc = extract_seo_information(page)
@@ -296,7 +312,7 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -305,6 +321,8 @@ class Scrapper
             cat.site_cat_id = site_cat_id
             cat.save
           end
+
+          puts "cat_name: #{cat_name} - site_cat_id: #{site_cat_id} - cat_id: #{cat.id} - parent_id: #{cat.parent_id}"
 
           nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
           nav.category_id = cat.id
@@ -344,7 +362,7 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -394,7 +412,7 @@ class Scrapper
           next
         end
 
-        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
         if cat.new_record?
           cat.is_shown_in_menu = false
@@ -486,7 +504,7 @@ class Scrapper
           next
         end
 
-        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
         if cat.new_record?
           cat.is_shown_in_menu = false
@@ -536,7 +554,7 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -593,14 +611,17 @@ class Scrapper
           start = Time.now
 
           puts "url #{cat_url}"
-          scrape_filters_details(cat_id, cat_url)
+
+          if cat_name == "WATCHES"
+            scrape_filters_details(cat_id, @root_url)
+          end
           
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
-          unless ["HOME", "WOMEN"].include? cat_name
-            max_deep = 2
-            scrape_filters_from_left_nav(cat, cat_url, max_deep)
-          end
+          # if cat_name == "WOMEN"
+          #   max_deep = 2
+          #   scrape_filters_from_left_nav(cat, cat_url, max_deep)
+          # end
 
           puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
         }
@@ -644,14 +665,18 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_id = leaf_cat.attributes["id"].text.split("?id=").last.split("&").first.to_i if site_cat_id == 0
               site_cat_url = cat_el.attributes["href"].text
-              cat_name = cat_el.text
+              cat_name = replace_macys_info(cat_el.text)
 
               puts "cat_name: -------> #{cat_name}"
 
-              root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-              max_deep = 2
-              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
+              if site_cat_id == 57386
+                root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
+                max_deep = 2
+                scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
+              end
             end
+          else
+            puts "leaf_cat: #{leaf_cat}"
           end
         end
       end
@@ -858,7 +883,7 @@ class Scrapper
           end
 
           url = cat.attributes["href"].text
-          cat_name = cat.text
+          cat_name = replace_macys_info(cat.text)
 
           # compare current_cat_name vs cat_name to prevent duplicate scrapping filters
           # due to duplicate urls
@@ -905,6 +930,7 @@ class Scrapper
         if !scrape_cat_name.nil?
           if cat_name == scrape_cat_name
             scrape_others_cat_products(cat_id, cat_url)
+            scrape_products_for_left_cat(cat_url)
 
             @current_file.flush unless @current_file.nil?
             @ppd_current_file.flush unless @ppd_current_file.nil?
@@ -916,6 +942,7 @@ class Scrapper
           end
         else
           scrape_others_cat_products(cat_id, cat_url)
+          scrape_products_for_left_cat(cat_url)
 
           @current_file.flush unless @current_file.nil?
           @ppd_current_file.flush unless @ppd_current_file.nil?
