@@ -3696,7 +3696,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #loading-indicator {
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   margin-left: -32px;
