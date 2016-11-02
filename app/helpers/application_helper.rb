@@ -153,8 +153,9 @@ module ApplicationHelper
             {:name=>"SHOES",:value=> 20},
             {:name=>"HANDBAGS",:value=> 20},
             {:name=>"JEWELRY",:value=> 25},
-            {:name=>"BRANDS",:value=> 20},
-            {:name=>"GIFTS",:value=> 20}]
+            {:name=>"WATCHES",:value=> 20},
+            {:name=>"GIFTS",:value=> 20},
+            {:name=>"BRANDS",:value=> 20}]
 
     existed_menu = map.select{|x| x[:name] == menu.cat_name}
     if existed_menu.present?
