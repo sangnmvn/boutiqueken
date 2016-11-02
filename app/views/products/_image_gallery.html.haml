@@ -11,9 +11,6 @@
   .left-slider{style: "width: 67px;float: left "}
     #gallery_01{:style => "width=50px;"}
       -list_addtion_images = JSON.parse(@product.additional_images);
-      -list_addtion_images.each_with_index do |i,index|
-        %a.elevatezoom-gallery.width-25{"data-image" => show_image_product_detail(i), "data-update" => "", "data-zoom-image" => show_large_image_url(i), :href => "#", class: index==0 ? "active" : ""}
-          %img{:src => show_image_50_50(i)}/
       -@product.product_details.each_with_index do |i,index|
         -if i.product_image.present?
           -class_t = ''
@@ -24,8 +21,15 @@
           -else 
             %a.elevatezoom-gallery.product-thumb-image.width-25.hide{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
               %img{:src => show_image_50_50(i.product_image)}/
+
+      -list_addtion_images.each_with_index do |i,index|
+        %a.elevatezoom-gallery.width-25{"data-image" => show_image_product_detail(i), "data-update" => "", "data-zoom-image" => show_large_image_url(i), :href => "#", class: index==0 ? "active" : ""}
+          %img{:src => show_image_50_50(i)}/
         
 
   .zoom-left
-    %img#zoom_03{"data-zoom-image" => show_large_image_url(@product.main_image_url), :src => show_image_in_detail(@product.main_image_url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
+    - url = @product.main_image_url
+    - if @product.product_details.count > 1
+      -url = @product.product_details.first.product_image
+    %img#zoom_03{"data-zoom-image" => show_large_image_url(url), :src => show_image_in_detail(url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
     
