@@ -141,7 +141,7 @@ class Scrapper
       puts "[END] Scrapping menu and sub-menu finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -199,7 +199,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -250,7 +250,7 @@ class Scrapper
       puts "[END] Scrapping left navigation finished in #{Time.now - start_time}\n\n"
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -289,7 +289,7 @@ class Scrapper
       
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
@@ -310,7 +310,7 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -333,7 +333,7 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
@@ -357,7 +357,7 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id)
 
           if cat.new_record?
             cat.is_shown_in_menu = false
@@ -382,7 +382,7 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end  
 
@@ -395,31 +395,24 @@ class Scrapper
         cat_el = f_cate_group.search("a").first
 
         cat_name = replace_macys_info(cat_el.text.strip)
-        site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first
+        site_cat_id = cat_el.attributes["href"].text.split("?CategoryID=").last
+        site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
         image_url = f_cate_group.search("img").first.attributes["src"].text
 
-        if site_cat_id.to_i == 0 && cat_name.nil?
+        if site_cat_id.to_i == 0
           puts "scrape_kids_featured_cates - #{site_cat_id}"
           puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
           next
         end
 
-        cat = Category.where(site_cat_id: site_cat_id).first unless site_cat_id.nil?
-        cat = Category.where(cat_name: cat_name).first if cat.nil? && !cat_name.nil?
+        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
 
-        if cat.nil?
-          puts "scrape_kids_featured_cates - Cannot find cat by cat_name #{cat_name} of root #{root_cat.cat_name}- at page #{page.uri.to_s}"
-
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id) unless site_cat_id.nil?
-          cat = Category.find_or_initialize_by(cat_name: cat_name) if cat.nil? && !cat_name.nil?
-
-          if cat.new_record?
-            cat.is_shown_in_menu = false
-            cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
-            cat.site_cat_id = site_cat_id
-            cat.save
-          end
+        if cat.new_record?
+          cat.is_shown_in_menu = false
+          cat.cat_name = cat_name
+          cat.parent_id = root_cat.id
+          cat.site_cat_id = site_cat_id
+          cat.save
         end
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
@@ -435,7 +428,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -456,25 +449,19 @@ class Scrapper
             next
           end
 
-          cat = Category.where(cat_name: cat_name).first
+          cat = Category.find_or_initialize_by(cat_name: cat_name)
 
-          if cat.nil?
-            puts "Cannot find cat by cat_name #{cat_name} - at page #{page.uri.to_s}"
-           
-            cat = Category.find_or_initialize_by(cat_name: cat_name)
-
-            if cat.new_record?
-              cat.is_shown_in_menu = false
-              cat.cat_name = cat_name
-              cat.parent_id = root_cat.id
-              cat.site_cat_id = cat.site_cat_id unless cat.nil?
-              cat.save
-            end
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = cat.site_cat_id unless cat.nil?
+            cat.save
           end
-
-          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, cat_name: cat_name)
+          
+          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, category_id: cat.id)
           f_cat.cat_name = cat_name
-          f_cat.category_id = cat.id unless cat.nil?
+          f_cat.category_id = cat.id
           f_cat.parent_id = root_cat.id
           f_cat.pos = pos
           f_cat.save
@@ -487,7 +474,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -502,6 +489,7 @@ class Scrapper
 
         cat_name = replace_macys_info(f_brand_el.text.strip)
         site_cat_id = f_brand_el.attributes["href"].text.split("?CategoryID=").last
+        site_cat_id = f_brand_el.attributes["href"].text.split("?id=").last if site_cat_id.to_i == 0
 
         if site_cat_id.to_i == 0
           puts "scrap_brand_featured_brands - #{site_cat_id} skipped"
@@ -509,25 +497,19 @@ class Scrapper
           next
         end
 
-        cat = Category.where(cat_name: cat_name).first
+        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
 
-        if cat.nil?
-          puts "scrap_brand_featured_brands - Cannot find cat by site_cat_id #{site_cat_id} - at page #{page.uri.to_s}"
-
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
-
-          if cat.new_record?
-            cat.is_shown_in_menu = false
-            cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
-            cat.site_cat_id = cat.site_cat_id unless cat.nil?
-            cat.save
-          end
+        if cat.new_record?
+          cat.is_shown_in_menu = false
+          cat.cat_name = cat_name
+          cat.parent_id = root_cat.id
+          cat.site_cat_id = site_cat_id
+          cat.save
         end
-
+        
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
         f_cat.site_cat_id = site_cat_id
-        f_cat.category_id = cat.id unless cat.nil?
+        f_cat.category_id = cat.id
         f_cat.cat_name = cat_name
         f_cat.parent_id = root_cat.id
         f_cat.pos = pos
@@ -537,7 +519,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -551,34 +533,28 @@ class Scrapper
       f_cates.each do |f_cate|
         f_cate_ele = f_cate.search("a").search("div").first
         site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?CategoryID=").last.split("&").first
-        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last if site_cat_id.to_i == 0
+        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
         image_url = f_cate.search("img").first.attributes["src"].text
 
         unless f_cate_ele.nil?
           cat_name = replace_macys_info(f_cate_ele.text)
           
-          if site_cat_id.to_i == 0 && cat_name.nil?
+          if site_cat_id.to_i == 0
+
             puts "scrape_others_featured_cates - #{site_cat_id}"
+            puts "url #{f_cate.search("a").first.attributes["href"].text}"
             puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
             next
           end
 
-          cat = Category.where(site_cat_id: site_cat_id).first unless site_cat_id.nil?
-          cat = Category.where(cat_name: cat_name).first if cat.nil? && !cat_name.nil?
+          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id)
 
-          if cat.nil?
-            puts "scrape_others_featured_cates - Cannot find cat by cat_name #{cat_name} of root #{root_cat.cat_name}- at page #{page.uri.to_s}"
-
-            cat = Category.find_or_initialize_by(site_cat_id: site_cat_id) unless site_cat_id.nil?
-            cat = Category.find_or_initialize_by(cat_name: cat_name) if cat.nil? && !cat_name.nil?
-
-            if cat.new_record?
-              cat.is_shown_in_menu = false
-              cat.cat_name = cat_name
-              cat.parent_id = root_cat.id
-              cat.site_cat_id = site_cat_id
-              cat.save
-            end
+          if cat.new_record?
+            cat.is_shown_in_menu = false
+            cat.cat_name = cat_name
+            cat.parent_id = root_cat.id
+            cat.site_cat_id = site_cat_id
+            cat.save
           end
 
           f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
@@ -599,7 +575,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end    
   end
 
@@ -612,44 +588,53 @@ class Scrapper
 
       menu = page.search("#globalMastheadCategoryMenu")
 
+      threads = []
+      thread_count = 0
+
       menu.search("li").each do |mnu_item|
-        cat_id = mnu_item.attributes["id"].value.split("_").last
+        threads[thread_count] = Thread.new {
+          cat_id = mnu_item.attributes["id"].value.split("_").last
 
-        anchor = mnu_item.search("a").first
-        cat_name = replace_macys_info(anchor.text)
-        cat_url = @root_url + anchor.attributes["href"].value
+          anchor = mnu_item.search("a").first
+          cat_name = replace_macys_info(anchor.text)
+          cat_url = @root_url + anchor.attributes["href"].value
 
-        puts "- Scrapping #{cat_name} filters"
-        start = Time.now
+          puts "- Scrapping #{cat_name} filters"
+          start = Time.now
 
-        scrape_filters_details(cat_id, cat_url)
+          scrape_filters_details(cat_id, cat_url)
+          
+          puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
+        }
         
-        puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
+        thread_count += 1
       end
+
+      threads.each {|t| t.join}
 
       # scrape filters for special home category
-      puts "*** Scrape filters for Home essentials"
+      #puts "*** Scrape filters for Home essentials"
 
-      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
+      # home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
 
-      if !home_cat.nil?
-        HOME_SPECIAL_CATES.each do |cat_name, url|
-          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
+      # if !home_cat.nil?
+      #   HOME_SPECIAL_CATES.each do |cat_name, url|
+      #     cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
 
-          if !cat.nil?
-            scrape_filter_for_spec_home(home_cat, cat, url)
-          else
-            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
-          end
-        end
-      else
-        puts "Cannot find HOME category by its name"
-      end
+      #     if !cat.nil?
+      #       scrape_filter_for_spec_home(home_cat, cat, url)
+      #     else
+      #       puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
+      #     end
+      #   end
+      # else
+      #   puts "Cannot find HOME category by its name"
+      # end
 
       puts "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
@@ -675,7 +660,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -683,11 +668,13 @@ class Scrapper
     begin
       puts "scrape_filters_details #{url}"
 
+      full_url = url
+
       unless url.start_with?("http")
-        return
+        full_url = "#{@root_url}#{url}"
       end
 
-      page = @agent.get(url)
+      page = @agent.get(full_url)
 
       sub_menu_id = "#Flyout_#{site_root_cat_id}"
 
@@ -704,21 +691,24 @@ class Scrapper
               site_cat_id = leaf_cat.attributes["id"].text.split("_").last.to_i
               site_cat_id = leaf_cat.attributes["id"].text.split("?id=").last.split("&").first.to_i if site_cat_id == 0
               site_cat_url = cat_el.attributes["href"].text
+              cat_name = cat_el.text
+
+              puts "cat_name: -------> #{cat_name}"
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
 
-              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url)
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name)
             end
           end
         end
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
-  def scrape_filters_for_subcat(root_cat, site_cat_id, url)
+  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name)
     begin
       puts "Scrapping filters in #{url}"
 
@@ -756,7 +746,7 @@ class Scrapper
 
       boxes = facets.children
 
-      cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id).first
+      cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name).first
 
       if cat.nil?
         return
@@ -887,7 +877,7 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -901,17 +891,19 @@ class Scrapper
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
 
           if site_cat_id.to_i == 0
+            puts "scrape_filters_from_left_nav: cannot scrape site_cat_id #{site_cat_id} - #{cat.attributes["href"].text}"
             next
           end
 
           url = cat.attributes["href"].text
-
-          scrape_filters_for_subcat(root_cat, site_cat_id, url)
+          cat_name = cat.text
+          puts "cat_name =========> #{cat_name}"
+          scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name)
         end
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end  
 
@@ -979,7 +971,7 @@ class Scrapper
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1007,7 +999,7 @@ class Scrapper
       puts "[END] Scrapping products for Home essentials finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
@@ -1033,7 +1025,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1065,7 +1057,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1098,7 +1090,7 @@ class Scrapper
       puts "[END] Scrapping products for left cates in #{Time.now - start}"
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1197,7 +1189,7 @@ class Scrapper
       @scrapped_site_cat_ids[site_cat_id] = site_cat_id
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1222,7 +1214,7 @@ class Scrapper
       end
     rescue Exception => e 
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end      
   end
 
@@ -1310,7 +1302,7 @@ class Scrapper
 
     rescue Exception => e
       puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1344,7 +1336,7 @@ class Scrapper
       puts "[END] Scrapping child products of collection #{product_url}"
     rescue Exception => e
       puts "[EXCEPTION] #{e.message} - at product_url: #{product_url}"
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1518,7 +1510,7 @@ class Scrapper
 
     rescue Exception => e
       puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
@@ -1595,7 +1587,7 @@ class Scrapper
       return regular_price, was_price, sale_price
     rescue Exception => e 
       puts "[Exception] #{e.message} - data: #{tiered_price}"
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
       return "","",""
     end
   end
@@ -1652,7 +1644,7 @@ class Scrapper
       end
     rescue Exception => e
       puts e.message
-      puts e.backtrace.first(10).join("\n")
+      puts e.backtrace.join("\n")
     end
   end
 
