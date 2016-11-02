@@ -613,7 +613,7 @@ class Scrapper
           
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
-          max_deep = 2
+          max_deep = 4
           scrape_filters_from_left_nav(cat, cat_url, max_deep)
 
           puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
