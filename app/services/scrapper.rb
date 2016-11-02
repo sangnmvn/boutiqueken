@@ -225,26 +225,8 @@ class Scrapper
         cat_url = @root_url + anchor.attributes["href"].value
 
         cat = Category.where(site_cat_id: cat_id, parent_id:nil).first
-        scrape_left_nav_details(cat, cat_url)
-      end
-
-      # scrape left-nav for Home essentials
-      puts "*** Scrape left-nav for Home essentials"
-
-      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
-
-      if !home_cat.nil?
-        HOME_SPECIAL_CATES.each do |cat_name, url|
-          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
-
-          if !cat.nil?
-            scrape_left_nav_details(cat, url)
-          else
-            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
-          end
-        end
-      else
-        puts "Cannot find HOME category by its name"
+        max_deep = 2
+        scrape_left_nav_details(cat, cat_url, max_deep)
       end
 
       puts "[END] Scrapping left navigation finished in #{Time.now - start_time}\n\n"
@@ -254,16 +236,20 @@ class Scrapper
     end
   end
 
-  def scrape_left_nav_details(root_cat, url)
+  def scrape_left_nav_details(root_cat, url, deep=1)
     begin
+      return if deep < 1
+      deep -= 1
+
       page = @agent.get(url)
+
 
       # crawl left nav
       puts "\nScrapping Left Nav of #{url}"
       if root_cat.cat_name == 'BRANDS'
         scrape_left_nav_brands(root_cat, page)
       else
-        scrape_left_nav_others(root_cat, page)
+        scrape_left_nav_others(root_cat, page, deep)
       end
 
       # crawl feature categories
@@ -286,7 +272,7 @@ class Scrapper
       root_cat.seo_keywords = seo_keywords
       root_cat.seo_desc = seo_desc
       root_cat.save
-      
+
     rescue Exception => e 
       puts e.message
       puts e.backtrace.join("\n")
@@ -337,7 +323,7 @@ class Scrapper
     end      
   end
 
-  def scrape_left_nav_others(root_cat, page)
+  def scrape_left_nav_others(root_cat, page, deep)
     begin
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       group_pos = 0
@@ -349,6 +335,7 @@ class Scrapper
 
         group_cat.search("a").each do |cat|
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
+          url = cat.attributes["href"].text
           cat_name = replace_macys_info(cat.text)
 
           if site_cat_id.to_i == 0
@@ -378,6 +365,8 @@ class Scrapper
           nav.save
 
           pos += 1
+
+          scrape_left_nav_details(cat, url, deep)
         end
       end
     rescue Exception => e
@@ -591,6 +580,7 @@ class Scrapper
       threads = []
       thread_count = 0
 
+      # scrape filters from sub-menu
       menu.search("li").each do |mnu_item|
         threads[thread_count] = Thread.new {
           cat_id = mnu_item.attributes["id"].value.split("_").last
@@ -602,8 +592,16 @@ class Scrapper
           puts "- Scrapping #{cat_name} filters"
           start = Time.now
 
+          puts "url #{cat_url}"
           scrape_filters_details(cat_id, cat_url)
           
+          cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
+
+          unless ["HOME", "WOMEN"].include? cat_name
+            max_deep = 2
+            scrape_filters_from_left_nav(cat, cat_url, max_deep)
+          end
+
           puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
         }
         
@@ -612,56 +610,11 @@ class Scrapper
 
       threads.each {|t| t.join}
 
-      # scrape filters for special home category
-      #puts "*** Scrape filters for Home essentials"
-
-      # home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
-
-      # if !home_cat.nil?
-      #   HOME_SPECIAL_CATES.each do |cat_name, url|
-      #     cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
-
-      #     if !cat.nil?
-      #       scrape_filter_for_spec_home(home_cat, cat, url)
-      #     else
-      #       puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
-      #     end
-      #   end
-      # else
-      #   puts "Cannot find HOME category by its name"
-      # end
-
       puts "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
       puts e.message
       puts e.backtrace.join("\n")
     end      
-  end
-
-  def scrape_filter_for_spec_home(root_cat, cat, url)
-    begin
-      page = @agent.get(url)
-
-      groups = page.search(".//li[@class='nav_cat_item_bold']")
-      groups.each do |group|
-        links = group.search("a")
-        links.each do |link|
-          filter_url = link.attributes["href"].text
-          
-          site_cat_id = filter_url.split("?id=").last.split("&").first
-
-          if site_cat_id.blank?
-            puts "Cannot get site_cat_id from url #{filter_url}"
-            next
-          end
-
-          scrape_filters_details(site_cat_id, filter_url)
-        end
-      end
-    rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
-    end
   end
 
   def scrape_filters_details(site_root_cat_id, url)
@@ -696,8 +649,8 @@ class Scrapper
               puts "cat_name: -------> #{cat_name}"
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-
-              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name)
+              max_deep = 2
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
             end
           end
         end
@@ -708,8 +661,11 @@ class Scrapper
     end      
   end
 
-  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name)
+  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, deep=1)
     begin
+      return if deep < 1
+      deep -= 1
+
       puts "Scrapping filters in #{url}"
 
       page = @agent.get(url)
@@ -722,25 +678,26 @@ class Scrapper
         puts "Cannot find filters in this page #{url}"
         puts "-> Scrape category list"
 
-        cat = Category.where(site_cat_id: site_cat_id).first
+        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
 
-        if cat.present?
-          cat.seo_title = seo_title
-          cat.seo_keywords = seo_keywords
-          cat.seo_desc = seo_desc
-          cat.save
+        cat.site_cat_id = site_cat_id
+        cat.parent_id = root_cat.id
+        cat.cat_name = cat_name
+        cat.seo_title = seo_title
+        cat.seo_keywords = seo_keywords
+        cat.seo_desc = seo_desc
+        cat.save
 
-          unless url.start_with?("http")
-            full_url = "#{@root_url}#{url}"
-          else
-            full_url = url
-          end
-
-          scrape_left_nav_details(cat, full_url)
-
-          scrape_filters_from_left_nav(cat, full_url)
+        unless url.start_with?("http")
+          full_url = "#{@root_url}#{url}"
+        else
+          full_url = url
         end
-        
+
+        scrape_left_nav_details(cat, full_url)
+
+        scrape_filters_from_left_nav(cat, full_url, deep)
+
         return
       end
 
@@ -749,6 +706,7 @@ class Scrapper
       cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name).first
 
       if cat.nil?
+        puts "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
         return
       end
 
@@ -881,11 +839,15 @@ class Scrapper
     end
   end
 
-  def scrape_filters_from_left_nav(root_cat, url)
+  def scrape_filters_from_left_nav(root_cat, url, deep=1)
     begin
+      return if deep < 1
+      deep -= 1
+
       page = @agent.get(url)
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
-      
+  
+      current_cat_name = ""      
       nav.each do |group_cat|
         group_cat.search("a").each do |cat|
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
@@ -897,8 +859,15 @@ class Scrapper
 
           url = cat.attributes["href"].text
           cat_name = cat.text
-          puts "cat_name =========> #{cat_name}"
-          scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name)
+
+          # compare current_cat_name vs cat_name to prevent duplicate scrapping filters
+          # due to duplicate urls
+          if current_cat_name != cat_name
+            puts "cat_name =========> #{cat_name}"
+            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, deep)
+          end
+
+          current_cat_name = cat_name
         end
       end
     rescue Exception => e
@@ -959,70 +928,11 @@ class Scrapper
         end
       end
 
-      # Scrape products for home essentials
-      if scrape_cat_name.nil? || scrape_cat_name == "HOME"
-        scrape_other_home_products()
-      end
-
       if update_db
         update_products_after_import()
         update_product_price_details_after_import()
       end
       puts "[END] Scrapping products finished in #{Time.now - start_time}"
-    rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
-    end
-  end
-
-  def scrape_other_home_products
-    begin
-      puts "[BEGIN] Scrape products for Home essentials"
-      start_time = Time.now
-
-      home_cat = Category.where(cat_name: "HOME", parent_id: nil).first
-
-      if !home_cat.nil?
-        HOME_SPECIAL_CATES.each do |cat_name, url|
-          cat = Category.where(parent_id: home_cat.id, cat_name: cat_name).first
-
-          if !cat.nil?
-            scrape_home_essential_products(home_cat, cat, url)
-          else
-            puts "Cannot find category by cat name: #{cat_name}, url: #{url}"
-          end
-        end
-      else
-        puts "Cannot find HOME category by its name"
-      end
-
-      puts "[END] Scrapping products for Home essentials finished in #{Time.now - start_time}"
-    rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
-    end      
-  end
-
-  def scrape_home_essential_products(root_cat, cat, url)
-    begin
-      page = @agent.get(url)
-
-      groups = page.search(".//li[@class='nav_cat_item_bold']")
-      groups.each do |group|
-        links = group.search("a")
-        links.each do |link|
-          filter_url = link.attributes["href"].text
-          
-          site_cat_id = filter_url.split("?id=").last.split("&").first
-
-          if site_cat_id.blank?
-            puts "Cannot get site_cat_id from url #{filter_url}"
-            next
-          end
-
-          scrape_products_per_subcat(site_cat_id, filter_url)
-        end
-      end
     rescue Exception => e 
       puts e.message
       puts e.backtrace.join("\n")
