@@ -15,13 +15,13 @@
           %h1=@product.brand_name
           %p=@product.short_desc
           %p.details-2-price
-            -if @product.regular_price.present?
+            -if @product.macys_sale_price.present?
               %span.del-price
                 %strong Was
                 %span
                   %del 
                     $
-                    =show_price_digit(@product.regular_price)
+                    =show_price_digit(@product.macys_sale_price)
 
             -if @product.sale_price.present?
               %span.cur-price
@@ -122,11 +122,11 @@
                       .vertical-items
                         %img.img-responsive{:alt => product.short_desc, :src => show_image_small_slider(product.main_image_url)}/
                         %p=product.short_desc
-                        -if product.regular_price.present?
+                        -if product.macys_sale_price.present?
                           %span.reg-price
                             %strong
                               Reg. $
-                              =show_price_digit(product.regular_price)
+                              =show_price_digit(product.macys_sale_price)
                         -if product.sale_price.present?
                           %span.sale-price
                             %strong
@@ -181,12 +181,12 @@
                           %a{:href => "javascript:;"}
                             %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
                 .col-md-12.col-sm-12.col-xs-12
-                  -if child.regular_price.present? && child.regular_price > 0
+                  -if child.macys_sale_price.present? && child.macys_sale_price > 0
                     %span.del-price
                       %span
                         %del.price-txt 
                           $
-                          =show_price_digit(child.regular_price)
+                          =show_price_digit(child.macys_sale_price)
                   -if child.sale_price.present? && child.sale_price > 0
                     %span.price-txt 
                       $
@@ -217,11 +217,11 @@
               .recent-view-single-item
                 %img.img-responsive{:alt => product.short_desc, :src => show_image_cus_love(product.main_image_url)}/
                 %p=product.short_desc
-                -if product.regular_price.present?
+                -if product.macys_sale_price.present?
                   %span.reg-price
                     %strong
                       Reg. $
-                      =show_price_digit(product.regular_price)
+                      =show_price_digit(product.macys_sale_price)
                 -if product.sale_price.present?
                   %span.sale-price
                     %strong 

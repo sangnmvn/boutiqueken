@@ -70,11 +70,11 @@
                 
               %strong
                 %a{:href => product_path(i)}=i.short_desc
-              -if i.regular_price.present?
+              -if i.macys_sale_price.present?
                 %span.reg-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong 
                     Reg. $
-                    =show_price_digit(i.regular_price)
+                    =show_price_digit(i.macys_sale_price)
               -if i.sale_price.present?
                 %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong

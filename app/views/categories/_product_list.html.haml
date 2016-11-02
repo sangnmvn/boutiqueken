@@ -78,11 +78,11 @@
                 .clear-fix
                 %strong
                   %a{:href => category_product_path(@category,f_id(i))}=i.short_desc
-                -if i.regular_price.present?
+                -if i.macys_sale_price.present?
                   %span.reg-price{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
                     %strong 
                       Reg. $
-                      =show_price_digit(i.regular_price)
+                      =show_price_digit(i.macys_sale_price)
                 -if i.sale_price.present?
                   %span.sale-price{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
                     %strong
