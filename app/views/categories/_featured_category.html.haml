@@ -1,7 +1,7 @@
 .featured-product-area
   / designer-popup-div starts
-  .designer-popup-div
-    -if @top_sales_categories.present?
+  -if @top_sales_categories.present?
+    .designer-popup-div
       %h1 Shop Our Designer Pop-Up Sale
       .designer-popup-items
         / popup single item
@@ -18,7 +18,7 @@
   / featured-categories-div starts
   .featured-categories-div
     -if @feature_categories.present?
-      %h1 Featured Categories
+      %h1.h1-featured Featured Categories
       .featured-items
         -@feature_categories.each do |i|
           .featured-single-item

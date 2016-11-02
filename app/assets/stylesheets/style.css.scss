@@ -671,7 +671,7 @@ ul{
  *
  */
 .section-saks-bag{
-  margin-top: 5rem;
+  /*margin-top: 5rem;*/
 }
 .section-saks-bag header{
   display: block;
@@ -1186,7 +1186,7 @@ ul{
  */
 
 .section-products-area {
-  margin-top: 2.5rem;
+  /*margin-top: 2.5rem;*/
   margin-bottom: 3.5rem;
 }
 .section-products-area aside img{
@@ -2874,7 +2874,7 @@ input[type=number]::-webkit-outer-spin-button {
 .product-details-2-top {
   margin-bottom: 5rem;
   overflow: hidden;
-  padding-top: 4rem;
+  /*padding-top: 4rem;*/
   width: 100%;
 }
 .details-2-left {
@@ -3793,4 +3793,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 .modal-open{
   overflow: auto;  
+}
+
+.h1-featured{
+  font-size: 2.7rem !important;
+  padding-bottom: 0px !important;
+}
+.no-mar-top{
+  margin-top: 0px;
 }
