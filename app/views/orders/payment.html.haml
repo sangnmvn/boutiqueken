@@ -1,0 +1,168 @@
+%body
+  %section.section-payment
+    .container
+      %header.tablist-holder
+        %ul.tablist.pull-left
+          %li.page-pointer
+          %li
+            %a{:href => "#"} SHIPPING AND BILLING
+          %li
+            %a.tablist-active{:href => "#"} PAYMENT
+          %li
+            %a{:href => "#"} REVIEW &amp; SUBMIT
+        %ul.ul-saks-bag-top-list.pull-right
+          %li
+            %a{:href => "#"} 1.8777.551.7257
+          %li
+            %a{:href => "#"} Email
+          %li
+            %a{:href => "#"} Chat
+          %li
+            %a{:href => "#"} Shipping &amp; Returns
+      / .tab holder ends
+      / payment-section-body start
+      .payment-section-body.common-section-body
+        .row
+          .col-xs-12.col-sm-12.col-md-7
+            %form{:action => "#"}
+              .sign-in-col.sign-in-col-has-required
+                .row
+                  .col-xs-12.col-sm-12.col-md-12
+                    .half-input-div
+                      %label{:for => "card-exp"} Cash on delivery
+                      %input#card-exp.half-left-input{:type =>"checkbox",:style =>"width: 14px",:checked =>"checked",:disabled=>"disabled"}/
+                  
+              .check-outing.pull-right
+                %a.btn-checkout{:href =>""} CONTINUE CHECKOUT
+          / COL-7 ENDS
+          / right area content
+          .col-xs-12.col-sm-12.col-md-5
+            .long-table
+              / DESKTOP TABLE MARKUP
+              %table.table.table-bordered.hidden-xs
+                %thead
+                  %tr
+                    %th{:scope => "row"} Order Summary (1 Item)
+                    %th{:scope => "row"} Subtotal
+                %tbody
+                  %tr
+                    %td.saks-bag-item
+                      .saks-bag-item-img
+                        %img{:alt => "", :src => "img/products/p-18.jpg"}/
+                      .product-details-info
+                        %strong 3.1 Phillip  Lim
+                        %p.pp-name Cropped Straight -leg Trousers
+                        %p.pp-code 0448664000041200
+                        %p.pp-size
+                          %b Size:
+                          4
+                        %p.pp-color
+                          %b Color:
+                          Black
+                        %p.pp-eligible
+                          %i.fa.fa-refresh{"aria-hidden" => "true"}
+                          Eligible
+                        %p.pp-edit
+                          %i.fa.fa-pencil{"aria-hidden" => "true"}
+                          %a{:href => "#"} Edit
+                        %p.pp-later
+                          %i.fa.fa-heart{"aria-hidden" => "true"}
+                          %a{:href => "#"} Save For Later
+                        %p.pp-gift
+                          %i.fa.fa-gift{"aria-hidden" => "true"}
+                          %a{:href => "#"} Make This a Gift
+                        %p.pp-remove
+                          %i.fa.fa-times{"aria-hidden" => "true"}
+                          %a{:href => "#"} Remove
+                      / .product-details-info
+                    %td $498.00
+              / DESKTOP TABLE MARKUP ENDS
+              / MOBILE TABLE MARKUP
+              %table.table.table-bordered.visible-xs
+                %tbody
+                  %tr
+                    %th{:scope => "row"} Order Summary (1 Item)
+                    %td.saks-bag-item
+                      .saks-bag-item-img
+                        %img{:alt => "", :src => "img/products/p-18.jpg"}/
+                      .product-details-info
+                        %strong 3.1 Phillip  Lim
+                        %p.pp-name Cropped Straight -leg Trousers
+                        %p.pp-code 0448664000041200
+                        %p.pp-size
+                          %b Size:
+                          4
+                        %p.pp-color
+                          %b Color:
+                          Black
+                        %p.pp-eligible
+                          %i.fa.fa-refresh{"aria-hidden" => "true"}
+                          Eligible
+                        %p.pp-edit
+                          %i.fa.fa-pencil{"aria-hidden" => "true"}
+                          %a{:href => "#"} Edit
+                        %p.pp-later
+                          %i.fa.fa-heart{"aria-hidden" => "true"}
+                          %a{:href => "#"} Save For Later
+                        %p.pp-gift
+                          %i.fa.fa-gift{"aria-hidden" => "true"}
+                          %a{:href => "#"} Make This a Gift
+                        %p.pp-remove
+                          %i.fa.fa-times{"aria-hidden" => "true"}
+                          %a{:href => "#"} Remove
+                      / .product-details-info
+                  %tr
+                    %th{:scope => "row"} Subtotal
+                    %td $498.00
+              / MOBILE TABLE MARKUP ENDS
+              .table-btm-qt
+                %p
+                  %strong Shopping To
+                  %span.c-name Mr. Jeffrey Johnso
+                  %span.c-street 3343 Waldeck Street
+                  %span.c-tx Arlington, TX 75760
+                  %span.c-city US
+                  %span.c-contact 817-465-4744
+                  %span
+                    %i.fa.fa-pencil{"aria-hidden" => "true"}
+                    %a{:href => "#"} Edit
+                %p
+                  %strong Shopping Method :
+                  Standard (Est Delivery 10/10/16)
+                  %span
+                    %i.fa.fa-pencil{"aria-hidden" => "true"}
+                    %a{:href => "#"} Edit
+              / .table-btm-qt
+              / checkout-table
+              %table.checkout-table
+                %tr
+                  %td
+                    %b Item Total
+                  %td.text-right $498.00
+                %tr
+                  %td
+                    %b Gift Wrap
+                  %td.text-right $0.00
+                %tr
+                  %td
+                    %b Estimated Shopping &amp; Handling
+                  %td.text-right $0.00
+                %tr
+                  %td
+                    %b Total Before Tax
+                  %td.text-right $498.00
+                %tr.checkout-table-last
+                  %td
+                    %b Estimated Tax
+                  %td.text-right $0.00
+                %tr.checkout-table-total
+                  %td
+                    %b Estimated Total
+                  %td.text-right
+                    %b $498.00
+              / CHECKOUT TABLE ENDS
+            / LONG TABLE ENDS
+          / COL-5 ENDS
+        / ROW ENDS
+      / common-section-body
+    / .container ends

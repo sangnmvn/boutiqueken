@@ -31,7 +31,7 @@
             / sign-in-col starts
             .sign-in-col.sign-in-col-has-required
               -url = orders_path()
-              = form_for(@order, url: url, html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |form|
+              = form_for(@order, url: url,method: :post, html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |form|
                 / shipping-wrapper starts
                 =form.fields_for :shipping_address do |f|
                   .shipping-wrapper
@@ -101,8 +101,7 @@
                           .checkbox-input-block
                             %label.control.control--checkbox.change-password-trigger{:for => "default-billing"}
                               Make This My Billing Address
-                              / %input#billing{:checked => "checked", :type => "checkbox"}/
-                              =f.check_box :is_default_billing,:id =>"default-billing",class: "cb-default"
+                              =f.check_box :is_default_billing,:id =>"billing",class: "cb-default",:checked => "checked"
                               %span.control__indicator
                           / .checkbox-input-block ends
                       / make-address
@@ -113,7 +112,6 @@
                     .row
                       .col-xs-12.col-sm-12
                         %h4 Billing Address
-                      .col-xs-12.col-sm-6.col-md-3
                       .col-xs-12.col-sm-6.col-md-4
                         .name-input-block
                           %label{:for => "first-name"} First Name
@@ -165,11 +163,13 @@
                     %p.email-phone Please enter an email address and a phone number whrer we can reach you about your order
                   .info-form-group.col-sm-6.col-md-8
                     %label{:for => "e-address"} Email Address
-                    %input#e-address{:required => "required", :type => "text"}/
+                    / %input#e-address{:required => "required", :type => "text"}/
+                    = form.text_field :email, autofocus: true, autocomplete: "off", placeholder: "Email", :required =>"required", "data-parsley-type" =>"email", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Email is required!",:id =>"e-address"
                   / .info-form-group ends
                   .info-form-group.col-sm-6.col-md-4
                     %label{:for => "p-number"} Phone Number
-                    %input#p-number{:required => "required", :type => "text"}/
+                    / %input#p-number{:required => "required", :type => "text"}/
+                    = form.text_field :phone,autocomplete: "off", :required =>"required", placeholder: "Telephone", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Telephone is required!",:id =>"telephone",:required =>"required"
                   / .info-form-group ends
                 / .row ends
                 .row
@@ -186,78 +186,95 @@
               %table.table.table-bordered.hidden-xs
                 %thead
                   %tr
-                    %th{:scope => "row"} Order Summary (1 Item)
+                    %th{:scope => "row"}="Order Summary (#{@shopping_cart.shopping_cart_items.count} Item)"
                     %th{:scope => "row"} Subtotal
                 %tbody
-                  %tr
-                    %td.saks-bag-item
-                      .saks-bag-item-img
-                        %img{:alt => "", :src => "img/products/p-18.jpg"}/
-                      .product-details-info
-                        %strong 3.1 Phillip  Lim
-                        %p.pp-name Cropped Straight -leg Trousers
-                        %p.pp-code 0448664000041200
-                        %p.pp-size
-                          %b Size:
-                          4
-                        %p.pp-color
-                          %b Color:
-                          Black
-                        %p.pp-eligible
-                          %i.fa.fa-refresh{"aria-hidden" => "true"}
-                          Eligible
-                        %p.pp-edit
-                          %i.fa.fa-pencil{"aria-hidden" => "true"}
-                          %a{:href => "#"} Edit
-                        %p.pp-later
-                          %i.fa.fa-heart{"aria-hidden" => "true"}
-                          %a{:href => "#"} Save For Later
-                        %p.pp-gift
-                          %i.fa.fa-gift{"aria-hidden" => "true"}
-                          %a{:href => "#"} Make This a Gift
-                        %p.pp-remove
-                          %i.fa.fa-times{"aria-hidden" => "true"}
-                          %a{:href => "#"} Remove
-                      / .product-details-info ends
-                    %td $498.00
+                  -@shopping_cart.shopping_cart_items.each do |i|
+                    %tr
+                      %td.saks-bag-item{:class =>"td_#{i.id}"}
+                        .saks-bag-item-img
+                          -if i.has_color
+                            %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -else
+                            %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                        .product-details-info
+                          -if i.has_color
+                            -product = i.product_price_detail.product
+                          -else
+                            -product = i.product
+                          %strong=product.short_desc
+                          -if i.size.present?
+                            %p.pp-size
+                              %b Size:
+                              =i.size
+                          -if i.has_color
+                            %p.pp-color
+                              %b Color:
+                              =i.product_price_detail.color_name
+                          %div
+                            .saks-bag-item-qnt
+                              %span=i.quantity
+                          %p.pp-edit
+                            %i.fa.fa-pencil{"aria-hidden" => "true"}
+                            %a.edit-q-link{:href => "javascript:;","data-p"=>"td_#{i.id}"}Edit
+                          %p.edit-quantity.hide
+                            .form-edit.hide
+                              =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
+                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
+                                =f.submit "update",class: ""
+                                =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                          %p.pp-remove
+                            %i.fa.fa-times{"aria-hidden" => "true"}
+                            =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
+                        %td=show_price_digit(i.price * i.quantity.to_i)
               / DESKTOP TABLE MARKUP ENDS
               / MOBILE TABLE MARKUP
               %table.table.table-bordered.visible-xs
                 %tbody
-                  %tr
-                    %th{:scope => "row"} Order Summary (1 Item)
-                    %td.saks-bag-item
-                      .saks-bag-item-img
-                        %img{:alt => "", :src => "img/products/p-18.jpg"}/
-                      .product-details-info
-                        %strong 3.1 Phillip  Lim
-                        %p.pp-name Cropped Straight -leg Trousers
-                        %p.pp-code 0448664000041200
-                        %p.pp-size
-                          %b Size:
-                          4
-                        %p.pp-color
-                          %b Color:
-                          Black
-                        %p.pp-eligible
-                          %i.fa.fa-refresh{"aria-hidden" => "true"}
-                          Eligible
-                        %p.pp-edit
-                          %i.fa.fa-pencil{"aria-hidden" => "true"}
-                          %a{:href => "#"} Edit
-                        %p.pp-later
-                          %i.fa.fa-heart{"aria-hidden" => "true"}
-                          %a{:href => "#"} Save For Later
-                        %p.pp-gift
-                          %i.fa.fa-gift{"aria-hidden" => "true"}
-                          %a{:href => "#"} Make This a Gift
-                        %p.pp-remove
-                          %i.fa.fa-times{"aria-hidden" => "true"}
-                          %a{:href => "#"} Remove
-                      / .product-details-info ends
-                  %tr
-                    %th{:scope => "row"} Subtotal
-                    %td $498.00
+                  -@shopping_cart.shopping_cart_items.each do |i|
+                    %tr
+                      %th{:scope => "row"}="Order Summary (#{@shopping_cart.shopping_cart_items.count} Item)"
+                      %td.saks-bag-item
+                        .saks-bag-item-img
+                          -if i.has_color
+                            %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -else
+                            %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                        .product-details-info
+                          -if i.has_color
+                            -product = i.product_price_detail.product
+                          -else
+                            -product = i.product
+                          %strong=product.short_desc
+                          -if i.size.present?
+                            %p.pp-size
+                              %b Size:
+                              =i.size
+                          -if i.has_color
+                            %p.pp-color
+                              %b Color:
+                              =i.product_price_detail.color_name
+                          %div{:class =>"td_#{i.id}"}
+                            .saks-bag-item-qnt
+                              %span=i.quantity
+                          %p.pp-edit
+                            %i.fa.fa-pencil{"aria-hidden" => "true"}
+                            %a{:href => "#"} Edit
+                          %p.edit-quantity.hide
+                            .form-edit.hide
+                              =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
+                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
+                                =f.submit "update",class: ""
+                                =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                          %p.pp-remove
+                            %i.fa.fa-times{"aria-hidden" => "true"}
+                            =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
+                        / .product-details-info ends
+                    %tr
+                      %th{:scope => "row"} Subtotal
+                      %td
+                        $
+                        =show_price_digit(i.price * i.quantity.to_i)
               / MOBILE TABLE MARKUP ENDS
               .table-btm-qt
                 %p
@@ -281,7 +298,9 @@
                 %tr
                   %td
                     %b Item Total
-                  %td.text-right $498.00
+                  %td.text-right
+                    $
+                    =show_price_digit(@shopping_cart.total)
                 %tr
                   %td
                     %b Gift Wrap
@@ -293,7 +312,9 @@
                 %tr
                   %td
                     %b Total Before Tax
-                  %td.text-right $498.00
+                  %td.text-right
+                    $
+                    =show_price_digit(@shopping_cart.total)
                 %tr.checkout-table-last
                   %td
                     %b Estimated Tax
@@ -302,7 +323,7 @@
                   %td
                     %b Estimated Total
                   %td.text-right
-                    %b $498.00
+                    %b=show_price_digit(@shopping_cart.total)
               / CHECKOUT TABLE ENDS
             / LONG TABLE ENDS
           / COL-5 ENDS
