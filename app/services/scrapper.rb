@@ -252,8 +252,15 @@ class Scrapper
 
       if nav_sub_cat.present?
         scrape_left_nav_others(root_cat, page, deep)
-      else
+      elsif page.search(".//div[@class='subCatList']").present?
         scrape_left_nav_brands(root_cat, page)
+      else
+        seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+        root_cat.seo_title = seo_title
+        root_cat.seo_keywords = seo_keywords
+        root_cat.seo_desc = seo_desc
+        root_cat.save
+        return
       end
 
       # crawl feature categories
