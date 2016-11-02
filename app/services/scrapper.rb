@@ -213,7 +213,7 @@ class Scrapper
       menu = page.search("#globalMastheadCategoryMenu")
 
       if menu.count == 0
-        puts "[WARN] Cannot scrape the left nav because of chaninging in the site structure"
+        puts "[WARN] Cannot scrape the left nav because of changing in the site structure"
         return
       end
 
@@ -271,15 +271,6 @@ class Scrapper
       else
         scrap_brand_featured_brands(root_cat, page)
       end
-
-      # if root_cat.cat_name == "KIDS"
-      # elsif root_cat.cat_name == 'ACTIVE'
-      #   scrap_active_featured_cates(root_cat, page)
-      # elsif root_cat.cat_name == 'BRANDS'
-      #   scrap_brand_featured_brands(root_cat, page)
-      # else
-      #   scrape_others_featured_cates(root_cat, page)
-      # end
 
       # update seo information for root_cat
       seo_title, seo_keywords, seo_desc = extract_seo_information(page)
@@ -447,9 +438,10 @@ class Scrapper
       pos = 0
 
       f_cates.each do |f_cate|
-        cat_name = replace_macys_info(f_cate.attributes["alt"].text)
+        cat_name = f_cate.attributes["alt"].text
 
         unless ['go you macys active'].include? cat_name
+          cat_name = replace_macys_info(cat_name)
 
           if cat_name.blank?
             puts "scrap_active_featured_cates - cat_name is blank - skipped"
@@ -595,12 +587,12 @@ class Scrapper
 
       menu = page.search("#globalMastheadCategoryMenu")
 
-      threads = []
-      thread_count = 0
+      #threads = []
+      #thread_count = 0
 
       # scrape filters from sub-menu
       menu.search("li").each do |mnu_item|
-        threads[thread_count] = Thread.new {
+        #threads[thread_count] = Thread.new {
           cat_id = mnu_item.attributes["id"].value.split("_").last
 
           anchor = mnu_item.search("a").first
@@ -610,26 +602,20 @@ class Scrapper
           puts "- Scrapping #{cat_name} filters"
           start = Time.now
 
-          puts "url #{cat_url}"
-
-          #if cat_name == "WATCHES"
-            scrape_filters_details(cat_id, @root_url)
-          #end
+          scrape_filters_details(cat_id, @root_url)
           
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
-          # if cat_name == "WOMEN"
-             max_deep = 2
-             scrape_filters_from_left_nav(cat, cat_url, max_deep)
-          # end
+          max_deep = 2
+          scrape_filters_from_left_nav(cat, cat_url, max_deep)
 
           puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
-        }
+        #}
         
-        thread_count += 1
+        #thread_count += 1
       end
 
-      threads.each {|t| t.join}
+      #threads.each {|t| t.join}
 
       puts "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -669,11 +655,9 @@ class Scrapper
 
               puts "cat_name: -------> #{cat_name}"
 
-              #if site_cat_id == 57386
-                root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-                max_deep = 2
-                scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
-              #end
+              root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
+              max_deep = 2
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
             end
           else
             puts "leaf_cat: #{leaf_cat}"
@@ -929,7 +913,7 @@ class Scrapper
 
         if !scrape_cat_name.nil?
           if cat_name == scrape_cat_name
-            scrape_others_cat_products(cat_id, cat_url)
+            scrape_others_cat_products(cat_id, @root_url)
             scrape_products_for_left_cat(cat_url)
 
             @current_file.flush unless @current_file.nil?
@@ -941,7 +925,7 @@ class Scrapper
             break
           end
         else
-          scrape_others_cat_products(cat_id, cat_url)
+          scrape_others_cat_products(cat_id, @root_url)
           scrape_products_for_left_cat(cat_url)
 
           @current_file.flush unless @current_file.nil?
