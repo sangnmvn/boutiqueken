@@ -34,6 +34,8 @@
     %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "72x72"}/
     / For non-Retina iPhone, iPod Touch, and Android 2.1+ devices:
     %link{:href => "#", :rel => "apple-touch-icon-precomposed"}/
+    %link{:href => asset_path("favicon.jpg"), :rel => "icon"}/
+
     / Google Fonts
     %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800", :rel => "stylesheet"}/
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
@@ -51,7 +53,7 @@
         / HOME RIGHT CONTENT MARKUP
         .home-right-content
           / TOP SLIDER AREA STARTS
-          .section-slider-area
+          .section-slider-area.no-mar-top
             %h2.sr-only Main Slider Area
             #slider-1.carousel.slide{"data-ride" => "carousel"}
               / Indicators

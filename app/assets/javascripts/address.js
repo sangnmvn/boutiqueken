@@ -225,7 +225,7 @@ var ViewProduct ={
     product["main_image_url"] = "http://macys-o.scene7.com/is/image/MCY/products/" + product_info.main_image_url;
     product["product_id"]= product_info.id;
     product["name"] =  product_info.short_desc;
-    product["regular_price"] = product_info.regular_price;
+    product["macys_sale_price"] = product_info.macys_sale_price;
     product["sale_price"] = product_info.sale_price;
     product["price_range"] = product_info.list_price_range;
     list_views = jQuery.grep(list_views, function(obj) {
@@ -246,7 +246,7 @@ var ViewProduct ={
       list_views = jQuery.parseJSON(saved_cookies);
       
       jQuery.each(list_views,function(index,value){
-        regular_price = ViewProduct.show_price(value.regular_price);
+        macys_sale_price = ViewProduct.show_price(value.macys_sale_price);
         sale_price = ViewProduct.show_price(value.sale_price);
         price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
@@ -254,8 +254,8 @@ var ViewProduct ={
         div_single = $("<div></div>").addClass("recent-view-single-item");
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
-        if(regular_price !=""){
-          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + regular_price + "</strong>").appendTo(div_single);
+        if(macys_sale_price !=""){
+          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + macys_sale_price + "</strong>").appendTo(div_single);
         }
         if(sale_price !=""){
           sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. $" + sale_price + "</strong>").appendTo(div_single);
