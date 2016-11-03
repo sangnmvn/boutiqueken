@@ -73,8 +73,8 @@ class Scrapper
   def load_existing_products
     begin
       sql =%{
-        SELECT id, site_cat_id, site_product_id FROM products;
-      } 
+        SELECT id, site_cat_id, site_product_id FROM products where not is_collection;
+      }
 
       products = Product.connection.execute(sql)
 
@@ -244,12 +244,13 @@ class Scrapper
 
       page = @agent.get(url)
 
+      # Ignore filter page
+      return if page.search("#facets").present?
 
       # crawl left nav
       puts "\nScrapping Left Nav of #{url}"
 
-      nav_sub_cat = page.search("#firstNavSubCat")
-
+      nav_sub_cat = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       if nav_sub_cat.present?
         scrape_left_nav_others(root_cat, page, deep)
       elsif page.search(".//div[@class='subCatList']").present?
@@ -610,7 +611,7 @@ class Scrapper
           start = Time.now
 
           scrape_filters_details(cat_id, @root_url)
-          
+
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
           max_deep = 4
@@ -647,9 +648,14 @@ class Scrapper
 
       cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
 
+      group_cat_name = ""
+
       cat_divs.search(".//div[@class='flexLabelLinksContainer']").each do |cat_div|
         cat_div.search("li").each do |leaf_cat|
-          next if leaf_cat.children.first.name == "label"
+          if leaf_cat.children.first.name == "label"
+            group_cat_name = replace_macys_info(leaf_cat.children.first.text)
+            next
+          end
 
           if leaf_cat.search("a").count > 0
             cat_el = leaf_cat.search("a").first
@@ -661,10 +667,13 @@ class Scrapper
               cat_name = replace_macys_info(cat_el.text)
 
               puts "cat_name: -------> #{cat_name}"
+                
+              puts "group_cat_name: #{group_cat_name}"
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-              max_deep = 2
-              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, max_deep)
+              max_deep = 3
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, group_cat_name, max_deep)
+            
             end
           else
             puts "leaf_cat: #{leaf_cat}"
@@ -677,7 +686,7 @@ class Scrapper
     end      
   end
 
-  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, deep=1)
+  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, group_name, deep=1)
     begin
       return if deep < 1
       deep -= 1
@@ -694,7 +703,7 @@ class Scrapper
         puts "Cannot find filters in this page #{url}"
         puts "-> Scrape category list"
 
-        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
 
         cat.site_cat_id = site_cat_id
         cat.parent_id = root_cat.id
@@ -719,7 +728,7 @@ class Scrapper
 
       boxes = facets.children
 
-      cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name).first
+      cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name).first
 
       if cat.nil?
         puts "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
@@ -880,7 +889,7 @@ class Scrapper
           # due to duplicate urls
           if current_cat_name != cat_name
             puts "cat_name =========> #{cat_name}"
-            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, deep)
+            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil, deep)
           end
 
           current_cat_name = cat_name
