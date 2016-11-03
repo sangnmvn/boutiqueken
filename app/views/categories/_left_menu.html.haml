@@ -13,6 +13,18 @@
             -cat = Category.find(i.category_id)
             %li
               %a{:href => category_path(f_id(cat))}=i.cat_name
+  -elsif @left_navs.first.group_name.blank?
+    .single-product-cat
+      %strong.trigger
+        =@left_navs.first.cat_name
+        %span
+          %i.fa.fa-chevron-down
+      %ul.ul-product-cat
+        -@left_navs.each_with_index do |i,index|
+          -if index !=0
+            -cat = Category.find(i.category_id)
+            %li
+              %a{:href => category_path(f_id(cat))}=i.cat_name
   -else
     -group_name = ""
     - main_subs = @left_navs.group_by(&:group_name)

@@ -34,7 +34,7 @@
                 %span.c-contact=@order.phone
                 %span
                   %i.fa.fa-pencil{"aria-hidden" => "true"}
-                  %a{:href => "#"} Edit
+                  %a{:href => billing_shopping_carts_path} Edit
               .billing-email
                 %strong Email Address
                 %span.c-email=@order.email
@@ -64,7 +64,7 @@
             / COL ENDS
           / ROW ENDS
         / SUBMIT TOP AREA ENDS
-        %form{:action => "#"}
+        =form_for(@order,:url=>confirmed_order_path(@order),method: :put) do |f|
           .submit-middle-area
             .row
               .col-xs-12.col-sm-4.col-md-3
@@ -75,15 +75,15 @@
                   / %span.c-tx Arlington, TX 75760
                   / %span.c-city US
                   / %span.c-contact 817-465-4744
-                  %strong Billing Address
-                  %span.c-name=@billing.full_name
-                  %span.c-street=@billing.show_address
-                  %span.c-tx=@billing.city_state
+                  %strong Shipping Address
+                  %span.c-name=@shipping.full_name
+                  %span.c-street=@shipping.show_address
+                  %span.c-tx=@shipping.city_state
                   / %span.c-city US
                   %span.c-contact=@order.phone
                   %span
                     %i.fa.fa-pencil{"aria-hidden" => "true"}
-                    %a{:href => "#"} Edit
+                    %a{:href => billing_shopping_carts_path} Edit
               / COL ENDS
               .col-xs-12.col-sm-4.col-md-9
                 .submit-shipping-Method
@@ -249,38 +249,13 @@
                 / col ends
                 .col-xs-12.col-sm-6
                   .saks-bag-shopping
-                    .sign-in-col.sign-in-col-has-required
-                      %h4 Estimated Shopping &amp; Handling
-                      .row
-                        .info-form-group.col-sm-6.col-md-4
-                          %label{:for => "zip2"}
-                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
-                            Card Number
-                          .account-input-block
-                            %input#zip2{:type => "text"}/
-                          / .account-input-block ends
-                        / .info-form-group ends
-                        .info-form-group.col-sm-3.col-md-2
-                          %label{:for => "zip3"}
-                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
-                            Pin
-                          .account-input-block
-                            %input#zip3{:type => "text"}/
-                          / .account-input-block ends
-                        / .info-form-group ends
-                        .info-form-group.col-sm-2
-                          %a.apply{:href => "#"} Apply
-                        / .info-form-group ends
-                        .info-form-group.col-sm-6.col-md-4
-                          %a{:href => "#"} Check Gift Card Balance
-                        / .info-form-group ends
-                      / ROW ENDS
-                    / .checkout-table starts
                     %table.checkout-table
                       %tr
                         %td
                           %b Item Total
-                        %td.text-right $498.00
+                        %td.text-right
+                          $
+                          =@order.total
                       %tr
                         %td
                           %b Gift Wrap
@@ -292,7 +267,9 @@
                       %tr
                         %td
                           %b Total Before Tax
-                        %td.text-right $498.00
+                        %td.text-right
+                          $
+                          =@order.total
                       %tr.checkout-table-last
                         %td
                           %b Estimated Tax
@@ -301,14 +278,10 @@
                         %td
                           %b Estimated Total
                         %td.text-right
-                          %b $498.00
+                          %b
+                            $
+                            =@order.total
                     / CHECKOUT TABLE ENDS
                   .check-outing.text-right
                     %button{:type => "submit"} CHECKOUT
-                  / .check-outing ends
-                / col ends
-              / .row ends
-            / saks-bag-checkout ends
-          / submit-bottom-area ends
-      / submit-section-body
-    / .container ends
+                  

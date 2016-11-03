@@ -33,7 +33,8 @@
               -url = orders_path()
               = form_for(@order, url: url,method: :post, html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do |form|
                 / shipping-wrapper starts
-                =form.fields_for :shipping_address,@ship do |f|
+                =form.fields_for :shipping_address,@order.shipping_address do |f|
+                  =f.hidden_field :address_type,value: "shipping"
                   .shipping-wrapper
                     .row
                       .col-xs-12.col-sm-12
@@ -107,7 +108,8 @@
                       / make-address
                   / row ends
                   / billing-wrapper starts
-                =form.fields_for :billing_address,@bill do |f|
+                =form.fields_for :billing_address,@order.billing_address do |f|
+                  =f.hidden_field :address_type,value: "billing"
                   .billing-wrapper.change-password-slideToggle
                     .row
                       .col-xs-12.col-sm-12

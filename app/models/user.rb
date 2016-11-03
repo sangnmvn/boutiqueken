@@ -4,6 +4,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   has_many :addresses
+  has_many :orders
+
+  def confirmed_orders
+    self.orders.where(:status =>1)
+  end
+
   def full_name
   	[first_name,middle_name,last_name].join(" ")
   	

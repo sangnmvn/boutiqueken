@@ -90,17 +90,17 @@ class ShoppingCartsController < ApplicationController
     @default_shipping = current_user.default_shipping_address
     @order = Order.new({:user_id => current_user.id})
     if @default_shipping.present?
-      @bill  = @order.build_shipping_address(@default_shipping.dup.attributes)
+      @ship  = @order.build_shipping_address(@default_shipping.dup.attributes)
     else
-      @bill  =  @order.build_shipping_address
+      @ship  =  @order.build_shipping_address
     end
-
+    @ship.address_type = "shipping"
     if @default_billing.present?
-      @ship  = @order.build_billing_address(@default_billing.dup.attributes)
+      @bill  = @order.build_billing_address(@default_billing.dup.attributes)
     else
-      @ship  = @order.build_billing_address
+      @bill  = @order.build_billing_address
     end
-
+    @ship.address_type = "billing"
   end
 
   def payment

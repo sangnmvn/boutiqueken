@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   belongs_to :user
-  has_one :billing_address, class_name: "OrderAddress", primary_key: "shipping_address_id", :inverse_of => :order
-  has_one :shipping_address, class_name: "OrderAddress", primary_key: "shipping_address_id", :inverse_of => :order
+  has_one :billing_address, class_name: "OrderAddress"
+  has_one :shipping_address, class_name: "OrderAddress"
   accepts_nested_attributes_for :billing_address, :shipping_address
   has_many :order_details
   def parse_items_from_cart(shop_cart)

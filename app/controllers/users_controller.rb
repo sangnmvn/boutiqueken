@@ -45,6 +45,10 @@ class UsersController < ApplicationController
     @default_shipping = current_user.default_shipping_address
   end
 
+  def orders
+    @orders = current_user.confirmed_orders 
+  end
+
   protected
   def user_params
     params.require(:user).permit(:password, :password_confirmation,:first_name,:last_name)

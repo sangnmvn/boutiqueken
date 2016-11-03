@@ -11,6 +11,14 @@ module ApplicationHelper
     end 
   end
 
+  def active_order_left_menu
+    if @order.present?
+      return "active"
+    else
+      return ""
+    end 
+  end
+
   def determine_type(group_filter)
     if group_filter.downcase.strip == "color"
       "li-color"
@@ -207,5 +215,11 @@ module ApplicationHelper
     else
       obj.id
     end
+  end
+
+
+  def show_order_status(status)
+    map_k = {0=>"Init",1 =>"Confirmed"}
+    return map_k[status]
   end
 end
