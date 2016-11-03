@@ -1,0 +1,314 @@
+%body
+  %section.section-submit
+    .container
+      %header.tablist-holder
+        %ul.tablist.pull-left
+          %li.page-pointer
+          %li
+            %a{:href => "#"} SHIPPING AND BILLING
+          %li
+            %a{:href => "#"} PAYMENT
+          %li
+            %a.tablist-active{:href => "#"} REVIEW &amp; SUBMIT
+        %ul.ul-saks-bag-top-list.pull-right
+          %li
+            %a{:href => "#"} 1.8777.551.7257
+          %li
+            %a{:href => "#"} Email
+          %li
+            %a{:href => "#"} Chat
+          %li
+            %a{:href => "#"} Shipping &amp; Returns
+      / .tab holder ends
+      / .submit-section-body
+      .submit-section-body
+        .submit-top-area
+          .row
+            .col-xs-12.col-sm-4.col-md-3
+              .billing-address
+                %strong Billing Address
+                %span.c-name=@billing.full_name
+                %span.c-street=@billing.show_address
+                %span.c-tx=@billing.city_state
+                / %span.c-city US
+                %span.c-contact=@order.phone
+                %span
+                  %i.fa.fa-pencil{"aria-hidden" => "true"}
+                  %a{:href => "#"} Edit
+              .billing-email
+                %strong Email Address
+                %span.c-email=@order.email
+            / COL ENDS
+            .col-xs-12.col-sm-4.col-md-3
+              .billing-payment-type
+                %strong Payment Type
+                %span="Cash on Delivery"
+                / %span Lewandowski - $529.13
+                / %span
+                /   %i.fa.fa-pencil{"aria-hidden" => "true"}
+                /   %a{:href => "#"} Edit
+              .billing-gift-card
+                %strong Gift Card
+                %span You've chosen to not use a gift card for this purchase.
+                %span
+                  / %i.fa.fa-pencil{"aria-hidden" => "true"}
+                  / %a{:href => "#"} Edit
+            / COL ENDS
+            .col-xs-12.col-sm-4.col-md-3
+              .billing-promo-code
+                %strong Promo Code
+                %span There are no valid promo codes entered for this purchase.
+                / %span
+                /   %i.fa.fa-pencil{"aria-hidden" => "true"}
+                /   %a{:href => "#"} Edit
+            / COL ENDS
+          / ROW ENDS
+        / SUBMIT TOP AREA ENDS
+        %form{:action => "#"}
+          .submit-middle-area
+            .row
+              .col-xs-12.col-sm-4.col-md-3
+                .submit-shipping-address
+                  / %strong Shipping Address
+                  / %span.c-name Mr. Jeffrey Johnso
+                  / %span.c-street 3343 Waldeck Street
+                  / %span.c-tx Arlington, TX 75760
+                  / %span.c-city US
+                  / %span.c-contact 817-465-4744
+                  %strong Billing Address
+                  %span.c-name=@billing.full_name
+                  %span.c-street=@billing.show_address
+                  %span.c-tx=@billing.city_state
+                  / %span.c-city US
+                  %span.c-contact=@order.phone
+                  %span
+                    %i.fa.fa-pencil{"aria-hidden" => "true"}
+                    %a{:href => "#"} Edit
+              / COL ENDS
+              .col-xs-12.col-sm-4.col-md-9
+                .submit-shipping-Method
+                  %strong Shopping Method
+                  .radio-input-block
+                    %label.control.control--radio{:for => "no"}
+                      Standard $0.00
+                      %input#no{:checked => "checked", :name => "radio", :type => "radio"}/
+                      %span.control__indicator
+                    %label.control.control--radio{:for => "yes"}
+                      Rush $15.00
+                      %input#yes{:checked => "checked", :name => "radio", :type => "radio"}/
+                      %span.control__indicator
+              / COL ENDS
+            / ROW ENDS
+            .row
+              .midle-midle
+                .col-xs-12.col-sm-4.col-md-3
+                  %span
+                    %i.fa.fa-pencil{"aria-hidden" => "true"}
+                    %a{:href => "#"} Edit
+                .col-xs-12.col-sm-4.col-md-4
+                  .info-form-group.info-form-group-single
+                    .checkbox-input-block
+                      %label.control.control--checkbox.change-password-trigger
+                        Signiture Required At Delivery
+                        %input{:checked => "checked", :type => "checkbox"}/
+                        %span.control__indicator
+                    / .checkbox-input-block ends
+            / DESKTOP TABLE MARKUP
+            .saks-bag-table
+              %table.table.table-bordered.hidden-xs
+                %thead
+                  %tr
+                    %th{:scope => "row"} Items
+                    %th{:scope => "row"} Quantity
+                    %th{:scope => "row"} Status
+                    %th{:scope => "row"} Unit Price
+                    %th{:scope => "row"} Subtotal
+                %tbody
+                  -@order.order_details.each do |i|
+                    %tr
+                      %td.saks-bag-item
+                        .saks-bag-item-img
+                          -if i.product_price_detail_id.present?
+                            %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -else
+                            %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                        .product-details-info
+                          %strong=i.product_name
+                          %p.pp-size
+                            %b Size:
+                            =i.size
+                          -if i.color.present?
+                            %p.pp-color
+                              %b Color:
+                              =i.color
+                        / .product-details-info
+                      %td
+                        .saks-bag-item-qnt
+                          %span=i.quantity
+                        .saks-bag-item-qnt-text
+                          / %p.pp-edit
+                          /   %i.fa.fa-pencil{"aria-hidden" => "true"}
+                          /   %a{:href => "#"} Edit
+                          / %p.pp-later
+                          /   %i.fa.fa-heart{"aria-hidden" => "true"}
+                          /   %a{:href => "#"} Save For Later
+                          / %p.pp-gift
+                          /   %i.fa.fa-gift{"aria-hidden" => "true"}
+                          /   %a{:href => "#"} Make This a Gift
+                          / %p.pp-remove
+                          /   %i.fa.fa-times{"aria-hidden" => "true"}
+                          /   %a{:href => "#"} Remove
+                        / .saks-bag-item-qnt-text
+                      %td In Stock
+                      %td=i.price
+                      %td=i.sub_total
+              / DESKTOP TABLE MARKUP ENDS
+              %p.about-table-p.hidden-xs
+                %strong Shipping Method:
+                Standard (est. delivery 10/ 07 16)
+              / MOBILE TABLE MARKUP
+              %table.table.table-bordered.visible-xs
+                -@order.order_details.each do |i|
+                  %tr
+                    %th{:scope => "row"} Items
+                    %td.saks-bag-item
+                      .saks-bag-item-img
+                        -if i.product_price_detail_id.present?
+                          %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                        -else
+                          %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                      .product-details-info
+                        %strong=i.product_name
+                        %p.pp-size
+                          %b Size:
+                          =i.size
+                        -if i.color.present?
+                          %p.pp-color
+                            %b Color:
+                            =i.color
+                        / %p.pp-eligible
+                        /   %i.fa.fa-refresh{"aria-hidden" => "true"}
+                        /   Eligible
+                      / .product-details-info
+                  %tr
+                    %th{:scope => "row"} Quantity
+                    %td
+                      .saks-bag-item-qnt
+                        %span=i.quantity
+                      .saks-bag-item-qnt-text
+                        / %p.pp-edit
+                        /   %i.fa.fa-pencil{"aria-hidden" => "true"}
+                        /   %a{:href => "#"} Edit
+                        / %p.pp-later
+                        /   %i.fa.fa-heart{"aria-hidden" => "true"}
+                        /   %a{:href => "#"} Save For Later
+                        / %p.pp-gift
+                        /   %i.fa.fa-gift{"aria-hidden" => "true"}
+                        /   %a{:href => "#"} Make This a Gift
+                        / %p.pp-remove
+                        /   %i.fa.fa-times{"aria-hidden" => "true"}
+                        /   %a{:href => "#"} Remove
+                      / .saks-bag-item-qnt-text
+                  %tr
+                    %th{:scope => "row"} Status
+                    %td In Stock
+                  %tr
+                    %th{:scope => "row"} Unit Price
+                    %td=i.price
+                  %tr
+                    %th{:scope => "row"} Subtotal
+                    %td=i.sub_total
+              / MOBILE TABLE MARKUP ENDS
+              %p.about-table-p.visible-xs
+                %strong Shipping Method:
+                Standard (est. delivery 10/ 07 16)
+          / SUBMIT MIDDLE AREA ENDS
+          .submit-bottom-area
+            %p.submit-bottom-title
+              %strong FREE SHIPPING,
+              Every Day, Every Onder, No Code Needed
+            .saks-bag-checkout
+              .row
+                .col-xs-12.col-sm-6
+                  .saks-bag-shopping.saks-bag-promo
+                    .sign-in-col.sign-in-col-has-required
+                      %h4 Promo Code (s)
+                      .row
+                        .info-form-group.col-sm-9
+                          %label{:for => "zip"}
+                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
+                            Enter One Promo Code At A Time
+                          .account-input-block
+                            %input#zip{:type => "text"}/
+                          / .account-input-block ends
+                        / .info-form-group ends
+                        .info-form-group.col-sm-2
+                          %a.apply{:href => "#"} Apply
+                        / .info-form-group ends
+                      / ROW ENDS
+                / col ends
+                .col-xs-12.col-sm-6
+                  .saks-bag-shopping
+                    .sign-in-col.sign-in-col-has-required
+                      %h4 Estimated Shopping &amp; Handling
+                      .row
+                        .info-form-group.col-sm-6.col-md-4
+                          %label{:for => "zip2"}
+                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
+                            Card Number
+                          .account-input-block
+                            %input#zip2{:type => "text"}/
+                          / .account-input-block ends
+                        / .info-form-group ends
+                        .info-form-group.col-sm-3.col-md-2
+                          %label{:for => "zip3"}
+                            %i.fa.fa-question-circle{"aria-hidden" => "true"}
+                            Pin
+                          .account-input-block
+                            %input#zip3{:type => "text"}/
+                          / .account-input-block ends
+                        / .info-form-group ends
+                        .info-form-group.col-sm-2
+                          %a.apply{:href => "#"} Apply
+                        / .info-form-group ends
+                        .info-form-group.col-sm-6.col-md-4
+                          %a{:href => "#"} Check Gift Card Balance
+                        / .info-form-group ends
+                      / ROW ENDS
+                    / .checkout-table starts
+                    %table.checkout-table
+                      %tr
+                        %td
+                          %b Item Total
+                        %td.text-right $498.00
+                      %tr
+                        %td
+                          %b Gift Wrap
+                        %td.text-right $0.00
+                      %tr
+                        %td
+                          %b Estimated Shopping &amp; Handling
+                        %td.text-right $0.00
+                      %tr
+                        %td
+                          %b Total Before Tax
+                        %td.text-right $498.00
+                      %tr.checkout-table-last
+                        %td
+                          %b Estimated Tax
+                        %td.text-right $0.00
+                      %tr.checkout-table-total
+                        %td
+                          %b Estimated Total
+                        %td.text-right
+                          %b $498.00
+                    / CHECKOUT TABLE ENDS
+                  .check-outing.text-right
+                    %button{:type => "submit"} CHECKOUT
+                  / .check-outing ends
+                / col ends
+              / .row ends
+            / saks-bag-checkout ends
+          / submit-bottom-area ends
+      / submit-section-body
+    / .container ends

@@ -2544,6 +2544,7 @@ input[type=number]::-webkit-outer-spin-button {
   border-width: 0 .1rem .1rem;
   margin-bottom: 1.2rem;
   padding: 1.5rem;
+  border-color: #ddd;
 }
 .common-section-body .table {
   margin-bottom: 0;
@@ -3828,4 +3829,10 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: 600;
   display: inline-block;
   text-align: center;
+}
+.lbl-normal{
+  display: inline-block !important;
+  line-height: 29px;
+  vertical-align: middle;
+  margin-top: 0px !important;
 }

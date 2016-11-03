@@ -1,7 +1,6 @@
 class Address < ActiveRecord::Base
   belongs_to :user
   before_save :set_billing_shipping_default
-  belongs_to :order
   def full_name
     [first_name,last_name].join(" ")
   end

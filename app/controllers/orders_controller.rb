@@ -19,14 +19,20 @@ class OrdersController < ApplicationController
   end
 
   def payment
-    
+    @order = Order.find(params[:id])
   end
   
+  def confirm
+    @order = Order.find(params[:id])
+    @billing = @order.billing_address
+    @shipping = @order.shipping_address
+  end
+
   protected
   def order_params
     params[:order][:shipping_address_attributes].merge!({user_id: current_user.id})
     params[:order][:billing_address_attributes].merge!({user_id: current_user.id})
-  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping],
-      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping])  
+  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:id,:order_id,:user_id],
+      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:id,:user_id,:order_id])  
   end
 end

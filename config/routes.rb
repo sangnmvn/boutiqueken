@@ -43,8 +43,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :orders
-
+  resources :orders do 
+    member do
+      get 'payment'
+      get 'confirm'
+    end
+  end
   resources :shopping_cart_items, only: [:update]
   #     member do
   #       get 'short'
