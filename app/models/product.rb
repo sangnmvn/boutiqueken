@@ -46,7 +46,11 @@ class Product < ActiveRecord::Base
 
     dynamic_string :filters, :multiple => true,:stored=>true do
       product_atts_key_pairs.inject({}) do |hash, e|
-        hash.merge(e[0].to_sym => e[1])
+        unless ["BULLET_TEXT","FABRIC_CONTENT","SHIPPING_BULLET_TEXT"].include? e[0]
+          hash.merge(e[0].to_sym => e[1])
+        end
+
+        hash
       end
     end
   end
@@ -58,7 +62,7 @@ class Product < ActiveRecord::Base
       end
       str
     end
-    
+
     JSON.parse(fixed_value).to_a
   end
 
