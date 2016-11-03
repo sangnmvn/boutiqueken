@@ -1442,7 +1442,7 @@ class Scrapper
     end
   end
 
-  def update_product_price_details(product)
+  def update_product_price_details(product, update_db=false)
     begin
       product_img_map = {}
       color_img_map = {}
@@ -1469,23 +1469,33 @@ class Scrapper
           colors.each do |color_name, nothing|
             ppd = ProductPriceDetail.new
             ppd.site_product_id = product.site_product_id
+            ppd.site_cat_id = product.site_cat_id
             ppd.price = price
             ppd.color_name = color_name
             ppd.color_image = color_img_map[color_name]
             ppd.product_image = product_img_map[color_name]
             
-            add_product_price_details_to_file(ppd)
+            if update_db
+              ppd.save
+            else
+              add_product_price_details_to_file(ppd)
+            end
           end
         end
       else
         color_img_map.each do |color_name, color_img|
           ppd = ProductPriceDetail.new
           ppd.site_product_id = product.site_product_id
+          ppd.site_cat_id = product.site_cat_id
           ppd.color_name = color_name
           ppd.color_image = color_img
           ppd.product_image = product_img_map[color_name]
-          
-          add_product_price_details_to_file(ppd)
+            
+          if update_db
+            ppd.save
+          else
+            add_product_price_details_to_file(ppd)
+          end
         end
       end
     rescue Exception => e
