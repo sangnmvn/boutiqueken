@@ -52,7 +52,14 @@ class Product < ActiveRecord::Base
   end
 
   def product_atts_key_pairs
-    JSON.parse(product_atts).to_a
+    fixed_value = product_atts.chars.inject("") do |str, char|
+      unless char.ascii_only? and (char.ord < 32 or char.ord == 127)
+        str << char
+      end
+      str
+    end
+    
+    JSON.parse(fixed_value).to_a
   end
 
   def list_sizes
