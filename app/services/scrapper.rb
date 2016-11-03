@@ -163,7 +163,7 @@ class Scrapper
 
         cat_div.search("li").each do |leaf_cat|
           if leaf_cat.children.first.name == "label"
-            group_cat_name = leaf_cat.children.first.text
+            group_cat_name = replace_macys_info(leaf_cat.children.first.text)
             puts "- #{group_cat_name}"
           else
             if leaf_cat.search("a").count > 0
@@ -180,9 +180,9 @@ class Scrapper
                   puts "  - #{cat_name} - site_cat_id #{site_cat_id} - parent_id #{parent_cat.id}"
 
                   unless cat_name.blank?
-                    cat = Category.find_or_create_by(group_name: group_name, site_cat_id: site_cat_id, cat_name: cat_name, parent_id: parent_cat.id, is_shown_in_menu: true)
+                    cat = Category.find_or_create_by(group_name: group_cat_name, site_cat_id: site_cat_id, cat_name: cat_name, parent_id: parent_cat.id, is_shown_in_menu: true)
                     cat.cat_name = replace_macys_info(cat_name)
-                    cat.group_name = replace_macys_info(group_cat_name)
+                    cat.group_name = group_cat_name
                     cat.site_cat_id = site_cat_id
                     cat.parent_id = parent_cat.id
                     cat.pos = pos
