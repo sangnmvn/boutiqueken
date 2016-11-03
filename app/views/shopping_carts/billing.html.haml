@@ -86,7 +86,7 @@
                             /     %option{:value => "5"} Australia
                             /   .select__arrow.state-select
                             .select
-                              =render :partial =>"addresses/state_select",locals: {country: "US", select_state: f.object.state,form: f}
+                              =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[shipping_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends
@@ -149,7 +149,7 @@
                           .account-input-block.state-selecting
                             %label{:for => "state-2"} State
                             .select
-                              =render :partial =>"addresses/state_select",locals: {country: "US", select_state: f.object.state,form: f}
+                              =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[billing_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends

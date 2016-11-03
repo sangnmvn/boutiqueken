@@ -13,7 +13,10 @@ class OrdersController < ApplicationController
     if @success && @order.parse_items_from_cart(@shopping_cart)
       redirect_to payment_order_path(@order)
     end
-
+    
+    if current_user.addresses.count ==0
+      current_user.add_default_address(params[:order][:shipping_address_attributes],params[:order][:billing_address_attributes])
+    end
 
 
   end
@@ -44,6 +47,10 @@ class OrdersController < ApplicationController
   def order_params
     params[:order][:shipping_address_attributes].merge!({user_id: current_user.id})
     params[:order][:billing_address_attributes].merge!({user_id: current_user.id})
+    if params[:order][:shipping_address_attributes][:is_default_billing] == true || params[:order][:shipping_address_attributes][:is_default_billing] == "1"
+      params[:order][:billing_address_attributes] = params[:order][:shipping_address_attributes]
+      params[:order][:billing_address_attributes][:is_default_billing] = "0"
+    end
   	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:shipping_address_id,:order_id,:user_id,:address_type],
       :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:billing_address_id,:user_id,:order_id,:address_type]).permit!  
   end

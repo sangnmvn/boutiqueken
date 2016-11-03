@@ -6,13 +6,21 @@ class Address < ActiveRecord::Base
   end
 
   def full_address
-    contry = Carmen::Country.coded(self.country)
+    if self.country.present?
+      contry = Carmen::Country.coded(self.country)
+    else 
+      contry = Carmen::Country.coded("US")
+    end
     full_state_name = contry.subregions.coded(self.state)
     [city,full_state_name,zip_code].join(" ")
   end
 
   def country_name
-    contry = Carmen::Country.coded(self.country).name
+    if self.country.present?
+      contry = Carmen::Country.coded(self.country)
+    else 
+      contry = Carmen::Country.coded("US")
+    end
   end
   
   def set_billing_shipping_default
