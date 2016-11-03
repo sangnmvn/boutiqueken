@@ -3658,15 +3658,22 @@ input[type=number]::-webkit-outer-spin-button {
   .menu-item{
 
     &.last-child{
-      .sub-menu{
-        left: -700px;
-        .triangle{
-          left: 703px !important;
-        }
-      }
+    }
+  }
+
+  .brands-menu{
+    left: -700px;
+    .triangle{
+      left: 703px !important;
     }
   }
   .watches-menu,.jewelry-menu{
+    left: -500px;
+    .triangle{
+      left: 503px !important;
+    }
+  }
+  .gifts-menu{
     left: -500px;
     .triangle{
       left: 503px !important;

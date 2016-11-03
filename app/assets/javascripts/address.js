@@ -325,7 +325,10 @@ var Product={
       //   return false;
       // });
       this.init_events();       
-      
+      $(".price-color").on("click",function(){
+        price = $(this).attr("data-price");
+        $(".cur-price span").html("$ " + price);
+      })
     }
   },
 

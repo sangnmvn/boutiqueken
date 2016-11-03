@@ -1,2 +1,3 @@
 var html = "<%= j render :partial =>'product_items',locals: {:product_ls => @products}%>";
+$("html, body").animate({ scrollTop: 0 }, "slow");
 $(".product-list").html(html);

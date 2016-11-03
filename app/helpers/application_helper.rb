@@ -133,11 +133,14 @@ module ApplicationHelper
             {:name=>"HANDBAGS",:value=> "three-col-menu"},
             {:name=>"JEWELRY",:value=> "three-col-menu"},
             {:name=>"WATCHES",:value=> "three-col-menu"},
-            {:name=>"BRANDS",:value=> "four-col-menu"}]
+            {:name=>"BRANDS",:value=> "four-col-menu"},
+            {:name=>"GIFTS",:value=> "three-col-menu"}]
 
     existed_menu = map.select{|x| x[:name] == menu.cat_name}
     if existed_menu.present?
       return existed_menu.first[:value]
+    else
+      "three-col-menu"
     end
   end
 
@@ -154,12 +157,14 @@ module ApplicationHelper
             {:name=>"HANDBAGS",:value=> 20},
             {:name=>"JEWELRY",:value=> 25},
             {:name=>"WATCHES",:value=> 20},
-            {:name=>"GIFTS",:value=> 20},
+            {:name=>"GIFTS",:value=> 30},
             {:name=>"BRANDS",:value=> 20}]
 
     existed_menu = map.select{|x| x[:name] == menu.cat_name}
     if existed_menu.present?
       return existed_menu.first[:value].to_i
+    else
+      30
     end
   end
 
@@ -176,7 +181,8 @@ module ApplicationHelper
             {:name=>"HANDBAGS",:value=> "handbags-menu"},
             {:name=>"JEWELRY",:value=> "jewelry-menu"},
             {:name=>"WATCHES",:value=> "watches-menu"},
-            {:name=>"BRANDS",:value=> "brands-menu"}]
+            {:name=>"BRANDS",:value=> "brands-menu"},
+            {:name=>"GIFTS",:value=> "gifts-menu"}]
 
     existed_menu = map.select{|x| x[:name] == menu.cat_name}
     if existed_menu.present?

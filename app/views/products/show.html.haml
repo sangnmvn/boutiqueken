@@ -63,7 +63,7 @@
                         -group_price = i.price
                     .seper-small
                   %li{"data-color" => i.color_name}
-                    %a.color-picking{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
+                    %a.color-picking.price-color{"data-price" => "#{i.price}",:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
                       %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
               .seper-small
               

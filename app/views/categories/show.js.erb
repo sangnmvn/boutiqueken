@@ -1,3 +1,4 @@
 var html = "<%= j render :partial =>'product_items',locals: {:product_ls => @product_ls}%>";
 $(".product-list").html(html);
+$("html, body").animate({ scrollTop: 0 }, "slow");
 ProductList.reinit_carousel();

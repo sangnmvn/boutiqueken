@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
 
   def extract_shopping_cart
     shopping_cart_id = session[:shopping_cart_id]
-    @shopping_cart = session[:shopping_cart_id] ? ShoppingCart.find(shopping_cart_id) : ShoppingCart.create
+    @shopping_cart = session[:shopping_cart_id] ? (ShoppingCart.find(shopping_cart_id) rescue ShoppingCart.create)  : ShoppingCart.create
     session[:shopping_cart_id] = @shopping_cart.id
   end
 
