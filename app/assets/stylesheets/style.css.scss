@@ -3843,3 +3843,26 @@ input[type=number]::-webkit-outer-spin-button {
   vertical-align: middle;
   margin-top: 0px !important;
 }
+
+.home-content{
+  margin-top: 10px;
+  .add-middle{
+    padding: 0px !important;
+  }
+  .pd-lef-10{
+    padding-left: 10px !important;
+  }
+  .no-mg-bt{
+    margin-bottom: 0px !important;
+  }
+  .no-mg{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+.fix-slider{
+  height: 409px;
+  img{
+    max-height: 100%;  
+  }
+}

@@ -55,27 +55,31 @@
           / TOP SLIDER AREA STARTS
           .section-slider-area.no-mar-top
             %h2.sr-only Main Slider Area
-            #slider-1.carousel.slide{"data-ride" => "carousel"}
+            #slider-1.carousel.slide.fix-slider{"data-ride" => "carousel"}
               / Indicators
               %ol.carousel-indicators
                 %li.active{"data-slide-to" => "0", "data-target" => "#slider-1"}
                 %li{"data-slide-to" => "1", "data-target" => "#slider-1"}
                 %li{"data-slide-to" => "2", "data-target" => "#slider-1"}
                 %li{"data-slide-to" => "3", "data-target" => "#slider-1"}
+                %li{"data-slide-to" => "4", "data-target" => "#slider-1"}
               / Wrapper for slides
               .carousel-inner{:role => "listbox"}
                 .item.active
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slider-1.jpg")}/
+                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slide0.jpg")}/
                 .item
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slider-2.jpg")}/
+                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slide1.jpg")}/
                 .item
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slider-3.jpg")}/
+                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slide2.png")}/
                 .item
                   %a{:href => "#"}
-                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slider-4.jpg")}/
+                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slide3.jpg")}/
+                .item
+                  %a{:href => "#"}
+                    %img.img-responsive{:alt => "slider-image", :src => asset_path("img/slider/slide4.jpg")}/
               / .carousel-inner ends
               / Controls
               %a.left.carousel-control{"data-slide" => "prev", :href => "#slider-1", :role => "button"}
@@ -87,6 +91,7 @@
             / #slider-1 ends
           / TOP SLIDER AREA ENDS
           / SLIDER BOTTOM MENU MARKUP
+          =render "shared/home_content"
           = yield
           / .slider-bottom-menu
           /   %a{:href => "#"}
