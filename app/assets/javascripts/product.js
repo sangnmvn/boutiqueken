@@ -240,6 +240,6 @@ document.getElementById('toggle-zoom').addEventListener('click', toggleZoom);
 $(document).ready(function () {
   // Works only on `data-parsley-validate`.
   if($('.validate-form').length >0){
-    $('.validate-form').parsley();
+    $('.validate-form').parsley({ excluded: "input[type=text]:hidden" });
    }
 });

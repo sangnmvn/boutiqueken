@@ -1,0 +1,193 @@
+%body
+  %section.section-payment
+    .container
+      %header.tablist-holder
+        %ul.tablist.pull-left
+          %li.page-pointer
+          %li
+            %a{:href => "#"} SHIPPING AND BILLING
+          %li
+            %a.tablist-active{:href => "#"} PAYMENT
+          %li
+            %a{:href => "#"} REVIEW &amp; SUBMIT
+        %ul.ul-saks-bag-top-list.pull-right
+          %li
+            %a{:href => "#"} 1.8777.551.7257
+          %li
+            %a{:href => "#"} Email
+          %li
+            %a{:href => "#"} Chat
+          %li
+            %a{:href => "#"} Shipping &amp; Returns
+      / .tab holder ends
+      / payment-section-body start
+      .payment-section-body.common-section-body
+        .row
+          .col-xs-12.col-sm-12.col-md-7
+            %form{:action => "#"}
+              .sign-in-col.sign-in-col-has-required
+                .row
+                  .col-xs-12.col-sm-12.col-md-12
+                    .half-input-div
+                      %label.lbl-normal{:for => "card-exp"} Cash on delivery
+                      %input#card-exp.half-left-input{:type =>"checkbox",:style =>"width: 14px",:checked =>"checked",:disabled=>"disabled"}/
+                  
+              .check-outing.pull-right
+                %a.btn-checkout{:href =>confirm_order_path(@order)} CONTINUE CHECKOUT
+          / COL-7 ENDS
+          / right area content
+          .col-xs-12.col-sm-12.col-md-5
+            .long-table
+              / DESKTOP TABLE MARKUP
+              %table.table.table-bordered.hidden-xs
+                %thead
+                  %tr
+                    %th{:scope => "row"} Order Summary (1 Item)
+                    %th{:scope => "row"} Subtotal
+                %tbody
+                  -@shopping_cart.shopping_cart_items.each do |i|
+                    %tr
+                      %td.saks-bag-item{:class =>"td_#{i.id}"}
+                        .saks-bag-item-img
+                          -if i.has_color
+                            %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -else
+                            %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                        .product-details-info
+                          -if i.has_color
+                            -product = i.product_price_detail.product
+                          -else
+                            -product = i.product
+                          %strong=product.short_desc
+                          -if i.size.present?
+                            %p.pp-size
+                              %b Size:
+                              =i.size
+                          -if i.has_color
+                            %p.pp-color
+                              %b Color:
+                              =i.product_price_detail.color_name
+                          %div
+                            .saks-bag-item-qnt
+                              %span=i.quantity
+                          / %p.pp-edit
+                          /   %i.fa.fa-pencil{"aria-hidden" => "true"}
+                          /   %a.edit-q-link{:href => "javascript:;","data-p"=>"td_#{i.id}"}Edit
+                          / %p.edit-quantity.hide
+                          /   .form-edit.hide
+                          /     =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
+                          /       =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
+                          /       =f.submit "update",class: ""
+                          /       =link_to"Cancel","javascript:;",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                          / %p.pp-remove
+                          /   %i.fa.fa-times{"aria-hidden" => "true"}
+                          /   =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
+                        %td
+                          $
+                          =show_price_digit(i.price * i.quantity.to_i)
+              / DESKTOP TABLE MARKUP ENDS
+              / MOBILE TABLE MARKUP
+              %table.table.table-bordered.visible-xs
+                %tbody
+                  -@shopping_cart.shopping_cart_items.each do |i|
+                    %tr
+                      %th{:scope => "row"}="Order Summary (#{@shopping_cart.shopping_cart_items.count} Item)"
+                      %td.saks-bag-item
+                        .saks-bag-item-img
+                          -if i.has_color
+                            %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -else
+                            %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                        .product-details-info
+                          -if i.has_color
+                            -product = i.product_price_detail.product
+                          -else
+                            -product = i.product
+                          %strong=product.short_desc
+                          -if i.size.present?
+                            %p.pp-size
+                              %b Size:
+                              =i.size
+                          -if i.has_color
+                            %p.pp-color
+                              %b Color:
+                              =i.product_price_detail.color_name
+                          %div{:class =>"td_#{i.id}"}
+                            .saks-bag-item-qnt
+                              %span=i.quantity
+                          %p.pp-edit
+                            %i.fa.fa-pencil{"aria-hidden" => "true"}
+                            %a{:href => "#"} Edit
+                          %p.edit-quantity.hide
+                            .form-edit.hide
+                              =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
+                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
+                                =f.submit "update",class: ""
+                                =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                          %p.pp-remove
+                            %i.fa.fa-times{"aria-hidden" => "true"}
+                            =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
+                        / .product-details-info ends
+                    %tr
+                      %th{:scope => "row"} Subtotal
+                      %td
+                        $
+                        =show_price_digit(i.price * i.quantity.to_i)
+              / MOBILE TABLE MARKUP ENDS
+              .table-btm-qt
+                / %p
+                /   %strong Shopping To
+                /   %span.c-name Mr. Jeffrey Johnso
+                /   %span.c-street 3343 Waldeck Street
+                /   %span.c-tx Arlington, TX 75760
+                /   %span.c-city US
+                /   %span.c-contact 817-465-4744
+                /   %span
+                /     %i.fa.fa-pencil{"aria-hidden" => "true"}
+                /     %a{:href => "#"} Edit
+                / %p
+                /   %strong Shopping Method :
+                /   Standard (Est Delivery 10/10/16)
+                /   %span
+                /     %i.fa.fa-pencil{"aria-hidden" => "true"}
+                /     %a{:href => "#"} Edit
+              / .table-btm-qt
+              / checkout-table
+              %table.checkout-table
+                %tr
+                  %td
+                    %b Item Total
+                  %td.text-right
+                    $
+                    =show_price_digit(@shopping_cart.total)
+                %tr
+                  %td
+                    %b Gift Wrap
+                  %td.text-right $0.00
+                %tr
+                  %td
+                    %b Estimated Shopping &amp; Handling
+                  %td.text-right $0.00
+                %tr
+                  %td
+                    %b Total Before Tax
+                  %td.text-right
+                    $
+                    =show_price_digit(@shopping_cart.total)
+                %tr.checkout-table-last
+                  %td
+                    %b Estimated Tax
+                  %td.text-right $0.00
+                %tr.checkout-table-total
+                  %td
+                    %b Estimated Total
+                  %td.text-right
+                    %b
+                      $
+                      =show_price_digit(@shopping_cart.total)
+              / CHECKOUT TABLE ENDS
+            / LONG TABLE ENDS
+          / COL-5 ENDS
+        / ROW ENDS
+      / common-section-body
+    / .container ends

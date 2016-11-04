@@ -22,7 +22,8 @@ Rails.application.routes.draw do
     member do
       get 'profile'
       get 'dashboard' 
-      get 'address_book' 
+      get 'address_book'
+      get 'orders' 
     end
     resources :addresses
   end
@@ -37,7 +38,19 @@ Rails.application.routes.draw do
     resources :products, path: 'pro', only: [:show]
   end
 
-  resource :shopping_carts
+  resource :shopping_carts do 
+    collection do
+      get "billing"
+    end
+  end
+
+  resources :orders do 
+    member do
+      get 'payment'
+      get 'confirm'
+      put 'confirmed'
+    end
+  end
   resources :shopping_cart_items, only: [:update]
   #     member do
   #       get 'short'

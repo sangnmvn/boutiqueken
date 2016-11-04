@@ -52,7 +52,7 @@
             -else
               %ul.coloring-ul
                 -group_price = 0
-                -@product.product_details.each_with_index do |i,index|
+                -@product.product_details.order("price asc").each_with_index do |i,index|
                   -if group_price != i.price
                     
                     .seper-small

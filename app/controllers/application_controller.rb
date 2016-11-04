@@ -6,7 +6,33 @@ class ApplicationController < ActionController::Base
   before_filter :configure_permitted_parameters , if: :devise_controller?
   before_filter :get_main_menus
   before_filter :extract_shopping_cart
+  before_filter :store_current_location, :unless => :devise_controller?
+  after_filter :store_location
+
+  
   protected
+
+  def store_location
+    # store last url - this is needed for post-login redirect to whatever the user last visited.
+    return unless request.get? 
+    if (request.path != "/users/sign_in" &&
+        request.path != "/users/sign_up" &&
+        request.path != "/users/password/new" &&
+        request.path != "/users/password/edit" &&
+        request.path != "/users/confirmation" &&
+        request.path != "/users/sign_out" &&
+        !request.xhr?) # don't store ajax calls
+      session[:previous_url] = request.fullpath 
+    end
+  end
+
+  def after_sign_in_path_for(resource)
+    session[:previous_url] || profile_user_path(resource.id)
+  end
+  
+  def store_current_location
+    store_location_for(:user, request.url)
+  end
 
   def layout_by_resource
     if devise_controller?
@@ -16,9 +42,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_in_path_for(resource)
-    profile_user_path(resource.id)
-  end
+  # def after_sign_in_path_for(resource)
+  #   puts "==SIGNIN==="
+  #   puts request.referrer
+  #   request.referrer || profile_user_path(resource.id)
+  # end
 
    def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up) do |u|
