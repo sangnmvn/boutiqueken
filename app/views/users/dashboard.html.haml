@@ -88,4 +88,4 @@
                         T:
                         =@default_shipping.telephone
                 .col-md-2.no-pd-lr
-                  =link_to "EDIT ADDRESS",edit_user_address_path(current_user.id,@default_shipping.id) if @default_billing.present?
+                  =link_to "EDIT ADDRESS",edit_user_address_path(current_user.id,@default_shipping.id) if @default_shipping.present?

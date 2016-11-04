@@ -1,6 +1,6 @@
 <%if @success == true %>
 	$(".bag-count").html("<%= @shopping_cart.shopping_cart_items.count%>");
-	<%if params[:has_color] == true%>
+	<%if params[:has_color].present? && (params[:has_color] == true || params[:has_color] == "true")%>
 		$(".product_need_<%=@product.product.id%>").addClass("hide");
 	<%else%>
 		$(".product_need_<%=@product.id%>").addClass("hide");
@@ -20,7 +20,7 @@
 	$(".modal-shopping-item").modal("show");
 	$(".modal-shopping-item .modal-body").slideDown(1000)
 <%else%>
-	<%if params[:has_color] == true%>
+	<%if params[:has_color].present? && (params[:has_color] == true || params[:has_color] == "true")%>
 	$(".product_need_<%=@product.product.id%>").removeClass("hide");
 	<%else%>
 		$(".product_need_<%=@product.id%>").removeClass("hide");

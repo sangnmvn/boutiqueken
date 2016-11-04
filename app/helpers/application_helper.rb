@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   def active_order_left_menu
-    if @order.present?
+    if @order.present? || (params[:controller] == "users" && params[:action]=="orders")
       return "active"
     else
       return ""

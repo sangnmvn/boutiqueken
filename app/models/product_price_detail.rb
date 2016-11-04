@@ -10,7 +10,7 @@ class ProductPriceDetail < ActiveRecord::Base
   end
 
   def require_size
-    return true if product.sizes.present?
+    return true if product.list_sizes.present?
     return false
   end
 

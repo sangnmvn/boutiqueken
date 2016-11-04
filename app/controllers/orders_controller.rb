@@ -40,6 +40,7 @@ class OrdersController < ApplicationController
   def confirmed
     @order = Order.find(params[:id])
     @order.update_attributes({:status =>1})
+    @shopping_cart.clear
     redirect_to orders_user_path(current_user)
   end
 

@@ -21,7 +21,7 @@
 }
 @media only screen and (max-width: 767px) {
 .account-inner {
-  margin: 0;
+  margin: 20px;
 }
 .account-inner aside {
   margin: 0 0 3rem;
