@@ -192,7 +192,7 @@
                     %th{:scope => "row"} Subtotal
                 %tbody
                   -@shopping_cart.shopping_cart_items.each do |i|
-                    %tr
+                    %tr{class: "cart_item_#{i.id}"}
                       %td.saks-bag-item{:class =>"td_#{i.id}"}
                         .saks-bag-item-img
                           -if i.has_color
@@ -222,13 +222,17 @@
                           %p.edit-quantity.hide
                             .form-edit.hide
                               =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
-                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
-                                =f.submit "update",class: ""
-                                =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!","min" => 1
+                                / =f.submit "update",class: ""
+                                / =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                                %i.fa.fa-check{"aria-hidden" => "true"}
+                                =f.submit "update",class: "btn-edit-billing-cart"
+                                %i.fa.fa-ban{"aria-hidden" => "true"}
+                                =f.button "Cancel",class: "btn-cancel-edit btn-edit-billing-cart ","data-p"=>"td_#{i.id}"
                           %p.pp-remove
                             %i.fa.fa-times{"aria-hidden" => "true"}
                             =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
-                        %td
+                        %td{:class =>"subtotal_#{i.id}"}
                           $
                           =show_price_digit(i.price * i.quantity.to_i)
               / DESKTOP TABLE MARKUP ENDS
@@ -236,7 +240,7 @@
               %table.table.table-bordered.visible-xs
                 %tbody
                   -@shopping_cart.shopping_cart_items.each do |i|
-                    %tr
+                    %tr{class: "cart_item_#{i.id}"}
                       %th{:scope => "row"}="Order Summary (#{@shopping_cart.shopping_cart_items.count} Item)"
                       %td.saks-bag-item{:class =>"td_#{i.id}"}
                         .saks-bag-item-img
@@ -267,16 +271,20 @@
                           %p.edit-quantity.hide
                             .form-edit.hide
                               =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
-                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
-                                =f.submit "update",class: ""
-                                =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                                =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!","min" =>"1"
+                                / =f.submit "update",class: ""
+                                / =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                                %i.fa.fa-check{"aria-hidden" => "true"}
+                                =f.submit "update",class: "btn-edit-billing-cart"
+                                %i.fa.fa-ban{"aria-hidden" => "true"}
+                                =f.button "Cancel",class: "btn-cancel-edit btn-edit-billing-cart ","data-p"=>"td_#{i.id}"
                           %p.pp-remove
                             %i.fa.fa-times{"aria-hidden" => "true"}
                             =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
                         / .product-details-info ends
                     %tr
                       %th{:scope => "row"} Subtotal
-                      %td
+                      %td{:class =>"subtotal_#{i.id}"}
                         $
                         =show_price_digit(i.price * i.quantity.to_i)
               / MOBILE TABLE MARKUP ENDS
@@ -302,7 +310,7 @@
                 %tr
                   %td
                     %b Item Total
-                  %td.text-right
+                  %td.text-right.total-txt
                     $
                     =show_price_digit(@shopping_cart.total)
                 %tr
@@ -316,7 +324,7 @@
                 %tr
                   %td
                     %b Total Before Tax
-                  %td.text-right
+                  %td.text-right.total-txt
                     $
                     =show_price_digit(@shopping_cart.total)
                 %tr.checkout-table-last
@@ -327,7 +335,7 @@
                   %td
                     %b Estimated Total
                   %td.text-right
-                    %b
+                    %b.total-txt
                       $
                       =show_price_digit(@shopping_cart.total)
               / CHECKOUT TABLE ENDS

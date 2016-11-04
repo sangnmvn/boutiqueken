@@ -64,17 +64,25 @@
                         %p.edit-quantity.hide
                           .form-edit.hide
                             =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|
-                              =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!"
-                              =f.submit "update",class: ""
-                              =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                              =f.text_field :quantity,:required =>"required", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Quantity is required!","data-parsley-type"=>"integer","data-parsley-type-message"=>"Quantity is number!","min"=>"1"
+                              / =f.submit "update",class: ""
+                              / =f.button "Cancel",class: "btn-cancel-edit","data-p"=>"td_#{i.id}"
+                              %i.fa.fa-check{"aria-hidden" => "true"}
+                              =f.submit "update",class: "btn-edit-billing-cart"
+                              %i.fa.fa-ban{"aria-hidden" => "true"}
+                              =f.button "Cancel",class: "btn-cancel-edit btn-edit-billing-cart ","data-p"=>"td_#{i.id}"
                         %p.pp-remove
                           %i.fa.fa-times{"aria-hidden" => "true"}
                           =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
                           / %a{:href => "#{shopping_carts_path}","data-remote" =>} Remove
                       / .saks-bag-item-qnt-text
                     %td In Stock
-                    %td=i.price
-                    %td=show_price_digit(i.price * i.quantity.to_i)
+                    %td
+                      $
+                      =i.price
+                    %td{:class =>"subtotal_#{i.id}"}
+                      $
+                      =show_price_digit(i.price * i.quantity.to_i)
             / DESKTOP TABLE MARKUP ENDS
             / MOBILE TABLE MARKUP
             / %table.table.table-bordered.visible-xs
@@ -154,7 +162,9 @@
                       %tr
                         %td
                           %b Item Total
-                        %td.text-right=@shopping_cart.total
+                        %td.text-right.total-txt
+                          $
+                          =@shopping_cart.total
                       %tr
                         %td
                           %b Gift Wrap
@@ -166,7 +176,9 @@
                       %tr
                         %td
                           %b Total Before Tax
-                        %td.text-right=@shopping_cart.total
+                        %td.text-right.total-txt
+                          $
+                          =@shopping_cart.total
                       %tr.checkout-table-last
                         %td
                           %b Estimated Tax
@@ -175,7 +187,9 @@
                         %td
                           %b Estimated Total
                         %td.text-right
-                          %b=@shopping_cart.total
+                          %b.total-txt
+                            $
+                            =@shopping_cart.total
                     / checkout-table ends
                   / .saks-bag-shopping
                 / col ends

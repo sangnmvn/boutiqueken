@@ -11,8 +11,7 @@
         .head-section
           %a{:href =>shopping_carts_path}
             View My Bag
-          .check-outing
-            %button CHECKOUT
+          =link_to "CHECKOUT",billing_shopping_carts_path,class: "btn-checkout"
         .item-list
           %table.table.tb-notborder
             -@shopping_cart.shopping_cart_items.order("updated_at desc").each_with_index do |i,index|
@@ -62,5 +61,4 @@
         .head-section
           %a{:href =>shopping_carts_path}
             View My Bag
-          .check-outing
-            %button CHECKOUT
+          =link_to "CHECKOUT",billing_shopping_carts_path,class: "btn-checkout"

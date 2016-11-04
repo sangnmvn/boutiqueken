@@ -1,3 +1,4 @@
 <%if @success%>
 	$(".cart_item_<%=@item.id%>").remove();
+  $(".total-txt").html("$<%= show_price_digit(@shopping_cart.total) %>")
 <%end%>
