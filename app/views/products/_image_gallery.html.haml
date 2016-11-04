@@ -8,8 +8,8 @@
 /           %img{:src => show_image_url(i),width: "100"}/
       
 .zoom-wrapper
-  .left-slider{style: "width: 67px;float: left "}
-    #gallery_01{:style => "width=50px;"}
+  .left-slider{style: ""}
+    #gallery_01{:style => ""}
       -list_addtion_images = JSON.parse(@product.additional_images);
       -details = @product.product_details
       -details = @product.product_details.order("price asc") if @product.is_price_color

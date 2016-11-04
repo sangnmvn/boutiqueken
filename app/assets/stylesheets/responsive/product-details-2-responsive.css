@@ -29,6 +29,16 @@
 }
 }
 @media only screen and (max-width: 767px) {
+.modal-dialog{
+    width: 350px !important;
+
+  }
+.left-slider{
+  width: 100% !important;
+}
+.modal-dialog  .saks-bag-item-img{
+  float: left;
+}
 .details-2-left {
   float: none;
   margin: 0;

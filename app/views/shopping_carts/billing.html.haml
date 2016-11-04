@@ -238,7 +238,7 @@
                   -@shopping_cart.shopping_cart_items.each do |i|
                     %tr
                       %th{:scope => "row"}="Order Summary (#{@shopping_cart.shopping_cart_items.count} Item)"
-                      %td.saks-bag-item
+                      %td.saks-bag-item{:class =>"td_#{i.id}"}
                         .saks-bag-item-img
                           -if i.has_color
                             %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
@@ -263,7 +263,7 @@
                               %span=i.quantity
                           %p.pp-edit
                             %i.fa.fa-pencil{"aria-hidden" => "true"}
-                            %a{:href => "#"} Edit
+                            %a.edit-q-link{:href => "javascript:;","data-p"=>"td_#{i.id}"}Edit
                           %p.edit-quantity.hide
                             .form-edit.hide
                               =form_for(i,:url =>shopping_carts_path({:item_id => i.id}),:method =>:put,html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"},remote: true) do |f|

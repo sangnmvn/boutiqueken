@@ -13,7 +13,7 @@
 		$(".modal-backdrop").remove();
 		left = $(".section-products-details-2-area .container").offset().left;
 		wid = $(".section-products-details-2-area .container").outerWidth();
-		left_modal = left + wid - 450;
+		left_modal = left + wid - $(".modal-dialog").outerWidth() -10;
 		$(".modal-shopping-item .modal-dialog").css("margin-left", left_modal);
 	});
 
