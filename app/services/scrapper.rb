@@ -33,6 +33,13 @@ class Scrapper
   MAX_THREAD = 15
   BATCH_SIZE = 25000
 
+  # action codes from admin
+  PAUSE = "pause"
+  STOP = "stop"
+  RUN = "run"
+
+  MAX_SLEEP_TIME = 60.seconds
+
   HOME_SPECIAL_CATES = {
     "Dining & Entertaining": "http://www1.macys.com/catalog/index.ognc?CategoryID=7498&cm_sp=us_hdr-_-home-_-7498_dining-%26-entertaining_COL1",
     "Furniture": "http://www1.macys.com/catalog/index.ognc?CategoryID=29391&cm_sp=us_hdr-_-home-_-29391_furniture_COL1",
@@ -42,7 +49,13 @@ class Scrapper
     "Holiday Lane": "http://www1.macys.com/catalog/index.ognc?CategoryID=30599&cm_sp=us_hdr-_-home-_-30599_holiday-lane_COL1"
   }
 
-  def initialize
+  def initialize(logger=Rails.logger, task_id=nil)
+    @task_id = task_id
+
+    puts "@task_id: #{@task_id}"
+
+    @logger = logger
+
     @root_url = 'https://www.macys.com'
 
     @agent = Mechanize.new
@@ -68,6 +81,10 @@ class Scrapper
     @scrapped_site_cat_ids = {}
     @existing_products = {}
 
+    # stop / pause / run
+    @request_from_admin = RUN
+
+    @is_full_scrapping = true
   end
 
   def load_existing_products
@@ -87,21 +104,22 @@ class Scrapper
         @existing_products[key] = prod["id"].to_i
       end
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
-  def import_others
+  def scrape_all
     scrape_menu
     scrape_left_nav
     scrape_filters
+    scrape_products
     scrape_seo_information
   end
 
   def scrape_menu
     begin
-      puts "[BEGIN] Scrapping menu and sub-menu"
+      @logger.info "[BEGIN] Scrapping menu and sub-menu"
       start_time = Time.now
 
       page = @agent.get(@root_url)
@@ -111,12 +129,12 @@ class Scrapper
       menu = page.search("#globalMastheadCategoryMenu")
 
       if menu.count == 0
-        puts "[WARN] Cannot scrape menu because of changing in the site structure"
+        @logger.info "[WARN] Cannot scrape menu because of changing in the site structure"
         return
       end
 
-      puts "\nMain Menu"
-      puts "---------"
+      @logger.info "\nMain Menu"
+      @logger.info "---------"
 
       pos = 0
       menu.search("li").each do |mnu_item|
@@ -133,15 +151,15 @@ class Scrapper
 
         pos += 1
 
-        puts "Scrapping sub-menu for #{cat_name}"
+        @logger.info "Scrapping sub-menu for #{cat_name}"
 
         scrape_sub_menu(cat, page)
       end
 
-      puts "[END] Scrapping menu and sub-menu finished in #{Time.now - start_time}"
+      @logger.info "[END] Scrapping menu and sub-menu finished in #{Time.now - start_time}"
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -152,7 +170,7 @@ class Scrapper
       cat_divs = page.search("#globalMastheadFlyout").search(sub_menu_id)
 
       if cat_divs.count == 0
-        puts "[WARN] Cannot scrape the sub menu because of chaninging in the site structure"
+        @logger.info "[WARN] Cannot scrape the sub menu because of chaninging in the site structure"
         return
       end
 
@@ -164,7 +182,7 @@ class Scrapper
         cat_div.search("li").each do |leaf_cat|
           if leaf_cat.children.first.name == "label"
             group_cat_name = replace_macys_info(leaf_cat.children.first.text)
-            puts "- #{group_cat_name}"
+            @logger.info "- #{group_cat_name}"
           else
             if leaf_cat.search("a").count > 0
               cat_el = leaf_cat.search("a").first
@@ -177,7 +195,7 @@ class Scrapper
                 if cat_el.attributes["class"].nil?
                   cat_name = replace_macys_info(cat_el.text)
 
-                  puts "  - #{cat_name} - site_cat_id #{site_cat_id} - parent_id #{parent_cat.id}"
+                  @logger.info "  - #{cat_name} - site_cat_id #{site_cat_id} - parent_id #{parent_cat.id}"
 
                   unless cat_name.blank?
                     cat = Category.find_or_create_by(group_name: group_cat_name, site_cat_id: site_cat_id, cat_name: cat_name, parent_id: parent_cat.id, is_shown_in_menu: true)
@@ -198,14 +216,14 @@ class Scrapper
         end
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
   def scrape_left_nav
     begin
-      puts "[BEGIN] Scrapping left navigation"
+      @logger.info "[BEGIN] Scrapping left navigation"
       start_time = Time.now
 
       page = @agent.get(@root_url)
@@ -213,7 +231,7 @@ class Scrapper
       menu = page.search("#globalMastheadCategoryMenu")
 
       if menu.count == 0
-        puts "[WARN] Cannot scrape the left nav because of changing in the site structure"
+        @logger.info "[WARN] Cannot scrape the left nav because of changing in the site structure"
         return
       end
 
@@ -230,10 +248,10 @@ class Scrapper
         scrape_left_nav_details(cat, cat_url, max_deep)
       end
 
-      puts "[END] Scrapping left navigation finished in #{Time.now - start_time}\n\n"
+      @logger.info "[END] Scrapping left navigation finished in #{Time.now - start_time}\n\n"
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -248,7 +266,7 @@ class Scrapper
       return if page.search("#facets").present?
 
       # crawl left nav
-      puts "\nScrapping Left Nav of #{url}"
+      @logger.info "\nScrapping Left Nav of #{url}"
 
       nav_sub_cat = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       if nav_sub_cat.present?
@@ -265,7 +283,7 @@ class Scrapper
       end
 
       # crawl feature categories
-      puts "\nScrapping Feature Categories #{url}"
+      @logger.info "\nScrapping Feature Categories #{url}"
       
       kid = ".//div[@class='flexPool flexPoolMargin']"
       active = "map"
@@ -289,8 +307,8 @@ class Scrapper
       root_cat.save
 
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end      
   end
 
@@ -306,8 +324,8 @@ class Scrapper
           site_cat_id = item.attributes["id"].text
 
           if site_cat_id.to_i == 0
-            #puts "scrape_left_nav_brands - #{site_cat_id}"
-            #puts "Cannot extract site_cat_id of cat_name #{cat_name}"
+            #@logger.info "scrape_left_nav_brands - #{site_cat_id}"
+            #@logger.info "Cannot extract site_cat_id of cat_name #{cat_name}"
             next
           end
 
@@ -321,7 +339,7 @@ class Scrapper
             cat.save
           end
 
-          puts "cat_name: #{cat_name} - site_cat_id: #{site_cat_id} - cat_id: #{cat.id} - parent_id: #{cat.parent_id}"
+          @logger.info "cat_name: #{cat_name} - site_cat_id: #{site_cat_id} - cat_id: #{cat.id} - parent_id: #{cat.parent_id}"
 
           nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
           nav.category_id = cat.id
@@ -335,8 +353,8 @@ class Scrapper
         end
       end
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end      
   end
 
@@ -356,8 +374,8 @@ class Scrapper
           cat_name = replace_macys_info(cat.text)
 
           if site_cat_id.to_i == 0
-            #puts "scrape_left_nav_others - #{site_cat_id}"
-            #puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s} - skipped"
+            #@logger.info "scrape_left_nav_others - #{site_cat_id}"
+            #@logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s} - skipped"
             next
           end
 
@@ -387,8 +405,8 @@ class Scrapper
         end
       end
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end  
 
@@ -406,8 +424,8 @@ class Scrapper
         image_url = f_cate_group.search("img").first.attributes["src"].text
 
         if site_cat_id.to_i == 0
-          puts "scrape_kids_featured_cates - #{site_cat_id}"
-          puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+          @logger.info "scrape_kids_featured_cates - #{site_cat_id}"
+          @logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
           next
         end
 
@@ -433,8 +451,8 @@ class Scrapper
         pos += 1
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -452,7 +470,7 @@ class Scrapper
           cat_name = replace_macys_info(cat_name)
 
           if cat_name.blank?
-            puts "scrap_active_featured_cates - cat_name is blank - skipped"
+            @logger.info "scrap_active_featured_cates - cat_name is blank - skipped"
             next
           end
 
@@ -480,8 +498,8 @@ class Scrapper
         end
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -499,8 +517,8 @@ class Scrapper
         site_cat_id = f_brand_el.attributes["href"].text.split("?id=").last if site_cat_id.to_i == 0
 
         if site_cat_id.to_i == 0
-          puts "scrap_brand_featured_brands - #{site_cat_id} skipped"
-          puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+          @logger.info "scrap_brand_featured_brands - #{site_cat_id} skipped"
+          @logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
           next
         end
 
@@ -525,8 +543,8 @@ class Scrapper
         pos += 1
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -548,9 +566,9 @@ class Scrapper
           
           if site_cat_id.to_i == 0
 
-            puts "scrape_others_featured_cates - #{site_cat_id}"
-            puts "url #{f_cate.search("a").first.attributes["href"].text}"
-            puts "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
+            @logger.info "scrape_others_featured_cates - #{site_cat_id}"
+            @logger.info "url #{f_cate.search("a").first.attributes["href"].text}"
+            @logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
             next
           end
 
@@ -581,14 +599,14 @@ class Scrapper
         end     
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end    
   end
 
   def scrape_filters
     begin
-      puts "[BEGIN] Scrapping filters"
+      @logger.info "[BEGIN] Scrapping filters"
       start_time = Time.now
 
       page = @agent.get(@root_url)
@@ -607,7 +625,7 @@ class Scrapper
           cat_name = replace_macys_info(anchor.text)
           cat_url = @root_url + anchor.attributes["href"].value
 
-          puts "- Scrapping #{cat_name} filters"
+          @logger.info "- Scrapping #{cat_name} filters"
           start = Time.now
 
           scrape_filters_details(cat_id, @root_url)
@@ -617,7 +635,7 @@ class Scrapper
           max_deep = 4
           scrape_filters_from_left_nav(cat, cat_url, max_deep)
 
-          puts "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
+          @logger.info "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"
         #}
         
         #thread_count += 1
@@ -625,16 +643,16 @@ class Scrapper
 
       #threads.each {|t| t.join}
 
-      puts "[END] Scrapping filters finished in #{Time.now - start_time}"
+      @logger.info "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end      
   end
 
   def scrape_filters_details(site_root_cat_id, url)
     begin
-      puts "scrape_filters_details #{url}"
+      @logger.info "scrape_filters_details #{url}"
 
       full_url = url
 
@@ -666,23 +684,20 @@ class Scrapper
               site_cat_url = cat_el.attributes["href"].text
               cat_name = replace_macys_info(cat_el.text)
 
-              puts "cat_name: -------> #{cat_name}"
-                
-              puts "group_cat_name: #{group_cat_name}"
+              @logger.info "cat_name: -------> #{cat_name}"
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
               max_deep = 3
               scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, group_cat_name, max_deep)
-            
             end
           else
-            puts "leaf_cat: #{leaf_cat}"
+            @logger.info "leaf_cat: #{leaf_cat}"
           end
         end
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end      
   end
 
@@ -691,7 +706,7 @@ class Scrapper
       return if deep < 1
       deep -= 1
 
-      puts "Scrapping filters in #{url}"
+      @logger.info "Scrapping filters in #{url}"
 
       page = @agent.get(url)
 
@@ -700,8 +715,8 @@ class Scrapper
       facets = page.search("#facets")
 
       if facets.empty?
-        puts "Cannot find filters in this page #{url}"
-        puts "-> Scrape category list"
+        @logger.info "Cannot find filters in this page #{url}"
+        @logger.info "-> Scrape category list"
 
         cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
 
@@ -731,7 +746,7 @@ class Scrapper
       cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name).first
 
       if cat.nil?
-        puts "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
+        @logger.info "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
         return
       end
 
@@ -750,10 +765,10 @@ class Scrapper
           ui_type = box.attributes["data-uitype"].text
           filter_product_field_name = box.attributes["id"].text
 
-          puts "+ #{box_type}"
+          @logger.info "+ #{box_type}"
 
           if box.search("h2").count > 1
-            puts "Inside a filter with subs"
+            @logger.info "Inside a filter with subs"
 
             sub_boxes = box.search(".//li[@class='typbox collapsed ']")
             sub_boxes |= box.search(".//li[@class='typbox groupFacet ']")
@@ -762,7 +777,7 @@ class Scrapper
 
             sub_boxes.each do |sub_box|
               sub_box_type = sub_box.search("h2").first.text
-              puts "  - #{sub_box_type}"
+              @logger.info "  - #{sub_box_type}"
 
               sub_box.search("a").each do |item|
                 filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
@@ -799,7 +814,7 @@ class Scrapper
             filter.filter_product_field_name = filter_product_field_name
             filter_values = []
 
-            puts " - #{sub_box_type}"
+            @logger.info " - #{sub_box_type}"
             box.search("a").each_with_index do |item, idx|
               break if idx > 9
 
@@ -822,7 +837,7 @@ class Scrapper
 
             filter_values = []
 
-            puts " - #{sub_box_type}"
+            @logger.info " - #{sub_box_type}"
             box.search("a").each_with_index do |item, idx|
               displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
               value = item.attributes["data-value"].text
@@ -856,11 +871,11 @@ class Scrapper
           group_pos += 1
         end
 
-        puts "\n"
+        @logger.info "\n"
       end
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -878,7 +893,7 @@ class Scrapper
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
 
           if site_cat_id.to_i == 0
-            puts "scrape_filters_from_left_nav: cannot scrape site_cat_id #{site_cat_id} - #{cat.attributes["href"].text}"
+            @logger.info "scrape_filters_from_left_nav: cannot scrape site_cat_id #{site_cat_id} - #{cat.attributes["href"].text}"
             next
           end
 
@@ -888,7 +903,7 @@ class Scrapper
           # compare current_cat_name vs cat_name to prevent duplicate scrapping filters
           # due to duplicate urls
           if current_cat_name != cat_name
-            puts "cat_name =========> #{cat_name}"
+            @logger.info "cat_name =========> #{cat_name}"
             scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil, deep)
           end
 
@@ -896,19 +911,21 @@ class Scrapper
         end
       end
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end  
 
-  def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=10)
+  def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=1)
     begin
 
       @number_of_threads = number_of_threads
 
-      puts "[BEGIN] Scrapping products by #{@number_of_threads} threads"
+      @logger.info "[BEGIN] Scrapping products by #{@number_of_threads} threads"
 
+      # Pre-cache and clean up temporary tables
       load_existing_products
+      reset_tmp_tables
 
       start_time = Time.now
 
@@ -916,7 +933,23 @@ class Scrapper
 
       menu = page.search("#globalMastheadCategoryMenu")
 
+      menu_count = menu.search("li").count
+      percentage_per_menu = 100 / menu_count
+      current_percentage = 0
+
+      unless scrape_cat_name.nil?
+        @is_full_scrapping = false
+      end
+
+      # create a thread to monitor action from admin
+      t = Thread.new{
+        get_admin_request()
+      }
+
       menu.search("li").each do |mnu_item|
+
+        break if admin_request == STOP
+
         cat_id = mnu_item.attributes["id"].value.split("_").last
 
         anchor = mnu_item.search("a").first
@@ -925,7 +958,7 @@ class Scrapper
 
         @current_cat_name = cat_name
 
-        puts "Scrapping #{cat_name} products"
+        @logger.info "Scrapping #{cat_name} products"
 
         if !scrape_cat_name.nil?
           if cat_name == scrape_cat_name
@@ -941,8 +974,15 @@ class Scrapper
             break
           end
         else
+          start = Time.now
+          update_scrapping_progress(current_percentage, "Scrapping #{cat_name} products")
+
           scrape_others_cat_products(cat_id, @root_url)
+
+          break if admin_request == STOP
+
           scrape_products_for_left_cat(cat_url)
+
 
           @current_file.flush unless @current_file.nil?
           @ppd_current_file.flush unless @ppd_current_file.nil?
@@ -952,23 +992,33 @@ class Scrapper
 
           @current_batch = 0
           @ppd_current_batch = 0
+
+          # Update processing progress for front-end
+          current_percentage += percentage_per_menu
+          update_scrapping_progress(current_percentage, "Done Scrapping #{cat_name} products in #{Time.now - start}")
         end
       end
 
-      if update_db
+      if update_db && admin_request != STOP
         update_products_after_import()
         update_product_price_details_after_import()
       end
-      puts "[END] Scrapping products finished in #{Time.now - start_time}"
+
+      # stop the monitoring admin action thread
+      t.exit
+
+      @logger.info "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    ensure
+      update_scrapping_progress(100, "Finished scrapping products", STOP)
     end
   end
 
   def scrape_others_cat_products(site_root_cat_id, url)
     begin
-      puts url
+      @logger.info url
 
       page = @agent.get(url)
 
@@ -988,13 +1038,15 @@ class Scrapper
               site_cat_url = cat_el.attributes["href"].text
 
               scrape_products_per_subcat(site_cat_id, site_cat_url)
+
+              return if admin_request == STOP
             end
           end
         end
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1004,7 +1056,7 @@ class Scrapper
         @current_cat_name = current_cat_name
       end
 
-      puts "[BEGIN] Scrapping products for left cates"
+      @logger.info "[BEGIN] Scrapping products for left cates"
       start = Time.now
 
       agent = Mechanize.new
@@ -1020,21 +1072,24 @@ class Scrapper
           site_cat_id = cat.attributes["href"].text.split("?id=").last.split("&").first
           cat_url = cat.attributes["href"].text
 
-          scrape_products_per_subcat(site_cat_id, cat_url)        
+          scrape_products_per_subcat(site_cat_id, cat_url)
+          return
+
+          return if admin_request == STOP
         end
       end
 
-      puts "[END] Scrapping products for left cates in #{Time.now - start}"
+      @logger.info "[END] Scrapping products for left cates in #{Time.now - start}"
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
   def scrape_products_per_subcat(site_cat_id, url)
     begin
       if @scrapped_site_cat_ids[site_cat_id].present?
-        puts "We scrapped products of this site_cat_id #{site_cat_id} - url #{url}"
+        @logger.info "We scrapped products of this site_cat_id #{site_cat_id} - url #{url}"
         return
       end
 
@@ -1046,7 +1101,7 @@ class Scrapper
         full_url = url
       end
 
-      puts "\nScrapping products from #{full_url}"
+      @logger.info "\nScrapping products from #{full_url}"
 
       page = @agent.get(full_url)
 
@@ -1055,8 +1110,8 @@ class Scrapper
       product_count_el = page.search("#productCount")
 
       if product_count_el.empty?
-        puts "[WARN] This page is not a product list page\n\n"
-        puts "url: #{full_url}"
+        @logger.info "[WARN] This page is not a product list page\n\n"
+        @logger.info "url: #{full_url}"
         scrape_products_for_left_cat(full_url)
         return
       end
@@ -1077,9 +1132,6 @@ class Scrapper
         threads = []
         thread_count = 0
 
-        #puts "total products in this page: #{products.count}"
-        #puts "url_paging: #{url_paging}"
-
         products.each do |product|
           total_product_t = total_product
           
@@ -1093,16 +1145,13 @@ class Scrapper
               product_id = product.attributes["id"].text
 
               product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-              puts "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
+              @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
               scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
             }
 
             thread_count += 1
             @existing_products[key] = 0
-          else
-            #puts "Existing product key #{key}"
-            #puts "#{total_product_t}/#{product_count}/#{current_page} - #{"#{@root_url}#{product.search("a").first.attributes["href"].text}"}"
           end
 
           if thread_count == @number_of_threads || total_product == product_count
@@ -1110,6 +1159,8 @@ class Scrapper
 
             threads = []
             thread_count = 0
+
+            return if admin_request == STOP
           end
         end
 
@@ -1123,10 +1174,11 @@ class Scrapper
           page = @agent.get(url_paging)
         end
       end
+
       @scrapped_site_cat_ids[site_cat_id] = site_cat_id
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1150,8 +1202,8 @@ class Scrapper
         end
       end
     rescue Exception => e 
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end      
   end
 
@@ -1235,11 +1287,13 @@ class Scrapper
       update_product_price_details(product)
 
       # scrape child products
+      
+      return if admin_request == STOP
       scrape_child_products_in_collection(site_cat_id, site_product_id, child_site_products, product_url)
 
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
-      puts e.backtrace.join("\n")
+      @logger.error("[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}")
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1248,7 +1302,7 @@ class Scrapper
       
       return if child_site_products.nil?
 
-      puts "[BEGIN] Scrapping child products of collection #{product_url}"
+      @logger.info "[BEGIN] Scrapping child products of collection #{product_url}"
 
       agent = Mechanize.new
       
@@ -1260,7 +1314,7 @@ class Scrapper
         product_id = prod["ID"]
         url = "#{@root_url}#{prod["semanticURL"]}"
 
-        puts "Scrapping child product of product #{site_product_id}: #{url}"
+        @logger.info "Scrapping child product of product #{site_product_id}: #{url}"
 
         page = agent.get(url)
 
@@ -1268,12 +1322,14 @@ class Scrapper
 
         scrape_product_page(page, product_id, product_main_data.first, pos, url, site_cat_id, true)
         
+        break if admin_request == STOP
+
         pos += 1
       end
-      puts "[END] Scrapping child products of collection #{product_url}"
+      @logger.info "[END] Scrapping child products of collection #{product_url}"
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at product_url: #{product_url}"
-      puts e.backtrace.join("\n")
+      @logger.error("[EXCEPTION] #{e.message} - at product_url: #{product_url}")
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1292,7 +1348,7 @@ class Scrapper
       if product_thumbnail_page.present? && product_thumbnail_page.code != "200"
         retry_times = 0
 
-        puts "Trying to get the url #{url}"
+        @logger.info "Trying to get the url #{url}"
 
         while retry_times < 3
           product_thumbnail_page = agent.get(url)
@@ -1342,9 +1398,9 @@ class Scrapper
             end
         }.to_json
       rescue Exception => ex
-        puts "Message: #{ex.message}"
-        puts "Backtrace: #{ex.backtrace}"
-        puts "Data: #{product_thumbnail["attributes"]}"
+        @logger.error("Message: #{ex.message}")
+        @logger.error("Backtrace: #{ex.backtrace}")
+        @logger.error("Data: #{product_thumbnail["attributes"]}")
       end
 
       cust_rating = product_thumbnail["custRatings"]
@@ -1361,8 +1417,8 @@ class Scrapper
         size_chart_json = size_chart_page.body
 
         if size_chart_canvas_url.blank?
-          puts "size_chart_json: #{size_chart_json.inspect}"
-          puts "url: #{size_chart_canvas_url}=#{size_chart_canvas_id}"
+          @logger.info "size_chart_json: #{size_chart_json.inspect}"
+          @logger.info "url: #{size_chart_canvas_url}=#{size_chart_canvas_id}"
         end
       end
 
@@ -1399,10 +1455,10 @@ class Scrapper
           related_loved_products = recommendations["recommendationsOnAllZones"]["MCOM-NAVAPP-PDP_ZONE_B"]["recommendationVBList"]
           related_loved_product_ids = related_loved_products.collect{|product| product["recommendedItemId"]}.to_json
         rescue
-          puts "Could not get related_products for site_product_id #{site_product_id} and site_cat_id #{site_product_id}"
+          @logger.info "Could not get related_products for site_product_id #{site_product_id} and site_cat_id #{site_product_id}"
         end
       else
-        puts "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
+        @logger.info "Cannot get recommendations for product(#{productId} - category(#{categoryId}))"
       end    
 
       product = Product.new()
@@ -1446,8 +1502,8 @@ class Scrapper
       update_product_price_details(product)
 
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}"
-      puts e.backtrace.join("\n")
+      @logger.error("[EXCEPTION] #{e.message} - at url: #{url} - product_url: #{product_url}")
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1479,12 +1535,13 @@ class Scrapper
             ppd = ProductPriceDetail.new
             ppd.site_product_id = product.site_product_id
             ppd.site_cat_id = product.site_cat_id
-            ppd.price = price
+            ppd.price = calculate_sale_price(price.to_f)
             ppd.color_name = color_name
             ppd.color_image = color_img_map[color_name]
             ppd.product_image = product_img_map[color_name]
             
             if update_db
+              ppd.product_id = product.id
               ppd.save
             else
               add_product_price_details_to_file(ppd)
@@ -1501,6 +1558,7 @@ class Scrapper
           ppd.product_image = product_img_map[color_name]
             
           if update_db
+            ppd.product_id = product.id
             ppd.save
           else
             add_product_price_details_to_file(ppd)
@@ -1508,8 +1566,8 @@ class Scrapper
         end
       end
     rescue Exception => e
-      puts "[EXCEPTION] #{e.message} - at product url: #{product.url}"
-      puts e.backtrace.join("\n")
+      @logger.error("[EXCEPTION] #{e.message} - at product url: #{product.url}")
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1533,8 +1591,8 @@ class Scrapper
 
       return regular_price, was_price, sale_price
     rescue Exception => e 
-      puts "[Exception] #{e.message} - data: #{tiered_price}"
-      puts e.backtrace.join("\n")
+      @logger.error("[Exception] #{e.message} - data: #{tiered_price}")
+      @logger.error(e.backtrace.join("\n"))
       return "","",""
     end
   end
@@ -1567,8 +1625,8 @@ class Scrapper
 
       return seo_title, seo_keywords, seo_desc
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1590,8 +1648,8 @@ class Scrapper
         seo_info.save
       end
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.join("\n")
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1643,10 +1701,24 @@ class Scrapper
       @current_file << product.attributes.values unless product.nil?
       @number_of_products += 1
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     ensure
       @mutex.unlock
+    end
+  end
+
+  def reset_tmp_tables
+    begin
+      sql =<<-str
+        truncate tmp_products;
+      str
+
+      TmpProduct.connection.execute(sql)
+
+    rescue Exception => e
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1655,44 +1727,82 @@ class Scrapper
       return if number_of_batches <= 0
 
       for i in 0...number_of_batches
-        puts "Begin to import batch #{i}"
+        @logger.info "Begin to import batch #{i}"
         start = Time.now
 
         products = CSV.read("./tmp/#{start_date}/#{current_cat_name}_products_batch_#{i}.csv", 
                             external_encoding: "ISO8859-1",
                             internal_encoding: "utf-8")
         
-        Product.transaction do
-          columns = Product.attribute_names
-          Product.import columns, products, validate: false
+        TmpProduct.transaction do
+          columns = TmpProduct.attribute_names
+          TmpProduct.import columns, products, validate: false
         end
 
-        puts "Finished importing batch #{i} in #{Time.now - start}\n"
+        @logger.info "Finished importing batch #{i} in #{Time.now - start}\n"
       end
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
   def update_products_after_import
     begin
-      puts "Begin to update products"
+      @logger.info "Begin to update products"
       start = Time.now
 
-      sql =<<-SQL 
-        update products p
-        set category_id = c.id
-        from categories c
-        where c.site_cat_id = p.site_cat_id;
-      SQL
+      # Insert new products
+      atts = Product.attribute_names.clone
+      atts.delete("id")
+      
+      atts = atts.join!(",")
+
+      sql =<<-STR 
+        INSERT INTO products("#{atts}")
+        SELECT "#{atts}" FROM tmp_products
+        WHERE tmp_products.id != products.id = tmp_products.id
+      STR
 
       Product.connection.execute(sql)
 
-      puts "Finished updating products in #{Time.now - start}"
+      # Update existing products
+      atts = Product.attribute_names.clone
+      atts.delete("id")
+      
+      update_atts = []
+
+      atts.each do |att|
+        update_atts << "#{att} = tmp_products.#{att}"
+      end
+
+      sql =<<-STR
+        UPDATE products
+        SET
+        "#{update_atts.join(",")}"
+        WHERE products.id = tmp_products.id and tmp_products.id != 0
+      STR
+
+      Product.connection.execute(sql)
+
+      # Delete out-of-date products
+      sql =<<-STR
+        DELETE FROM products
+        WHERE id = any(
+          SELECT id from products
+          EXCEPT
+          SELECT id from tmp_products
+        );
+      STR
+
+      if is_full_scrapping
+        Product.connection.execute(sql)
+      end
+
+      @logger.info "Finished updating products in #{Time.now - start}"
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
@@ -1710,8 +1820,8 @@ class Scrapper
       @ppd_current_file << product_price_detail.attributes.values unless product_price_detail.nil?
       @ppd_number_of_products += 1
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     ensure
       @ppd_mutex.unlock
     end
@@ -1722,7 +1832,7 @@ class Scrapper
       return if number_of_batches <= 0
 
       for i in 0...number_of_batches
-        puts "Begin to import product price details batch #{i}"
+        @logger.info "Begin to import product price details batch #{i}"
         start = Time.now
 
         ppds = CSV.read("./tmp/#{start_date}/#{current_cat_name}_product_price_details_batch_#{i}.csv")
@@ -1732,32 +1842,109 @@ class Scrapper
           ProductPriceDetail.import columns, ppds, validate: false
         end
 
-        puts "Finished importing product price details batch #{i} in #{Time.now - start}\n"
+        @logger.info "Finished importing product price details batch #{i} in #{Time.now - start}\n"
       end
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
     end
   end
 
   def update_product_price_details_after_import
     begin
-      puts "Begin to update product price details"
+      @logger.info "Begin to update product price details"
       start = Time.now
 
       sql =<<-SQL 
         update product_price_details p
         set product_id = c.id
         from products c
-        where c.site_product_id = p.site_product_id;
+        where c.site_product_id = p.site_product_id 
+          and c.site_cat_id = p.site_cat_id 
+          and c.site_cat_id != 0;
       SQL
 
       ProductPriceDetail.connection.execute(sql)
 
-      puts "Finished updating product price details in #{Time.now - start}"
+      @logger.info "Finished updating product price details in #{Time.now - start}"
     rescue Exception => e
-      puts "Message: #{e.message}"
-      puts "Backtrace: #{e.backtrace}"
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    end
+  end
+
+  def update_scrapping_progress(percentage, log, action=RUN)
+    begin
+      if @task_id.present?
+        logs = []
+
+        task = ProcessingTask.find_by_id(@task_id)
+        task.progress = percentage
+        task.action_code = action
+        task.status = "done" if percentage == 100
+      
+        if !task.log.nil?
+          logs = JSON.parse(task.log)
+        end
+
+        logs << log
+
+        task.log = logs.to_json
+        task.save
+      end
+    rescue Exception => e
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    end
+  end
+
+  def get_admin_request
+    begin
+      puts "get_admin_request: #{@task_id}"
+
+      if @task_id.present?
+        while true
+
+          logs = []
+          task = ProcessingTask.find(@task_id)
+          @request_from_admin = task.action_code
+
+          puts "Received action_code #{task.action_code} from the admin"
+          @logger.info "Received action_code #{task.action_code} from the admin"
+
+          break if @request_from_admin == STOP
+
+          sleep(MAX_SLEEP_TIME)
+        end
+      end
+    rescue Exception => e
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    end
+  end
+
+  def admin_request
+    begin
+      if @request_from_admin == PAUSE
+        while true
+          # Sleep in 30 seconds before check exit status
+          sleep(MAX_SLEEP_TIME)
+
+          if [STOP, RUN].include? @request_from_admin
+            break
+          end
+        end
+      elsif @request_from_admin == STOP
+        return @request_from_admin
+      elsif @request_from_admin == RUN
+        return @request_from_admin
+      end
+
+      return @request_from_admin
+    rescue
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+      return STOP
     end
   end
 end
