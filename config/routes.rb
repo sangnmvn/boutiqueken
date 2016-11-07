@@ -51,7 +51,10 @@ Rails.application.routes.draw do
       put 'confirmed'
     end
   end
+
   resources :shopping_cart_items, only: [:update]
+  get 'admin/index'
+
   #     member do
   #       get 'short'
   #       post 'toggle'

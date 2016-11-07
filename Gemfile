@@ -59,3 +59,4 @@ gem 'activerecord-import'
 gem 'friendly_id'
 
 gem 'acts_as_shopping_cart'
+gem 'delayed_job_active_record'

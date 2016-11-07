@@ -1,0 +1,16 @@
+//= require js/common.min
+//= require js/common.min
+//= require js/uikit_custom.min
+//= require js/altair_admin_common.min
+//= require d3/d3.min
+//= require metrics-graphics/dist/metricsgraphics.min
+//= require chartist/dist/chartist.min
+//= require maplace.js/src/maplace-0.1.3
+//= require peity/jquery.peity.min
+//= require jquery.easy-pie-chart/dist/jquery.easypiechart.min
+//= require countUp.js/countUp.min
+//= require handlebars/handlebars.min
+//= require js/custom/handlebars_helpers.min
+//= require clndr/src/clndr
+//= require fitvids/jquery.fitvids
+//= require js/pages/dashboard.min
