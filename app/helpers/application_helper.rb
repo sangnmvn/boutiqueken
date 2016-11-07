@@ -229,4 +229,12 @@ module ApplicationHelper
     map_k = {0=>"Init",1 =>"Confirmed"}
     return map_k[status]
   end
+
+  def determine_static_left_selected(action,controller="home")
+    if params[:controller] == controller && params[:action] == action
+      return "active"
+    else
+      return ""
+    end
+  end
 end

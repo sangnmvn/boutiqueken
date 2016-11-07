@@ -3901,3 +3901,11 @@ input[type=number]::-webkit-outer-spin-button {
 .logo-trust-google{
   max-height: 65px;
 }
+
+.ul-static{
+  li{
+    a.active{
+      font-weight: 800;
+    }
+  }
+}
