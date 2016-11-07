@@ -42,7 +42,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     :address   => "smtp.sendgrid.net",
     :port      => 587,
-    :domain    => "spinx.com",
+    :domain    => "boutiqueken.com",
     :user_name => "opa3g",
     :password  => "1qazxsw2",
     :authentication => 'plain',
