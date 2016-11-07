@@ -4,6 +4,24 @@ class Order < ActiveRecord::Base
   has_one :shipping_address, class_name: "OrderAddress"
   accepts_nested_attributes_for :billing_address, :shipping_address
   has_many :order_details
+
+  before_save :generate_code
+
+  def generate_code
+    code = "BEK-" + Random.new.rand((10**(12 - 1))..(10**12)).to_s
+    existed = Order.where(:code => code).first
+    until !existed.present? do
+      code = "BEK-" + Random.new.rand((10**(12 - 1))..(10**12)).to_s
+      existed = Order.where(:code => code).first
+    end
+
+    self.code = code
+  end
+
+  def show_total_price
+    [self.currency,self.total.to_s].join(" ")
+  end
+
   def parse_items_from_cart(shop_cart)
   	# t.integer :order_id
    #    t.integer :product_id
@@ -37,10 +55,11 @@ class Order < ActiveRecord::Base
         product = Product.find(i.item_id)
         detail.product_id = i.item_id
         detail.price = i.price
-        detail.product_name = product.shop_desc
+        detail.product_name = product.short_desc
         detail.size = i.size
         detail.quantity = i.quantity
         detail.currency = i.price_currency
+        detail.product_image = product.main_image_url
         detail.save
       else
         product_detail = ProductPriceDetail.find(i.item_id)
@@ -53,6 +72,7 @@ class Order < ActiveRecord::Base
         detail.product_name = product.short_desc
         detail.size = i.size
         detail.currency = i.price_currency
+        detail.product_image = product.product_image
         detail.save
       end
   		

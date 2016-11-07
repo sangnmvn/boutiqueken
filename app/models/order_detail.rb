@@ -9,6 +9,14 @@ class OrderDetail < ActiveRecord::Base
     self.sub_total = self.price * self.quantity
   end
   
+  def show_price
+    self.currency.to_s + " " + self.price.to_s
+  end
+
+  def show_sub_total
+    [self.currency,self.sub_total.to_s].join(" ")
+  end
+
   def cal_order_total
     order = self.order
     order.total +=self.sub_total

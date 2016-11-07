@@ -38,7 +38,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  config.action_mailer.default_url_options = { :host => 'http://localhost:3002'}
+  config.action_mailer.default_url_options = { :host => 'http://172.16.3.56:3002'}
   config.action_mailer.smtp_settings = {
     :address   => "smtp.sendgrid.net",
     :port      => 587,
@@ -48,4 +48,5 @@ Rails.application.configure do
     :authentication => 'plain',
     :enable_starttls_auto => true
   }
+  config.host_app = "http://172.16.3.56:3002"
 end

@@ -87,4 +87,5 @@ Rails.application.configure do
     :authentication => 'plain',
     :enable_starttls_auto => true
   }
+  config.host_app = "https://www.boutiqueken.com"
 end

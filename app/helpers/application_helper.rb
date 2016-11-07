@@ -229,4 +229,9 @@ module ApplicationHelper
     map_k = {0=>"Init",1 =>"Confirmed"}
     return map_k[status]
   end
+
+
+  def full_image_link(img_link)
+    Rails.application.config.host_app.to_s + asset_path(img_link)
+  end
 end
