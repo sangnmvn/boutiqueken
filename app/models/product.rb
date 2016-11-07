@@ -1,5 +1,5 @@
 class Product < ActiveRecord::Base
-  has_many :product_details,class_name: "ProductPriceDetail", primary_key: "site_product_id",foreign_key: "site_product_id"
+  has_many :product_details,class_name: "ProductPriceDetail"
   
   extend FriendlyId
   friendly_id :slug_candidates, use: [:slugged, :finders]
