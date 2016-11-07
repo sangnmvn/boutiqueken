@@ -2,3 +2,19 @@ var html = "<%= j render :partial =>'product_items',locals: {:product_ls => @pro
 $(".product-list").html(html);
 $("html, body").animate({ scrollTop: 0 }, "slow");
 ProductList.reinit_carousel();
+var productColorImg = $('.product-details-info').find('.coloring-ul').find('li'),
+      productLargeImg = $('.product-img-wrapper').find('img');
+
+  productColorImg.on({
+    click: function(e){
+      e.preventDefault();
+      $(this).addClass('active').siblings().removeClass('active');
+
+      var thumbActive = $(this).data('img');
+
+      $(this).closest('.single-product').find(productLargeImg)
+        .filter("[data-img='" + thumbActive + "']")
+        .addClass('active')
+          .siblings().removeClass('active');
+    }
+  });
