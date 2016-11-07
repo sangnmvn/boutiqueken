@@ -3902,6 +3902,10 @@ input[type=number]::-webkit-outer-spin-button {
 .order_list_lower_roman {
     list-style-type: lower-roman;
 }
+.unordered_list_disc{
+  list-style-type: disc !important;
+  list-style-position: inside;
+}
 .faq,.international-ship,.term-of-use,.secure-shopping,.safe-shopping{
   p{
     margin-top: 30px;
