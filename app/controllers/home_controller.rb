@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  layout "static_layout",only: [:about_us]
+  layout "static_layout",only: [:about_us, :faq, :domestic_shipping_return, :privacy_policy]
   protect_from_forgery with: :exception
   def index
     # redirect_to new_user_session_path
