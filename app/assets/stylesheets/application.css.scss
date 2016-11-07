@@ -20,6 +20,6 @@
  *= require style
  *= require responsive
  *= require color
- *= require_tree .
+ *= require_directory ./responsive
  *= require_self
  */

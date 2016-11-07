@@ -4,11 +4,11 @@ class UsersController < ApplicationController
   protect_from_forgery with: :exception
   layout "devise"
   before_filter :get_user, :only =>[:profile,:update,:dashboard]
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   def index
     # redirect_to new_user_session_path
   end
-
+  
   def update
     user = current_user
 

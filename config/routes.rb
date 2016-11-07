@@ -17,7 +17,6 @@ Rails.application.routes.draw do
 
   # Example resource route with options:
 
-
   resources :users do
     member do
       get 'profile'
@@ -53,7 +52,23 @@ Rails.application.routes.draw do
   end
 
   resources :shopping_cart_items, only: [:update]
-  get 'admin/index'
+  # get 'admin/index'
+  # get 'admin/scrapper'
+  # put 'admin/interact_with_scrapper'
+
+  resources :admin do
+    collection do
+      get '' => "admin#index"
+      get 'index'
+      get 'scrapper'
+      get 'user_mgmt' 
+      put 'interact_with_scrapper'
+      get 'create_user'
+      put 'save_user'
+      post 'delete_user'
+    end
+    resources :addresses
+  end
 
   #     member do
   #       get 'short'

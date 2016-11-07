@@ -1,0 +1,53 @@
+<% unless @has_in_progress_worker %>
+    <div class="header_main_search_form">
+        <p class="uk-margin-large-top uk-text-large">Click the Update Products button to activate the scrapper</p>
+
+    <%= form_tag("interact_with_scrapper", method: :put) do |f| %>
+        <input type="hidden" name="run" value="run"></input>
+        <button class="md-btn md-btn-primary" type="submit">
+            Update Products
+        </button>
+    <% end %>
+
+    </div>
+<% else %>
+    <% if @is_paused %>
+        <div class="header_main_search_form">
+        <p class="uk-margin-large-top uk-text-large">Click the Run Scrapper to resume scrapping process or stop by clicking the Stop Scrapper</p>
+
+        <%= form_tag("interact_with_scrapper", method: :put, :id => "form_scrapper") do |f| %>
+            <button class="md-btn md-btn-primary" name="run" value="run">
+                RUN SCRAPPER
+            </button>
+            <button class="md-btn md-btn-danger" name="stop" value="stop" onclick="UIkit.modal.confirm('Do you want to stop scrapper?', function(){document.getElementById('form_scrapper').submit()});" type="button">
+                STOP SCRAPPER
+            </button>
+        <% end %>
+        </div>
+    <% else %>
+        <div class="header_main_search_form">
+        <p class="uk-margin-large-top uk-text-large">Click the Pause Scrapper to pause scrapping process or stop by clicking the Stop Scrapper</p>
+
+        <%= form_tag("interact_with_scrapper", method: :put, :id => "form_scrapper") do |f| %>
+            <button class="md-btn md-btn-primary" name="pause" value="pause">
+                PAUSE SCRAPPER
+            </button>
+            <button class="md-btn md-btn-danger" name="stop" value="stop" onclick="UIkit.modal.confirm('Do you want to stop scrapper?', function(){document.getElementById('form_scrapper').submit()});" type="button">
+                STOP SCRAPPER
+            </button>
+        <% end %>
+
+        </div>
+    <% end %>
+
+    <p class="uk-margin-normal-top uk-text-normal">Scrapping progress:</p>
+
+    <div class="uk-progress">
+        <div class="uk-progress-bar" style="width: <%= @progress %>%;"> <%= @progress %>%</div>
+    </div>
+
+    <div class="md-list-content">
+        <span class="md-list-heading">Scrapping logs:</span>
+        <span class="uk-text-small uk-text-muted">Id voluptatem veritatis ratione odio voluptatum.</span>
+    </div>
+<% end %>
