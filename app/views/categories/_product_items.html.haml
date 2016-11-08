@@ -40,7 +40,7 @@
             .product-img-wrapper.left-content-side{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
               -if i.product_details.present?
                 -is_need_main = true
-                -i.product_details.each_with_index do |detail,index|
+                -i.product_details.order("product_image asc").each_with_index do |detail,index|
                   - if detail.product_image.present?
                     %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_product_list(detail.product_image)}/
                     -is_need_main = false
@@ -58,7 +58,7 @@
                     .pull-left
                       .carousel{"data-target" =>".car_#{i.id}"}
                         %ul.coloring-ul
-                          -i.product_details.each_with_index do |detail,index|
+                          -i.product_details.order("product_image asc").each_with_index do |detail,index|
                             %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                               %a{:href => "javascript:;"}
                                 %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
@@ -66,7 +66,7 @@
                     %i.fa.fa-angle-right{"aria-hidden" => "true"}
               -else
                 %ul.coloring-ul
-                  -i.product_details.each_with_index do |detail,index|
+                  -i.product_details.order("product_image asc").each_with_index do |detail,index|
                     %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                       %a{:href => "javascript:;"}
                         %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
