@@ -13,7 +13,7 @@
             -cat = Category.find(i.category_id)
             %li
               %a{:href => category_path(f_id(cat))}=i.cat_name
-  -elsif  @left_navs.first.group_name.blank?
+  -elsif @left_navs.present? &&  @left_navs.first.group_name.blank?
     .single-product-cat
       %strong.trigger
         =@left_navs.first.cat_name
