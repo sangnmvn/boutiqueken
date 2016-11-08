@@ -612,9 +612,9 @@ ul{
 }
 .footer-bottom-inner {
   border-bottom: 1px solid #fff;
-  border-top: 1px solid #fff;
-  padding: 5.3rem 0;
+  padding: 5.3rem 0 4rem 0;
   margin-bottom: 2.2rem;
+  margin-top: -4rem;
 }
 .footer-sitemap {
   padding: 0 10rem;
@@ -646,7 +646,7 @@ ul{
 .footer-social > a {
   color: #fff;
   display: inline-block;
-  margin-top: 0.2rem;
+  margin-top: -1rem;
   margin-right: .7rem;
 }
 .download-app {
