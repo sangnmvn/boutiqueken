@@ -59,58 +59,103 @@
         .footer-sitemap
           .row
             .col-sm-3
-              %strong Shop Saks
+              %strong Explore Boutiqueken
               %ul.ul-single-sitemap
                 %li
-                  %a{:href => "#"} EDITION
+                  %a{:href => "#"} Brands
                 %li
-                  %a{:href => "#"} The Trendcaster
+                  %a{:href => "#"} Clothing
                 %li
-                  %a{:href => "#"} Fall Fashion: A Designer Series
+                  %a{:href => "#"} 
+                    Luxury
                 %li
-                  %a{:href => "#"} Collection: A Contemporary Series
+                  %a{:href => "#"} Eyewear
                 %li
-                  %a{:href => "#"} #SaksStyle Hub
+                  %a{:href => "#"} 
+                    New Arrivals
                 %li
-                  %a{:href => "#"} Catalogs
+                  %a{:href => "#"} 
+                    Outdoor
                 %li
-                  %a{:href => "#"} Gift Cards
+                  %a{:href => "#"} 
+                    Rideshop
+                %li
+                  %a{:href => "#"} 
+                    Running
+                %li
+                  %a{:href => "#"} 
+                    Shoes
+                %li
+                  %a{:href => "#"} 
+                    Watches
             / .col-sm-3 ends
             .col-sm-3
-              %strong Stores &amp; Corporate
+              %strong Customer Service
               %ul.ul-single-sitemap
                 %li
-                  %a{:href => "#"} Store Locations &amp; Events
+                  %a{:href => faq_path} FAQ's
                 %li
-                  %a{:href => "#"} Bridal Trunk Shows
+                  %a{:href => "#"} 
+                    Coupons
                 %li
-                  %a{:href => "#"} About Us
+                  %a{:href => "#"} Contact Info
                 %li
-                  %a{:href => "#"} Careers
+                  %a{:href => about_us_path} About Us
                 %li
-                  %a{:href => "#"} Policies
+                  %a{:href => safe_shopping_guarantee_path} 
+                    Safe Shopping Guarantee
+                %li
+                  %a{:href => secure_shopping_path} Secure shopping
             / .col-sm-3 ends
             .col-sm-3
-              %strong Shipping &amp; Returns
+              %strong Shipping & Returns
               %ul.ul-single-sitemap
                 %li
-                  %a{:href => "#"} Domestic
+                  %a{:href => domestic_shipping_and_return_path} Domestic
                 %li
-                  %a{:href => "#"} International
+                  %a{:href => international_shipping_and_return_path} International
                 %li
-                  %a{:href => "#"} Order Status &amp; Tracking
+                  -if current_user.present?
+                    %a{:href => orders_user_path(current_user)} Order Status &amp; Tracking
+                  -else
+                    %a{:href => new_user_session_path} Order Status &amp; Tracking
             / .col-sm-3 ends
             .col-sm-3
-              %strong SaksFirst Card
+              %strong My Account
               %ul.ul-single-sitemap
                 %li
-                  %a{:href => "#"} SaksFirst
-                %li
-                  %a{:href => "#"} Pay Bills &amp; Manage
-                %li
-                  %a{:href => "#"} Apply
-                %li
-                  %a{:href => "#"} Upgrade to the Saks MasterCard
+                  %a{:href => new_user_session_path} Login/Register
+                -if current_user.present?
+                  %li
+                    %a{:href => profile_user_path(current_user)} My Account
+                  %li
+                    %a{:href => orders_user_path(current_user)} 
+                      Order Status
+                  %li
+                    %a{:href => orders_user_path(current_user)} 
+                      Order History
+                  %li
+                    %a{:href => orders_user_path(current_user)} 
+                      Print An Invoice
+                  %li
+                    %a{:href => orders_user_path(current_user)} 
+                      Track My Order
+
+                -else
+                  %li
+                    %a{:href => new_user_session_path} My Account
+                  %li
+                    %a{:href => new_user_session_path} 
+                      Order Status
+                  %li
+                    %a{:href => new_user_session_path} 
+                      Order History
+                  %li
+                    %a{:href => new_user_session_path} 
+                      Print An Invoice
+                  %li
+                    %a{:href => new_user_session_path} 
+                      Track My Order
             / .col-sm-3 ends
           / .row ends
         / .footer-sitemap ends
@@ -139,13 +184,13 @@
             %a{:href => "#"}
               %img{:alt => "youtube-icon", :src => asset_path("img/icons/youtube.png")}/
         %a.download-app{:href => "#"}
-          Download the Saks App:
+          Download the Boutiqueken App:
           %img{:alt => "app-icon", :src => asset_path("img/icons/app.png")}/
         %a.sign-up-sms{:href => "#"}
           Sign up for SMS:
           %img{:alt => "sms-icon", :src => asset_path("img/icons/sms.png")}/
       / .footer-social ends
       %p.copyright
-        © 2015, Saks Fifth Avenue
+        © 2016, Boutiqueken Fifth Avenue
         %span •
         CA Transparency in Supply Chains Act

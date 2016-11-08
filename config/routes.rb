@@ -6,6 +6,15 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
   get "home/subregions"
+
+  get "/about-us" =>"home#about_us"
+  get "/faq" => "home#faq"
+  get "/domestic-shipping-and-return" =>"home#domestic_shipping_return"
+  get "/international-shipping-and-return" =>"home#international_shipping_return"
+  get "/privacy-policy" =>"home#privacy_policy"
+  get "/safe-shopping-guarantee" =>"home#safe_shopping_guarantee"
+  get "/secure-shopping" =>"home#secure_shopping"
+  get "/term-of-use" =>"home#term_of_use"
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

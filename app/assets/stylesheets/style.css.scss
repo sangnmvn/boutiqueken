@@ -3885,3 +3885,27 @@ input[type=number]::-webkit-outer-spin-button {
   text-align: center;
   padding: 0px  !important;
 }
+.faq,.international-ship,.term-of-use,.secure-shopping,.safe-shopping{
+  p{
+    margin-top: 30px;
+  }
+  h1{
+    padding-top: 0px;
+    margin-top: 0px;
+  }
+}
+
+.sp-div-tall{
+  height: 10px;
+}
+.logo-trust-google{
+  max-height: 65px;
+}
+
+.ul-static{
+  li{
+    a.active{
+      font-weight: 800;
+    }
+  }
+}
