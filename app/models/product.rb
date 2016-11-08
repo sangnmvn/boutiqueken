@@ -6,7 +6,8 @@ class Product < ActiveRecord::Base
 
   def slug_candidates
     [
-      [:short_desc]
+      [:short_desc],
+      [:id, :short_desc]
     ]
   end
   
@@ -23,6 +24,9 @@ class Product < ActiveRecord::Base
     text :shipping_return
     integer :category_id
     string :site_cat_id
+
+    boolean :is_child, :stored => true
+    
     string :color_name,:multiple => true do
       result = []
       result = product_details.pluck(:color_name)
@@ -46,11 +50,7 @@ class Product < ActiveRecord::Base
 
     dynamic_string :filters, :multiple => true,:stored=>true do
       product_atts_key_pairs.inject({}) do |hash, e|
-        unless ["BULLET_TEXT","FABRIC_CONTENT","SHIPPING_BULLET_TEXT"].include? e[0]
-          hash.merge(e[0].to_sym => e[1])
-        end
-
-        hash
+        hash.merge(e[0].to_sym => e[1])
       end
     end
   end
@@ -63,7 +63,19 @@ class Product < ActiveRecord::Base
       str
     end
 
-    JSON.parse(fixed_value).to_a
+    new_atts = []
+    
+    JSON.parse(fixed_value).to_a.each_with_index do |att, i|
+      unless ["SHOW_MEMBER_IMAGE","PRODUCT_ADDITIONAL_IMAGES",
+              "INTL_SIZE_CHART","PRODUCT_PORTRAIT_IMAGE",
+              "PDF_EMAIL_DESCRIPTION","BULLET_TEXT",
+              "FABRIC_CONTENT",
+              "SHIPPING_BULLET_TEXT"].include? att[0]
+        new_atts << att
+      end
+    end
+
+    new_atts
   end
 
   def list_sizes
