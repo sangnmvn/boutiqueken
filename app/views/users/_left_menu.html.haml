@@ -8,4 +8,4 @@
     %li{:class =>active_address_left_menu}
       %a{"data-account" => "address", :href => "#{address_book_user_path(current_user)}"} Address Book
     %li{:class =>active_order_left_menu}
-      %a{"data-account" => "orders", :href => orders_user_path} My Orders
+      %a{"data-account" => "orders", :href => orders_user_path(current_user)} My Orders
