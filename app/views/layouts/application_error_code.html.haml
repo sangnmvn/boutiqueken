@@ -1,0 +1,67 @@
+!!!
+/[if lt IE 7] <html class="no-js lt-ie9 lt-ie8 lt-ie7">
+/[if IE 7] <html class="no-js lt-ie9 lt-ie8">
+/[if IE 8] <html class="no-js lt-ie9">
+/ [if gt IE 8]><!
+%html.no-js{:lang => "en"}
+  / <![endif]
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    -if @category.present?
+      %title=@category.seo_title
+      %meta{:content => @category.seo_desc, :name => "description"}/
+      %meta{:content => @category.seo_keywords, :name => "keywords"}/
+    -elsif @product.present?
+      %title=@product.seo_title
+      %meta{:content => @product.seo_desc, :name => "description"}/
+      %meta{:content => @product.seo_keywords, :name => "keywords"}/
+    -else
+      %title Free SHIPPING, FREE RETURNS & FREE 3-DAY SHIPPING WORLDWIDE latest latest Designer Women's Apparel, Men's Apparel, Shoes, Handbags, Beauty and More. Boutiqueken.com
+
+      %meta{:content => "Free shipping. Free returns. All the time. Shop online for shoes, clothing, jewelry, dresses, makeup and more from top brands. Make returns in store or by mail.", :name => "description"}/
+      %meta{:content => "women&#039;s fashion, women&#039;s clothing, designer fashion, boutiqueken, boutiqueken.com", :name => "keywords"}/
+      
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
+    / Place favicon.ico and apple-touch-icon.png in the root directory
+    %link{:href => "https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css", :rel => "stylesheet"}/
+    / For third-generation iPad with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "144x144"}/
+    / For iPhone with high-resolution Retina display:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "114x114"}/
+    / For first- and second-generation iPad:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed", :sizes => "72x72"}/
+    / For non-Retina iPhone, iPod Touch, and Android 2.1+ devices:
+    %link{:href => "#", :rel => "apple-touch-icon-precomposed"}/
+    %link{:href => asset_path("favicon.jpg"), :rel => "icon"}/
+
+    / Google Fonts
+    %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800", :rel => "stylesheet"}/
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application'
+    = csrf_meta_tags 
+    /[if IE] <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  %body
+    /[if lt IE 7]
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    / HEADER STARTS
+    =render "shared/header"
+    %section.section-home-2
+      .container
+        / HOME RIGHT CONTENT MARKUP
+        /.home-right-content 
+        = yield
+          
+        / HOME RIGHT SIDE CONTENT MARKUP ENDS
+      / .container ends
+    / SECTION HOME CONTENT Starts
+    / FOOTER AREA STARTS
+    =render "shared/footer_error_code"
+:javascript
+  $(document).ready(function(){
+    setTimeout(function(){
+    $('.grid').masonry();
+    },200);
+  });
+  

@@ -616,6 +616,7 @@ ul{
   margin-bottom: 2.2rem;
   margin-top: -4rem;
 }
+
 .footer-sitemap {
   padding: 0 10rem;
 }
@@ -3934,4 +3935,73 @@ input[type=number]::-webkit-outer-spin-button {
   text-align:right;
   float: right;
   margin-left:2rem;
+}
+
+.footer-bottom-error-code{
+  color: #000;
+}
+.footer-bottom-error-code ul li a, .footer-bottom-error-code h2{
+  color: #000;
+}
+.footer-bottom-error-code h2 {
+  font-size: 3.3rem;
+  font-weight: 300;
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+  text-align: center;
+}
+
+.footer-bottom-error-code-inner {
+  padding: 5.3rem 0 4rem 0;
+  margin-bottom: 2.2rem;
+  margin-top: -4rem;
+}
+
+.footer-bottom-error-code ul li a {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.footer-sitemap-error-code {
+  padding-left: 3rem;
+}
+.footer-sitemap-error-code strong {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: .5rem;
+  display: block;
+}
+ 
+.error-dialog {
+  width: 100%;
+  margin: -1em 0em -2em;
+}
+
+.error-dialog-box{
+  background-color: #f2f2f2;
+  padding: 2em;
+  
+  text-align:center;
+ 
+}
+
+.dialog-error{
+  
+  font-size: 14px;
+}
+.dialog-text {
+  
+  color: #000;
+  line-height: 1.5em;
+  font-weight: bold;
+}
+.col-xs-5ths {
+    width: 20%;
+    float:left;
+}
+
+.dialog-title {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 2.2rem;
+  margin-right: 2.2rem;
 }
