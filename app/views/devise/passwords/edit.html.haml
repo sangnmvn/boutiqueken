@@ -12,11 +12,13 @@
                   = devise_error_messages!
               = f.hidden_field :reset_password_token
               %label{:for => "password"} New password
-              %br/
-                - if @minimum_password_length
-                  %em
-                    (#{@minimum_password_length} characters minimum)
-                  %br/
-              = f.password_field :password, autofocus: true, autocomplete: "off",placeholder: "Password", required: true "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Password is required!",:id =>"password"
+              %br
+              - if @minimum_password_length
+                %em
+                  ="(#{@minimum_password_length} characters minimum)"
+                %br
+              = f.password_field :password, autofocus: true, autocomplete: "off",placeholder: "Password", required: true, "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Password is required!",:id =>"password"
               = f.label :password_confirmation, "Confirm new password"
-              = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password confirmation", required: true "data-parsley-trigger" => "change", "data-parsley-required-message" => "Password confirmation is required!",:id =>"password","data-parsley-equalto"=>"#password","parsley-equalto-message" => "Password confirmation does not match"
+              = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password confirmation", required: true, "data-parsley-trigger" => "change", "data-parsley-required-message" => "Password confirmation is required!",:id =>"password","data-parsley-equalto"=>"#password","parsley-equalto-message" => "Password confirmation does not match"
+              %br
+              = f.submit "SAVE",class: "btn-cus btn-reset"
