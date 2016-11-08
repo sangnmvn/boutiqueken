@@ -37,7 +37,7 @@ class Order < ActiveRecord::Base
         product = Product.find(i.item_id)
         detail.product_id = i.item_id
         detail.price = i.price
-        detail.product_name = product.shop_desc
+        detail.product_name = product.short_desc
         detail.size = i.size
         detail.quantity = i.quantity
         detail.currency = i.price_currency
