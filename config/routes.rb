@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'errors/not_found'
+
+  get 'errors/internal_server_error'
+
   devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -15,6 +19,9 @@ Rails.application.routes.draw do
   get "/safe-shopping-guarantee" =>"home#safe_shopping_guarantee"
   get "/secure-shopping" =>"home#secure_shopping"
   get "/term-of-use" =>"home#term_of_use"
+
+  match "/404", :to => "errors#not_found", :via => :all
+  match "/500", :to => "errors#internal_server_error", :via => :all
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
