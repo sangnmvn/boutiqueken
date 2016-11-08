@@ -3885,7 +3885,15 @@ input[type=number]::-webkit-outer-spin-button {
   text-align: center;
   padding: 0px  !important;
 }
-.faq,.international-ship,.term-of-use,.secure-shopping,.safe-shopping{
+
+.order_list_lower_roman {
+    list-style-type: lower-roman;
+}
+.unordered_list_disc{
+  list-style-type: disc !important;
+  list-style-position: inside;
+}
+.faq,.international-ship,.term-of-use,.secure-shopping,.safe-shopping,.about-us,.policy,.domestic{
   p{
     margin-top: 30px;
   }
@@ -3901,7 +3909,9 @@ input[type=number]::-webkit-outer-spin-button {
 .logo-trust-google{
   max-height: 65px;
 }
-
+.txt-right{
+  text-align: right;
+}
 .ul-static{
   li{
     a.active{
