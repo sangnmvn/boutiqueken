@@ -84,6 +84,11 @@
                     %strong
                       Sale. $
                       =show_price_digit(i.sale_price)
+                -elsif i.list_price_range.present?
+                  %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
+                    %strong
+                      Sale. $
+                      =i.list_price_range.join(" - ")
             / .single-product ends
           / .col-md-4 ends
           / SINGLE PRODUCT ends
