@@ -160,36 +160,16 @@
         / .footer-sitemap ends
       / .footer-bottom-inner ends
       .footer-social
-      /   %ul.ul-social-icons
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "pov-icon", :src => asset_path("img/icons/pov.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "fb-icon", :src => asset_path("img/icons/facebook.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "twitter-icon", :src => asset_path("img/icons/twitter.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "pinterest-icon", :src => asset_path("img/icons/pinterest.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "tumbler-icon", :src => asset_path("img/icons/tumbler.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "instagram-icon", :src => asset_path("img/icons/instagram.png")}/
-      /     %li
-      /       %a{:href => "#"}
-      /         %img{:alt => "youtube-icon", :src => asset_path("img/icons/youtube.png")}/
-      /   %a.download-app{:href => "#"}
-      /     Download the Boutiqueken App:
-      /     %img{:alt => "app-icon", :src => asset_path("img/icons/app.png")}/
-      /   %a.sign-up-sms{:href => "#"}
-      /     Sign up for SMS:
-      /     %img{:alt => "sms-icon", :src => asset_path("img/icons/sms.png")}/
-      / / .footer-social ends
-      / %p.copyright
-      /   © 2016, Boutiqueken Fifth Avenue
-      /   %span •
-      /   CA Transparency in Supply Chains Act
+        %a.txt-float-right{:href => privacy_policy_path}
+          Privacy Policies
+          
+        %a.txt-float-right{:href => term_of_use_path}
+          Terms of Use
+        
+      / .footer-social ends
+      %p.copyright.product-details-info
+        @2009-2016 - Boutiqueken.com or its affiliates, 108 Madison Ave, New York, NY 10016, USA.
+        %br
+        Boutiqueken.com is operated by NYFashoFin Inc. Products on Boutiqueken.com are sold by NYFashoFin Retail, Inc.
+        %br
+        Gift cards and e-Gift cards sold on Boutiqueken.com are sold by NYFashoFin Gift Cards, Inc. or ACI Gift Cards, Inc.
