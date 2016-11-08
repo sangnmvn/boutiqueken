@@ -237,4 +237,8 @@ module ApplicationHelper
       return ""
     end
   end
+  
+  def full_image_link(img_link)
+    Rails.application.config.host_app.to_s + asset_path(img_link)
+  end
 end

@@ -41,6 +41,7 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     @order.update_attributes({:status =>1})
     @shopping_cart.clear
+    UserMailer.order_confirmation(@order,current_user).deliver
     redirect_to orders_user_path(current_user)
   end
 

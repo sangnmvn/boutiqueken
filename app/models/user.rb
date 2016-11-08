@@ -5,9 +5,13 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   has_many :addresses
   has_many :orders
-
+  after_create :send_welcome
   def confirmed_orders
     self.orders.where(:status =>1)
+  end
+
+  def send_welcome
+    UserMailer.welcome(self).deliver
   end
 
   def add_default_address(ship_params,billing_params)

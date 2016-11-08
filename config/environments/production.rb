@@ -79,12 +79,13 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { :host => 'https://www.boutiqueken.com'}
   config.action_mailer.smtp_settings = {
-    :address   => "smtp.sendgrid.net",
+    :address   => "mail.boutiqueken.com",
     :port      => 587,
-    :domain    => "spinx.com",
-    :user_name => "opa3g",
-    :password  => "1qazxsw2",
-    :authentication => 'plain',
+    #:domain    => "spinx.com",
+    :user_name => "care",
+    :password  => "H'?,4|#@3c,(9S%{7369E",
+    :authentication => 'login',
     :enable_starttls_auto => true
   }
+  config.host_app = "https://www.boutiqueken.com"
 end
