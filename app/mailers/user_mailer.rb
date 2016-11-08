@@ -14,7 +14,7 @@ class UserMailer < ActionMailer::Base
     @user = user
     subject = "Confirmation of your Boutiqueken order (Order No.:#{@order.code})"
     @shipping = @order.shipping_address
-    mail :to => @user.email, :subject => subject if @user
+    mail :to => @order.email,:cc=>[@user.email], :subject => subject if @user
   end
 end
  

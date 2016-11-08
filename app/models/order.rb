@@ -5,7 +5,7 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :billing_address, :shipping_address
   has_many :order_details
 
-  before_save :generate_code
+  before_create :generate_code
 
   def generate_code
     code = "BEK-" + Random.new.rand((10**(12 - 1))..(10**12)).to_s
