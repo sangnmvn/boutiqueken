@@ -43,6 +43,7 @@ class ShoppingCartsController < ApplicationController
           end
         else
           item = @shopping_cart.add(@product, @product.sale_price,quantity)
+          @shopping_cart.shopping_cart_items.update_all({:has_color => false})
         end
       end
     end

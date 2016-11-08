@@ -1,4 +1,4 @@
-%section.section-signin-area
+%section.section-signin-area.profile-page
   .container
     %h2.sr-only My Account Navigation Area
     .account-inner
@@ -42,12 +42,12 @@
                     .checkbox-input-block
                       %label.control.control--checkbox.change-password-trigger
                         Change Password
-                        %input{:type => "checkbox",:checked =>"checked"}/
+                        %input{:type => "checkbox"}/
                         %span.control__indicator
                     / .checkbox-input-block ends
                   / .info-form-group ends
                 / .sign-in-col ends
-                .change-password-slideToggle
+                .change-password-slideToggle{:style =>"display: none;"}
                   .sign-in-col.sign-in-col-has-required
                     %h4 change password
                     .info-form-group

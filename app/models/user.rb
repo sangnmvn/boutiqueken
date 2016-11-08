@@ -17,8 +17,8 @@ class User < ActiveRecord::Base
     billing_params[:is_default_billing] = true
     billing_params[:is_default_shipping] = false
 
-    Address.create(ship_params.permit(:user_id,:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping) );
-    Address.create(billing_params.permit(:user_id,:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping));
+    Address.create(ship_params.permit(:user_id,:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:country) );
+    Address.create(billing_params.permit(:user_id,:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:country));
   end
 
   def full_name

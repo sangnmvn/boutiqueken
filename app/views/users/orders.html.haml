@@ -18,14 +18,15 @@
                   %th{:scope => "row"} Actions
               %tbody
                 -@orders.each do |i|
-                  %td
-                    =i.id
-                  %td
-                    =i.order_details.sum(:quantity)
-                  %td
-                    =show_order_status(i.status)
-                  %td
-                    $
-                    =i.total
-                  %td
-                    =link_to "View Detail",order_path(i)
+                  %tr
+                    %td
+                      =i.id
+                    %td
+                      =i.order_details.sum(:quantity)
+                    %td
+                      =show_order_status(i.status)
+                    %td
+                      $
+                      =i.total
+                    %td
+                      =link_to "View Detail",order_path(i)

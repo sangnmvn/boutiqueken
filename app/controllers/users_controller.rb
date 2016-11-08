@@ -11,18 +11,30 @@ class UsersController < ApplicationController
 
   def update
     user = current_user
-
-    if user.valid_password?(params[:user][:current_password])
-      if user.update_attributes(user_params)
-        sign_in user, :bypass => true
-        flash[:notice] = "Your Password is updated successfully!"
-        redirect_to profile_user_path(current_user)
+    if params[params[:user][:current_password].present?]
+      if user.valid_password?(params[:user][:current_password])
+        if user.update_attributes(user_params)
+          sign_in user, :bypass => true
+          flash[:notice] = "Your Password is updated successfully!"
+          redirect_to profile_user_path(current_user)
+        else
+          flash[:error] = user.errors.full_messages.first.html_safe
+        end
       else
-        flash[:error] = user.errors.full_messages.first.html_safe
+        flash[:error] = "Your entered Current Password is incorrect."
+        redirect_to profile_user_path
       end
     else
-      flash[:error] = "Your entered Current Password is incorrect."
-      redirect_to profile_user_path
+      if user.update_attributes(user_params.delete_if{|key,value| (key=="password" || key == "password_confirmation")})
+        sign_in user, :bypass => true
+        flash[:notice] = "Your profile is updated successfully!"
+        redirect_to profile_user_path(current_user)
+      else
+        puts "====WEEE"
+        puts user.errors.inspect
+        flash[:error] = "Can't update your profile."
+        redirect_to profile_user_path
+      end
     end
   end
 

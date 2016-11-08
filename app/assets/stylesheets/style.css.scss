@@ -3837,6 +3837,17 @@ input[type=number]::-webkit-outer-spin-button {
   display: inline-block;
   text-align: center;
 }
+.btn-checkout:hover{
+  background: #000 none repeat scroll 0 0;
+  border: 0 none;
+  color: #fff;
+  padding: .8rem;
+  width: 17.5rem;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  text-decoration: underline;
+}
 .lbl-normal{
   display: inline-block !important;
   line-height: 29px;

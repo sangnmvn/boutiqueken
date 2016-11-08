@@ -52,8 +52,8 @@ class OrdersController < ApplicationController
       params[:order][:billing_address_attributes] = params[:order][:shipping_address_attributes]
       params[:order][:billing_address_attributes][:is_default_billing] = "0"
     end
-  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:shipping_address_id,:order_id,:user_id,:address_type],
-      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:billing_address_id,:user_id,:order_id,:address_type]).permit!  
+  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:shipping_address_id,:order_id,:user_id,:address_type,:country],
+      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:billing_address_id,:user_id,:order_id,:address_type,:country]).permit!  
   end
 
   def check_user_orders

@@ -27,6 +27,7 @@ $(function(){
   ViewProduct.init();
   ViewProduct.render();
   Product.init(".image-product-detail");
+  Billing.init(".section-billing");
 
   $(".a-to-bag").on("click",function(){
     selected_detail_id = $(this).closest(".product-panel").find(".color-picking.active").attr("data-detail-id");
@@ -433,3 +434,22 @@ var Product={
 }
 
 
+var Billing ={
+  init: function(selector){
+    if($(selector).length >0){
+      $(".country-div-ship select").on("change",function(){
+        select_wrapper = $(".select-ship-state select");
+        country_code =$(this).val();
+        url ="/home/subregions?country=" + country_code
+        select_wrapper.load(url);
+      });
+
+      $(".country-div-bill select").on("change",function(){
+        select_wrapper = $(".select-state-bill select");
+        country_code =$(this).val();
+        url ="/home/subregions?country=" + country_code
+        select_wrapper.load(url);
+      });
+    }
+  }
+}

@@ -11,14 +11,14 @@
           %li
             %a{:href => "#"} REVIEW &amp; SUBMIT
         %ul.ul-saks-bag-top-list.pull-right
-          %li
-            %a{:href => "#"} 1.8777.551.7257
-          %li
-            %a{:href => "#"} Email
-          %li
-            %a{:href => "#"} Chat
-          %li
-            %a{:href => "#"} Shipping &amp; Returns
+          / %li
+          /   %a{:href => "#"} 1.8777.551.7257
+          / %li
+          /   %a{:href => "#"} Email
+          / %li
+          /   %a{:href => "#"} Chat
+          / %li
+          /   %a{:href => "#"} Shipping &amp; Returns
       / .tab holder ends
       / payment-section-body start
       .payment-section-body.common-section-body
@@ -31,7 +31,8 @@
                     .half-input-div
                       %label.lbl-normal{:for => "card-exp"} Cash on delivery
                       %input#card-exp.half-left-input{:type =>"checkbox",:style =>"width: 14px",:checked =>"checked",:disabled=>"disabled"}/
-                  
+              .check-outing.pull-left
+                %a.btn-checkout{:href =>billing_shopping_carts_path} BACK
               .check-outing.pull-right
                 %a.btn-checkout{:href =>confirm_order_path(@order)} CONTINUE CHECKOUT
           / COL-7 ENDS

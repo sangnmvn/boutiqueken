@@ -11,14 +11,14 @@
           %li
             %a{:href => "#"} REVIEW &amp; SUBMIT
         %ul.ul-saks-bag-top-list.pull-right
-          %li
-            %a{:href => "#"} 1.8777.551.7257
-          %li
-            %a{:href => "#"} Email
-          %li
-            %a{:href => "#"} Chat
-          %li
-            %a{:href => "#"} Shipping &amp; Returns
+          / %li
+          /   %a{:href => "#"} 1.8777.551.7257
+          / %li
+          /   %a{:href => "#"} Email
+          / %li
+          /   %a{:href => "#"} Chat
+          / %li
+          /   %a{:href => "#"} Shipping &amp; Returns
       / .tab holder ends
       / billing-section-body starts
       .billing-section-body.common-section-body
@@ -73,6 +73,14 @@
                         %label{:for => "city"} City
                         / %input#city{:required => "required", :type => "text"}/
                         = f.text_field :city,autocomplete: "off", placeholder: "City",:id =>"city", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, City is required!",:id =>"city",:required =>"required"
+                      .col-xs-12.col-sm-6.col-md-4
+                        .info-form-group
+                          .account-input-block.country-selecting
+                            %label{:for => "country"} Country
+                            .select
+                              .country-div-ship
+                                =f.country_select :country,{priority: %w(US),selected: f.object.country}
+                              .select__arrow.country-select
                       .col-xs-12.col-sm-6.col-md-4.middle-state
                         .info-form-group
                           .account-input-block.state-selecting
@@ -85,11 +93,12 @@
                             /     %option{:value => "4"} Brazil
                             /     %option{:value => "5"} Australia
                             /   .select__arrow.state-select
-                            .select
+                            .select.select-ship-state
                               =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[shipping_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends
+                    .row
                       .col-xs-12.col-sm-6.col-md-4
                         %label{:for => "zip-code"} Zip Code
                         = f.text_field :zip_code,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
@@ -144,16 +153,26 @@
                       .col-xs-12.col-sm-6.col-md-4
                         %label{:for => "city-2"} City
                         = f.text_field :city,autocomplete: "off", placeholder: "City",:id =>"city", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, City is required!",:id =>"city",:required =>"required"
+                      .col-xs-12.col-sm-6.col-md-4
+                        .info-form-group
+                          .account-input-block.country-selecting
+                            %label{:for => "country"} Country
+                            .select
+                              .country-div-bill
+                                =f.country_select :country,{priority: %w(US),selected: f.object.country}
+                              .select__arrow.country-select
                       .col-xs-12.col-sm-6.col-md-4.middle-state
                         .info-form-group
                           .account-input-block.state-selecting
                             %label{:for => "state-2"} State
-                            .select
+                            .select.select-state-bill
                               =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[billing_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends
                       / col ends
+                      
+                    .row
                       .col-xs-12.col-sm-6.col-md-4
                         %label{:for => "zc-2"} Zip Code
                         = f.text_field :zip_code,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
