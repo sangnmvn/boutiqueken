@@ -8,7 +8,7 @@
     %span.item
       =i["name"]
 -elsif group_name.downcase == "customer ratings"
-  %input{:type=>"checkbox",name: "filter",value: i["value"],id: id}
+  %input.filter-item{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter,"filter-field" =>field_name}
   %span.item_review{title: i["name"]}
 -elsif group_name.downcase == "brand"
   %input.brand-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}

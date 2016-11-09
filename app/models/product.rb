@@ -116,12 +116,15 @@ class Product < ActiveRecord::Base
       # with(:sizes_list,params_t[:size_selected]) if params_t[:size_selected].present?
       with(:site_cat_id,params_t[:category_id]) if params_t[:category_id].present?
       if params_t[:price_selected].present?
+        min = 0
+        max = 0 
         params_t[:price_selected].each do |i|
           start,finish = i.split("|")
-          puts start
-          puts finish
-          with(:sale_price,Range.new(start,finish)) if start.present? && finish.present?
+          min = start.to_f if min > start.to_f
+          max = finish.to_f  if max < finish.to_f
+          
         end
+        with(:sale_price,Range.new(min,max)) if min.present? && max.present?
       end
       if params_t[:filter].present?
         filter_names.each do |i|
