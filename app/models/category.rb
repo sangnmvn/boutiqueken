@@ -33,5 +33,11 @@ class Category < ActiveRecord::Base
     new_record? || slug.blank?
   end
 
-  
+  def to_friend_or_id
+    if self.friendly_id? || self.slug.present?
+      self.friendly_id
+    else
+      self.id
+    end
+  end
 end
