@@ -225,6 +225,7 @@ var ViewProduct ={
     product={};
     product["main_image_url"] = "http://macys-o.scene7.com/is/image/MCY/products/" + product_info.main_image_url;
     product["product_id"]= product_info.id;
+    product["slug"]= product_info.slug;
     product["name"] =  product_info.short_desc;
     product["macys_sale_price"] = product_info.macys_sale_price;
     product["sale_price"] = product_info.sale_price;
@@ -251,7 +252,12 @@ var ViewProduct ={
         sale_price = ViewProduct.show_price(value.sale_price);
         price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
-        link_a = $("<a></a>").attr("href","/pro/" + value.product_id);
+
+        if(value.slug !=""){
+          link_a = $("<a></a>").attr("href","/pro/" + value.slug);
+        }else{
+          link_a = $("<a></a>").attr("href","/pro/" + value.product_id);
+        }
         div_single = $("<div></div>").addClass("recent-view-single-item");
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
