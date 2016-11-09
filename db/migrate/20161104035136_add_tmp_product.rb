@@ -1,10 +1,8 @@
 class AddTmpProduct < ActiveRecord::Migration
   def up
     sql =<<-STR
-        CREATE TABLE tmp_products(
-          id int default 0
-        )
-        INHERITS (products);
+        DROP TABLE IF EXISTS tmp_products;
+        SELECT * INTO tmp_products FROM products LIMIT 0; 
     STR
     
     ActiveRecord::Base.connection.execute(sql)

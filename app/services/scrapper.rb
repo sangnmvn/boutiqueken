@@ -240,7 +240,7 @@ class Scrapper
         if cat.cat_name == "GIFTS"
           scrape_left_nav_gifts(cat, cat_url, max_deep)
         else
-          scrape_left_nav_details(cat, cat_url, max_deep)  
+          #scrape_left_nav_details(cat, cat_url, max_deep)  
         end
       end
 
@@ -406,10 +406,15 @@ class Scrapper
     end
   end
 
-  def scrape_left_nav_gifts(root_cat, page, deep)
+  def scrape_left_nav_gifts(root_cat, url, deep)
     begin
 
-      groups = page.search("#hgg-nav").first.children
+      return if deep < 1
+      deep -= 1
+
+      page = @agent.get(url)
+
+      groups = page.search("#hgg-nav").children
 
       group_pos = 0
 
@@ -692,15 +697,17 @@ class Scrapper
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
           max_deep = 4
-
           if cat_name == "GIFTS"
             scrape_filters_from_left_nav_gifts(cat, cat_url, max_deep)
           else
-            #scrape_filters_from_left_nav(cat, cat_url, max_deep)
+            scrape_filters_from_left_nav(cat, cat_url, max_deep)
           end
 
           @logger.info "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"        
       end
+
+      # scrape brand page and brand filters for each brand
+      scrape_filter_and_brand_from_left_nav
 
       @logger.info "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -1266,9 +1273,13 @@ class Scrapper
       end
 
       # create a thread to monitor action from admin
-      t = Thread.new{
-        get_admin_request()
-      }
+      t = nil
+
+      if @task_id.present?
+        t = Thread.new{
+          get_admin_request()
+        }
+      end
 
       menu.search("li").each do |mnu_item|
 
@@ -1331,13 +1342,17 @@ class Scrapper
         end
       end
 
+      unless scrape_cat_name.present?
+        scrape_additional_brand_products
+      end
+
       if update_db && admin_request != STOP
-        update_products_after_import()
-        update_product_price_details_after_import()
+        update_products_after_import
+        update_product_price_details_after_import
       end
 
       # stop the monitoring admin action thread
-      t.exit
+      t.exit unless t.nil?
 
       @logger.info "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -1350,7 +1365,7 @@ class Scrapper
 
   def scrape_additional_brand_products
     begin
-      @current_cat_name = "BRANDS"
+      @current_cat_name = "BRANDS_ADDS"
 
       url = "http://www1.macys.com/shop/all-brands?id=63538&edge=hybrid&cm_sp=us_hdr-_-brands-_-63538_brands"
 
@@ -1375,18 +1390,14 @@ class Scrapper
 
           # scrape products for each brand
           scrape_products_per_subcat(0, brand_url)
-          break
         end
-
-        break
       end
 
       puts "@current_batch #{@current_batch}"
       puts "@ppd_current_batch #{@ppd_current_batch}"
 
       import_crawled_products_to_db(@start_date, @current_cat_name, @current_batch)
-      #import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
-      update_products_after_import
+      import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
       
     rescue Exception => e
       @logger.error(e.message)
@@ -1558,21 +1569,22 @@ class Scrapper
 
           key = "#{site_cat_id}\t#{tmp_product_id}"
 
-          if !@existing_products[key].present?
-            threads[thread_count] = Thread.new {
-              product_id = product.attributes["id"].text
+          #if !@existing_products[key].present?
+          @existing_products[key] = 0 unless @existing_products[key].present?
 
-              product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-              @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
+          threads[thread_count] = Thread.new {
+            product_id = product.attributes["id"].text
 
-              site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
+            product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+            @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
-              scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
-            }
+            site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
 
-            thread_count += 1
-            @existing_products[key] = 0
-          end
+            scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
+          }
+
+          thread_count += 1
+          #end
 
           if thread_count == @number_of_threads || total_product == product_count
             threads.each {|t| t.join}
@@ -2146,6 +2158,7 @@ class Scrapper
     begin
       sql =<<-str
         truncate tmp_products;
+        truncate tmp_product_price_details;
       str
 
       TmpProduct.connection.execute(sql)
@@ -2190,15 +2203,15 @@ class Scrapper
       atts = Product.attribute_names.clone
       atts.delete("id")
       
-      atts = atts.join!(",")
+      atts = atts.join(",")
 
       sql =<<-STR 
-        INSERT INTO products("#{atts}")
-        SELECT "#{atts}" FROM tmp_products
-        WHERE tmp_products.id = 0
+        INSERT INTO products(#{atts})
+        SELECT #{atts} FROM tmp_products
+        WHERE tmp_products.id = 0;
       STR
 
-      puts "sql: #{sql}"
+      puts "sql: #{sql.inspect}"
 
       Product.connection.execute(sql)
 
@@ -2215,7 +2228,8 @@ class Scrapper
       sql =<<-STR
         UPDATE products
         SET
-        "#{update_atts.join(",")}"
+        #{update_atts.join(",")}
+        FROM tmp_products
         WHERE products.id = tmp_products.id and tmp_products.id != 0
       STR
 
@@ -2223,6 +2237,13 @@ class Scrapper
 
       # Delete out-of-date products
       sql =<<-STR
+        UPDATE tmp_products
+        SET 
+          id = products.id
+        FROM products
+        WHERE tmp_products.site_product_id = products.site_product_id and
+              tmp_products.site_cat_id = products.site_cat_id;
+
         DELETE FROM products
         WHERE id = any(
           SELECT id from products
@@ -2231,9 +2252,49 @@ class Scrapper
         );
       STR
 
-      if is_full_scrapping
+      if @is_full_scrapping
         Product.connection.execute(sql)
       end
+
+      @logger.info "Finished updating products in #{Time.now - start}"
+    rescue Exception => e
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    end
+  end
+
+  def update_product_price_details_after_import
+    begin
+      @logger.info "Begin to update product price details"
+      start = Time.now
+
+      # Insert new products
+      atts = ProductPriceDetail.attribute_names.clone
+      atts.delete("id")
+      
+      atts = atts.join(",")
+
+      sql =<<-STR
+        DELETE FROM product_price_details
+        WHERE (site_product_id, site_cat_id) = any(
+          SELECT (site_product_id, site_cat_id)
+          FROM tmp_product_price_details
+        );
+
+        INSERT INTO product_price_details(#{atts})
+        SELECT #{atts} FROM tmp_product_price_details;
+
+        UPDATE product_price_details p
+        SET product_id = c.id
+        FROM products c
+        WHERE c.site_product_id = p.site_product_id 
+          and c.site_cat_id = p.site_cat_id 
+          and c.site_cat_id != 0;
+      STR
+
+      puts "sql: #{sql.inspect}"
+
+      ProductPriceDetail.connection.execute(sql)
 
       @logger.info "Finished updating products in #{Time.now - start}"
     rescue Exception => e
@@ -2273,36 +2334,13 @@ class Scrapper
 
         ppds = CSV.read("./tmp/#{start_date}/#{current_cat_name}_product_price_details_batch_#{i}.csv")
         
-        ProductPriceDetail.transaction do
-          columns = ProductPriceDetail.attribute_names
-          ProductPriceDetail.import columns, ppds, validate: false
+        TmpProductPriceDetail.transaction do
+          columns = TmpProductPriceDetail.attribute_names
+          TmpProductPriceDetail.import columns, ppds, validate: false
         end
 
         @logger.info "Finished importing product price details batch #{i} in #{Time.now - start}\n"
       end
-    rescue Exception => e
-      @logger.error(e.message)
-      @logger.error(e.backtrace.join("\n"))
-    end
-  end
-
-  def update_product_price_details_after_import
-    begin
-      @logger.info "Begin to update product price details"
-      start = Time.now
-
-      sql =<<-SQL 
-        update product_price_details p
-        set product_id = c.id
-        from products c
-        where c.site_product_id = p.site_product_id 
-          and c.site_cat_id = p.site_cat_id 
-          and c.site_cat_id != 0;
-      SQL
-
-      ProductPriceDetail.connection.execute(sql)
-
-      @logger.info "Finished updating product price details in #{Time.now - start}"
     rescue Exception => e
       @logger.error(e.message)
       @logger.error(e.backtrace.join("\n"))
