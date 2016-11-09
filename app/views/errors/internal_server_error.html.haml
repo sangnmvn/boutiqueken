@@ -1,2 +1,9 @@
-<h1>Errors#internal_server_error</h1>
-<p>Find me in app/views/errors/internal_server_error.html.erb</p>
+- content_for(:title, 'Internal Server Error')
+
+.error-dialog
+  .error-dialog-box
+    .dialog-error
+      .dialog-text 
+        We're sorry, but something went wrong.
+      %p If you are the application owner check the logs for more information.
+
