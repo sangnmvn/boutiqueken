@@ -36,5 +36,6 @@
         -url = @product.product_details.order("product_image asc").first.product_image
       -else
         -url = @product.product_details.order("price asc,product_image asc").first.product_image
+    -url = @product.main_image_url if url.blank?
     %img#zoom_03{"data-zoom-image" => show_large_image_url(url), :src => show_image_in_detail(url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
     
