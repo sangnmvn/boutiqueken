@@ -168,7 +168,7 @@ module ApplicationHelper
     map = [{:name=>"HOME",:value=> 20},
             {:name=>"BED & BATH",:value=> 20},
             {:name=>"WOMEN",:value=> 28},
-            {:name=>"MEN",:value=> 20},
+            {:name=>"MEN",:value=> 22},
             {:name=>"JUNIORS",:value=> 20},
             {:name=>"KIDS",:value=> 20},
             {:name=>"ACTIVE",:value=> 25},
