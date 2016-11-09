@@ -2,20 +2,24 @@
 %section.section-products-area.category-list
   .container
     .row
-      .col-md-10.col-sm-12.col-xs-12.pull-right
-        -if @category.parent_id.blank?
-          =render "featured_category"
-        -elsif @feature_categories.present? && @feature_categories.count > 1
-          =render "featured_category"
-        -else
-          =render "product_list"
-      .col-md-2.col-sm-12.col-xs-12
-        -if @category.parent_id.blank?
-          =render "left_menu"
-        -elsif @left_navs.present? && @left_navs.count > 1
-          =render "left_menu"
-        -else
-          =render "filter2"
+      -if @category.cat_name.include?("Brand") || @category.cat_name.downcase.include?("brand") || params[:vtype].present?
+
+        =render "brand_type"
+      -else
+        .col-md-10.col-sm-12.col-xs-12.pull-right
+          -if @category.parent_id.blank?
+            =render "featured_category"
+          -elsif @feature_categories.present? && @feature_categories.count > 1
+            =render "featured_category"
+          -else
+            =render "product_list"
+        .col-md-2.col-sm-12.col-xs-12
+          -if @category.parent_id.blank?
+            =render "left_menu"
+          -elsif @left_navs.present? && @left_navs.count > 1
+            =render "left_menu"
+          -else
+            =render "filter2"
       / .col-md-2 ends
     / .row ends
   / .container ends
