@@ -2,8 +2,14 @@ Rails.application.routes.draw do
   get 'errors/not_found'
 
   get 'errors/internal_server_error'
-
-  devise_for :users
+  
+  devise_scope :user do
+    get "/secure-user-sign-in-up" => "devise/sessions#new", as: "new_user_session"
+    post "/secure-user-sign-in-up" => "devise/sessions#create", as: "user_session"
+    delete "/users/sign_out" => "devise/sessions#destroy", as: "destroy_user_session"
+    get "/secure-sign-up" => "devise/registrations#new", as: "new_user_registration"
+  end
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -134,4 +140,7 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+  
+  # Below for all other routes:
+  devise_for :users, :skip => [:sessions]
 end
