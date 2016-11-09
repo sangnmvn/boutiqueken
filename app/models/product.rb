@@ -172,4 +172,12 @@ class Product < ActiveRecord::Base
     return [] if self.related_loved_products.blank?
     JSON.parse(self.related_loved_products)
   end
+
+  def to_friend_or_id
+    if self.friendly_id? || self.slug.present?
+      self.friendly_id
+    else
+      self.id
+    end
+  end
 end
