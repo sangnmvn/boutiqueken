@@ -13,7 +13,7 @@ class ProductsController < ApplicationController
    @product_loved = Product.select("distinct on (site_product_id) *").where(:site_product_id => @product.list_related_loved_products_ids)
     if @product.is_collection
 
-      @product_childrens = Product.select("distinct on (site_product_id) *").where(:site_product_id =>@product.list_child_site_ids)
+      @product_childrens = Product.where(:site_product_id =>@product.list_child_site_ids)
     end
   end
 
