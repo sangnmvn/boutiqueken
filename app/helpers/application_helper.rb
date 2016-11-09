@@ -1,4 +1,16 @@
 module ApplicationHelper
+  def set_seo
+    if params[:controller] == "devise/sessions" && params[:action] == "new"
+      @seo_title = "Log In or Register for a boutiqueken.com Account | Women's Discount Shoes, Clothing, Accessories"
+      @seo_desc = "Boutiqueken Sign In:  Shop womens discounted clothing, shoes, accessories, handbags and more from your favorite brands and designer collections."
+      @seo_keywords="boutiqueken,  Shop boutiqueken.com , Women's Apparel, Men's Apparel, Shoes, Handbags, Beauty, makup"
+    elsif params[:controller] == "devise/registrations" && params[:action] == "new"
+      @seo_title = "Register for a Boutiqueken.com Account | Clearance Shoes, Clothing, Accessories & More"
+      @seo_desc = "Boutiqueken Sign In:  Shop deeply discounted shoes, clothing and accessories on Boutiqueken.com. Find the best deals on top brands for men and women!"
+      @seo_keywords="boutiqueken,  Shop boutiqueken.com , Women's Apparel, Men's Apparel, Shoes, Handbags, Beauty, makup"
+    end  
+  end
+
   def render_title
     [["Mr","Mr"],["Ms","Ms"],["Mrs","Mrs"]]
   end
