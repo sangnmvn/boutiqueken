@@ -253,7 +253,7 @@ var ViewProduct ={
         price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
 
-        if(value.slug !=""){
+        if(value.slug !="" && value.slug !="undefined" && typeof(value.slug) !="undefined"){
           link_a = $("<a></a>").attr("href","/pro/" + value.slug);
         }else{
           link_a = $("<a></a>").attr("href","/pro/" + value.product_id);
