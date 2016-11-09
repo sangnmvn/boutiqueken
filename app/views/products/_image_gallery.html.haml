@@ -11,9 +11,9 @@
   .left-slider{style: ""}
     #gallery_01{:style => ""}
       -list_addtion_images = JSON.parse(@product.additional_images);
-      -details = @product.product_details
-      -details = @product.product_details.order("price asc") if @product.is_price_color
-      -details.each_with_index do |i,index|
+      -details = @product.product_details.order("product_image asc")
+      -details = @product.product_details.order("price asc,product_image asc") if @product.is_price_color
+      -details.order("product_image asc").each_with_index do |i,index|
         -if i.product_image.present?
           -class_t = ''
           -class_t = 'active' if list_addtion_images.count ==0
@@ -33,8 +33,8 @@
     - url = @product.main_image_url
     - if @product.product_details.count > 1
       -if @product.is_price_color == false
-        -url = @product.product_details.first.product_image
+        -url = @product.product_details.order("product_image asc").first.product_image
       -else
-        -url = @product.product_details.order("price asc").first.product_image
+        -url = @product.product_details.order("price asc,product_image asc").first.product_image
     %img#zoom_03{"data-zoom-image" => show_large_image_url(url), :src => show_image_in_detail(url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
     
