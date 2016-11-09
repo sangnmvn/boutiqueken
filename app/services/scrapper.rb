@@ -76,6 +76,8 @@ class Scrapper
     @request_from_admin = RUN
 
     @is_full_scrapping = true
+    @existing_urls = {}
+
   end
 
   def load_existing_products
@@ -235,12 +237,10 @@ class Scrapper
 
         cat = Category.where(site_cat_id: cat_id, parent_id:nil).first
 
-        max_deep = 2
-
         if cat.cat_name == "GIFTS"
-          scrape_left_nav_gifts(cat, cat_url, max_deep)
+          scrape_left_nav_gifts(cat, cat_url)
         else
-          scrape_left_nav_details(cat, cat_url, max_deep)  
+          scrape_left_nav_details(cat, cat_url)  
         end
       end
 
@@ -251,22 +251,30 @@ class Scrapper
     end
   end
 
-  def scrape_left_nav_details(root_cat, url, deep=1)
+  def scrape_left_nav_details(root_cat, url)
     begin
-      return if deep < 1
-      deep -= 1
+      full_url = url
 
-      page = @agent.get(url)
+      unless url.start_with?("http")
+        full_url = "#{@root_url}#{url}"
+      end
+
+      key = "n\t#{full_url}"
+
+      return if @existing_urls[key].present?
+      @existing_urls[key] = true
+
+      page = @agent.get(full_url)
 
       # Ignore filter page
       return if page.search("#facets").present?
 
       # crawl left nav
-      @logger.info "\nScrapping Left Nav of #{url}"
+      @logger.info "\nScrapping Left Nav of #{full_url}"
 
       nav_sub_cat = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       if nav_sub_cat.present?
-        scrape_left_nav_others(root_cat, page, deep)
+        scrape_left_nav_others(root_cat, page)
       elsif page.search(".//div[@class='subCatList']").present?
         scrape_left_nav_brands(root_cat, page)
       else
@@ -279,7 +287,7 @@ class Scrapper
       end
 
       # crawl feature categories
-      @logger.info "\nScrapping Feature Categories #{url}"
+      @logger.info "\nScrapping Feature Categories #{full_url}"
       
       kid = ".//div[@class='flexPool flexPoolMargin']"
       active = "map"
@@ -354,7 +362,7 @@ class Scrapper
     end      
   end
 
-  def scrape_left_nav_others(root_cat, page, deep)
+  def scrape_left_nav_others(root_cat, page)
     begin
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       group_pos = 0
@@ -397,7 +405,7 @@ class Scrapper
 
           pos += 1
 
-          scrape_left_nav_details(cat, url, deep)
+          scrape_left_nav_details(cat, url)
         end
       end
     rescue Exception => e
@@ -406,12 +414,8 @@ class Scrapper
     end
   end
 
-  def scrape_left_nav_gifts(root_cat, url, deep)
+  def scrape_left_nav_gifts(root_cat, url)
     begin
-
-      return if deep < 1
-      deep -= 1
-
       page = @agent.get(url)
 
       groups = page.search("#hgg-nav").children
@@ -466,7 +470,7 @@ class Scrapper
 
             pos += 1
 
-            scrape_left_nav_details(cat, url, deep)
+            scrape_left_nav_details(cat, url)
           end  
         end
 
@@ -692,24 +696,34 @@ class Scrapper
           @logger.info "- Scrapping #{cat_name} filters"
           start = Time.now
 
-          if cat_name == "WOMEN"
-            scrape_filters_details(cat_id, @root_url)
-          end
+          #if cat_name == "WOMEN"
+            scrape_filters_from_sub_menu(cat_id, @root_url)
+          #end
 
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
-          max_deep = 4
           if cat_name == "GIFTS"
-            #scrape_filters_from_left_nav_gifts(cat, cat_url, max_deep)
+            scrape_filters_from_left_nav_gifts(cat, cat_url)
           else
-            scrape_filters_from_left_nav(cat, cat_url, max_deep)
+            scrape_filters_from_left_nav(cat, cat_url)
           end
 
           @logger.info "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"        
       end
 
       # scrape brand page and brand filters for each brand
-      #scrape_filter_and_brand_from_left_nav
+      scrape_filter_and_brand_from_left_nav
+
+
+      # write scraped urls to file
+      f = File.open("tmp/#{@start_date}.scraped_url.txt", "a+")
+      f.puts "-------------#{@start_date}--------------"
+      @existing_urls.keys.each do |url|
+        f.puts url
+      end
+
+      f.flush
+      f.close
 
       @logger.info "[END] Scrapping filters finished in #{Time.now - start_time}"
     rescue Exception => e 
@@ -718,9 +732,9 @@ class Scrapper
     end      
   end
 
-  def scrape_filters_details(site_root_cat_id, url)
+  def scrape_filters_from_sub_menu(site_root_cat_id, url)
     begin
-      @logger.info "scrape_filters_details #{url}"
+      @logger.info "scrape_filters_from_sub_menu #{url}"
 
       full_url = url
 
@@ -757,12 +771,9 @@ class Scrapper
               @logger.info "cat_name: -------> #{cat_name}"
 
               root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-              max_deep = 3
 
-              #if cat_name == "Shoes"
-                puts "cat_name #{cat_name}"
-                scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, group_cat_name, max_deep)  
-              #end
+              puts "cat_name #{cat_name}"
+              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, group_cat_name)  
             end
           else
             @logger.info "leaf_cat: #{leaf_cat}"
@@ -775,10 +786,8 @@ class Scrapper
     end      
   end
 
-  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, group_name, deep=1)
+  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, group_name)
     begin
-      return if deep < 1
-      deep -= 1
 
       @logger.info "Scrapping filters in #{url}"
 
@@ -790,8 +799,13 @@ class Scrapper
 
       puts "full_url #{full_url}"
 
-      page = fetch_page_content(@agent, full_url)
+      key1 = "f\t#{full_url}"
 
+      key2 = "n\t#{full_url}"
+
+      return if @existing_urls[key1].present? && @existing_urls[key2].present?
+
+      page = fetch_page_content(@agent, full_url)
       return if page.nil?
 
       #page = @agent.get(url)
@@ -831,10 +845,12 @@ class Scrapper
 
         scrape_left_nav_details(cat, full_url)
 
-        scrape_filters_from_left_nav(cat, full_url, deep)
+        scrape_filters_from_left_nav(cat, full_url)
 
         return
       end
+
+      @existing_urls[key1] = true
 
       boxes = facets.children
 
@@ -983,14 +999,8 @@ class Scrapper
     end
   end
 
-  def scrape_filters_from_left_nav(root_cat, url, deep=1)
+  def scrape_filters_from_left_nav(root_cat, url)
     begin
-
-      puts "SangNM: deep #{deep}"
-
-      return if deep < 1
-      deep -= 1
-
       page = @agent.get(url)
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
   
@@ -1011,7 +1021,7 @@ class Scrapper
           # due to duplicate urls
           if current_cat_name != cat_name
             @logger.info "cat_name =========> #{cat_name}"
-            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil, deep)
+            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil)
           end
 
           current_cat_name = cat_name
@@ -1023,7 +1033,7 @@ class Scrapper
     end
   end  
 
-  def scrape_filters_from_left_nav_gifts(root_cat, url, deep=1)
+  def scrape_filters_from_left_nav_gifts(root_cat, url)
     begin
       page = @agent.get(url)
 
@@ -1054,7 +1064,7 @@ class Scrapper
             end
 
             @logger.info "cat_name =========> #{cat_name}"
-            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil, deep)
+            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil)
           end  
         end
 
