@@ -116,7 +116,7 @@ class Product < ActiveRecord::Base
       # with(:sizes_list,params_t[:size_selected]) if params_t[:size_selected].present?
       with(:site_cat_id,params_t[:category_id]) if params_t[:category_id].present?
       if params_t[:price_selected].present?
-        min = 0
+        min = 9999
         max = 0 
         params_t[:price_selected].each do |i|
           start,finish = i.split("|")
