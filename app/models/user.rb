@@ -44,4 +44,7 @@ class User < ActiveRecord::Base
   	addresses.where(:is_default_shipping => false,:is_default_billing => false)
   end
 
+  def self.get_users()
+    User.all()
+  end
 end

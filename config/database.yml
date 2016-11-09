@@ -8,13 +8,13 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
-  host: localhost
+  host: 172.16.9.187
   username: postgres
   password: postgres
 
 development:
   <<: *default
-  database: spinx_dev
+  database: boutiqueken_dev_sang
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

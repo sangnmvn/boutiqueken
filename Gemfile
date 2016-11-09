@@ -60,3 +60,5 @@ gem 'friendly_id'
 
 gem 'acts_as_shopping_cart'
 gem 'sitemap_generator'
+gem 'delayed_job_active_record'
+gem 'progress_bar'
