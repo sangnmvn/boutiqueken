@@ -528,7 +528,7 @@ class Scrapper
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-        if f_cat.new_record?
+        #if f_cat.new_record?
           f_cat.cat_name = cat_name
           f_cat.parent_id = root_cat.id
           f_cat.site_cat_id = site_cat_id
@@ -536,7 +536,7 @@ class Scrapper
           f_cat.image_url = image_url
           f_cat.pos = pos
           f_cat.save
-        end
+        #end
 
         pos += 1
       end
@@ -630,14 +630,14 @@ class Scrapper
         
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-        if f_cat.new_record?
+        #if f_cat.new_record?
           f_cat.site_cat_id = site_cat_id
           f_cat.category_id = cat.id
           f_cat.cat_name = cat_name
           f_cat.parent_id = root_cat.id
           f_cat.pos = pos
           f_cat.save
-        end
+        #end
 
         pos += 1
       end
@@ -687,7 +687,7 @@ class Scrapper
 
           f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-          if f_cat.new_record?
+          #if f_cat.new_record?
             f_cat.site_cat_id = site_cat_id
             f_cat.cat_name = cat_name
             f_cat.category_id = cat.id unless cat.nil?
@@ -695,7 +695,7 @@ class Scrapper
             f_cat.parent_id = root_cat.id
             f_cat.pos = pos
             f_cat.save
-          end
+          #end
 
           pos += 1
 
