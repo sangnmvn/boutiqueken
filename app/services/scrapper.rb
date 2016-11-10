@@ -259,7 +259,7 @@ class Scrapper
         full_url = "#{@root_url}#{url}"
       end
 
-      key = "n\t#{full_url}"
+      key = "#{root_cat.id}\tn\t#{full_url}"
 
       return if @existing_urls[key].present?
       @existing_urls[key] = true
@@ -799,16 +799,30 @@ class Scrapper
 
       puts "full_url #{full_url}"
 
-      key1 = "f\t#{full_url}"
+      cat = nil
 
-      key2 = "n\t#{full_url}"
+      if group_name.nil?
+        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+      else
+        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
+      end
+
+      key1 = "#{cat.id}\tf\t#{full_url}"
+
+      key2 = "#{cat.id}\tn\t#{full_url}"
 
       return if @existing_urls[key1].present? && @existing_urls[key2].present?
 
+      cat.site_cat_id = site_cat_id
+      cat.parent_id = root_cat.id
+      cat.cat_name = cat_name
+      cat.seo_title = seo_title
+      cat.seo_keywords = seo_keywords
+      cat.seo_desc = seo_desc
+      cat.save
+
       page = fetch_page_content(@agent, full_url)
       return if page.nil?
-
-      #page = @agent.get(url)
 
       seo_title, seo_keywords, seo_desc = extract_seo_information(page)
 
@@ -820,22 +834,6 @@ class Scrapper
 
         puts "Cannot find filters in this page #{full_url}"
         puts "-> Scrape category list"
-
-        cat = nil
-
-        if group_name.nil?
-          cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
-        else
-          cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
-        end
-        
-        cat.site_cat_id = site_cat_id
-        cat.parent_id = root_cat.id
-        cat.cat_name = cat_name
-        cat.seo_title = seo_title
-        cat.seo_keywords = seo_keywords
-        cat.seo_desc = seo_desc
-        cat.save
 
         unless url.start_with?("http")
           full_url = "#{@root_url}#{url}"
@@ -854,26 +852,12 @@ class Scrapper
 
       boxes = facets.children
 
-      #cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name).first
-      cat = nil
-
-      if group_name.nil?
-        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
-      else
-        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
-      end
-
       if cat.nil?
         puts "?????????????????????"
         @logger.info "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
         puts "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"        
         return
       end
-
-      cat.seo_title = seo_title
-      cat.seo_keywords = seo_keywords
-      cat.seo_desc = seo_desc
-      cat.save
 
       group_pos = 0
 
