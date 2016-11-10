@@ -240,9 +240,7 @@ class Scrapper
         if cat.cat_name == "GIFTS"
           scrape_left_nav_gifts(cat, cat_url)
         else
-          if cat.cat_name == "BED & BATH"
-            scrape_left_nav_details(cat, cat_url)  
-          end
+          scrape_left_nav_details(cat, cat_url)  
         end
       end
 
@@ -346,12 +344,15 @@ class Scrapper
           cat = cats.first
 
           nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name)
-          nav.category_id = cat.id
-          nav.site_cat_id = site_cat_id
-          nav.parent_id = root_cat.id
-          nav.cat_name = cat_name
-          nav.pos = pos
-          nav.save
+
+          if nav.new_record?
+            nav.category_id = cat.id
+            nav.site_cat_id = site_cat_id
+            nav.parent_id = root_cat.id
+            nav.cat_name = cat_name
+            nav.pos = pos
+            nav.save
+          end
 
           pos += 1
         end
@@ -397,14 +398,17 @@ class Scrapper
           cat = cats.first
 
           nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name, group_name: group_cat_name)
-          nav.group_name = group_cat_name
-          nav.cat_name = cat_name
-          nav.category_id = cat.id
-          nav.parent_id = root_cat.id
-          nav.site_cat_id = site_cat_id
-          nav.pos = pos
-          nav.group_pos = group_pos
-          nav.save
+          
+          if nav.new_record?
+            nav.group_name = group_cat_name
+            nav.cat_name = cat_name
+            nav.category_id = cat.id
+            nav.parent_id = root_cat.id
+            nav.site_cat_id = site_cat_id
+            nav.pos = pos
+            nav.group_pos = group_pos
+            nav.save
+          end
 
           scrape_left_nav_details(cat, url)
 
@@ -441,9 +445,9 @@ class Scrapper
           cats.each do |cat|
             cat_name = replace_macys_info(cat.search("a").first.text)
             site_cat_id = cat.search("a").first.attributes["href"].text.split("?id=").last.split("&").first
-            url = cat.search("a").first.attributes["href"].text
+            cat_url = cat.search("a").first.attributes["href"].text
 
-            puts "- #{cat_name} - #{site_cat_id} - #{url}"
+            puts "- #{cat_name} - #{site_cat_id} - #{cat_url}"
 
             if site_cat_id.to_i == 0
               #@logger.info "scrape_left_nav_others - #{site_cat_id}"
@@ -466,16 +470,19 @@ class Scrapper
             cat = cats.first
 
             nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name, group_name: group_name)
-            nav.group_name = group_name
-            nav.cat_name = cat_name
-            nav.category_id = cat.id
-            nav.parent_id = root_cat.id
-            nav.site_cat_id = site_cat_id
-            nav.pos = pos
-            nav.group_pos = group_pos
-            nav.save
 
-            scrape_left_nav_details(cat, url)
+            if nav.new_record?
+              nav.group_name = group_name
+              nav.cat_name = cat_name
+              nav.category_id = cat.id
+              nav.parent_id = root_cat.id
+              nav.site_cat_id = site_cat_id
+              nav.pos = pos
+              nav.group_pos = group_pos
+              nav.save
+            end
+
+            scrape_left_nav_details(cat, cat_url)
 
             pos += 1
           end
@@ -521,13 +528,16 @@ class Scrapper
         cat = cats.first
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-        f_cat.cat_name = cat_name
-        f_cat.parent_id = root_cat.id
-        f_cat.site_cat_id = site_cat_id
-        f_cat.category_id = cat.id unless cat.nil?
-        f_cat.image_url = image_url
-        f_cat.pos = pos
-        f_cat.save
+
+        if f_cat.new_record?
+          f_cat.cat_name = cat_name
+          f_cat.parent_id = root_cat.id
+          f_cat.site_cat_id = site_cat_id
+          f_cat.category_id = cat.id unless cat.nil?
+          f_cat.image_url = image_url
+          f_cat.pos = pos
+          f_cat.save
+        end
 
         pos += 1
       end
@@ -620,12 +630,15 @@ class Scrapper
         cat = cats.first
         
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-        f_cat.site_cat_id = site_cat_id
-        f_cat.category_id = cat.id
-        f_cat.cat_name = cat_name
-        f_cat.parent_id = root_cat.id
-        f_cat.pos = pos
-        f_cat.save
+
+        if f_cat.new_record?
+          f_cat.site_cat_id = site_cat_id
+          f_cat.category_id = cat.id
+          f_cat.cat_name = cat_name
+          f_cat.parent_id = root_cat.id
+          f_cat.pos = pos
+          f_cat.save
+        end
 
         pos += 1
       end
@@ -674,13 +687,16 @@ class Scrapper
           cat = cats.first
 
           f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
-          f_cat.site_cat_id = site_cat_id
-          f_cat.cat_name = cat_name
-          f_cat.category_id = cat.id unless cat.nil?
-          f_cat.image_url = image_url
-          f_cat.parent_id = root_cat.id
-          f_cat.pos = pos
-          f_cat.save
+
+          if f_cat.new_record?
+            f_cat.site_cat_id = site_cat_id
+            f_cat.cat_name = cat_name
+            f_cat.category_id = cat.id unless cat.nil?
+            f_cat.image_url = image_url
+            f_cat.parent_id = root_cat.id
+            f_cat.pos = pos
+            f_cat.save
+          end
 
           pos += 1
 
@@ -715,26 +731,21 @@ class Scrapper
           @logger.info "- Scrapping #{cat_name} filters"
           start = Time.now
 
-          if cat_name == "HOME"
-            scrape_filters_from_sub_menu(cat_id, @root_url)
-          end
+          scrape_filters_from_sub_menu(cat_id, @root_url)
 
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
           if cat_name == "GIFTS"
-            #scrape_filters_from_left_nav_gifts(cat, cat_url)
+            scrape_filters_from_left_nav_gifts(cat, cat_url)
           else
-            if cat_name == "HOME"
-              scrape_filters_from_left_nav(cat, cat_url)
-            end
+            scrape_filters_from_left_nav(cat, cat_url)
           end
 
           @logger.info "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"        
       end
 
       # scrape brand page and brand filters for each brand
-      #scrape_filter_and_brand_from_left_nav
-
+      scrape_filter_and_brand_from_left_nav
 
       # write scraped urls to file
       f = File.open("tmp/#{@start_date}.scraped_url.txt", "a+")
@@ -760,7 +771,6 @@ class Scrapper
       full_url = get_full_url(url)
 
       page = fetch_page_content(@agent, full_url)
-      #page = @agent.get(full_url)
       return if page.nil?
 
       sub_menu_id = "#Flyout_#{site_root_cat_id}"
@@ -832,6 +842,10 @@ class Scrapper
         next if @existing_urls[key1].present? && @existing_urls[key2].present?
 
         seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+        cat.seo_title = seo_title
+        cat.seo_keywords = seo_keywords
+        cat.seo_desc = seo_desc
+        cat.save
 
         facets = page.search("#facets")
 
