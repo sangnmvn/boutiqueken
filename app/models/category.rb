@@ -23,7 +23,8 @@ class Category < ActiveRecord::Base
     	]
   	else
       [
-        [:cat_name]
+        [:cat_name],
+        [:id, :cat_name]
       ]
   	end
     

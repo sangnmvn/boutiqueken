@@ -240,7 +240,9 @@ class Scrapper
         if cat.cat_name == "GIFTS"
           scrape_left_nav_gifts(cat, cat_url)
         else
-          scrape_left_nav_details(cat, cat_url)  
+          if cat.cat_name == "BED & BATH"
+            scrape_left_nav_details(cat, cat_url)  
+          end
         end
       end
 
@@ -329,19 +331,21 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+          cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-          if cat.new_record?
-            cat.is_shown_in_menu = false
+          unless cats.present?
+            cat = Category.new
             cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
             cat.site_cat_id = site_cat_id
+            cat.parent_id = 0
             cat.save
+
+            cats << cat
           end
 
-          @logger.info "cat_name: #{cat_name} - site_cat_id: #{site_cat_id} - cat_id: #{cat.id} - parent_id: #{cat.parent_id}"
+          cat = cats.first
 
-          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id, cat_name: cat_name)
+          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name)
           nav.category_id = cat.id
           nav.site_cat_id = site_cat_id
           nav.parent_id = root_cat.id
@@ -362,6 +366,7 @@ class Scrapper
     begin
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
       group_pos = 0
+
       nav.each do |group_cat|
         group_cat_name = replace_macys_info(group_cat.search("span").first.text)
 
@@ -374,22 +379,24 @@ class Scrapper
           cat_name = replace_macys_info(cat.text)
 
           if site_cat_id.to_i == 0
-            #@logger.info "scrape_left_nav_others - #{site_cat_id}"
-            #@logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s} - skipped"
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+          cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-          if cat.new_record?
-            cat.is_shown_in_menu = false
+          unless cats.present?
+            cat = Category.new
             cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
             cat.site_cat_id = site_cat_id
+            cat.parent_id = 0
             cat.save
+
+            cats << cat
           end
 
-          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id, cat_name: cat_name)
+          cat = cats.first
+
+          nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name, group_name: group_cat_name)
           nav.group_name = group_cat_name
           nav.cat_name = cat_name
           nav.category_id = cat.id
@@ -399,9 +406,9 @@ class Scrapper
           nav.group_pos = group_pos
           nav.save
 
-          pos += 1
-
           scrape_left_nav_details(cat, url)
+
+          pos += 1
         end
       end
     rescue Exception => e
@@ -444,17 +451,21 @@ class Scrapper
               next
             end
 
-            cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+            cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-            if cat.new_record?
-              cat.is_shown_in_menu = false
+            unless cats.present?
+              cat = Category.new
               cat.cat_name = cat_name
-              cat.parent_id = root_cat.id
               cat.site_cat_id = site_cat_id
+              cat.parent_id = 0
               cat.save
+
+              cats << cat
             end
 
-            nav = LeftNav.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id, cat_name: cat_name)
+            cat = cats.first
+
+            nav = LeftNav.find_or_create_by(parent_id: root_cat.id, category_id: cat.id, cat_name: cat_name, group_name: group_name)
             nav.group_name = group_name
             nav.cat_name = cat_name
             nav.category_id = cat.id
@@ -464,10 +475,10 @@ class Scrapper
             nav.group_pos = group_pos
             nav.save
 
-            pos += 1
-
             scrape_left_nav_details(cat, url)
-          end  
+
+            pos += 1
+          end
         end
 
         group_pos += 1
@@ -492,20 +503,22 @@ class Scrapper
         image_url = f_cate_group.search("img").first.attributes["src"].text
 
         if site_cat_id.to_i == 0
-          @logger.info "scrape_kids_featured_cates - #{site_cat_id}"
-          @logger.info "Cannot scrape site_cat_id of cat_name #{cat_name} - page #{page.uri.to_s}"
           next
         end
 
-        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+        cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-        if cat.new_record?
-          cat.is_shown_in_menu = false
+        unless cats.present?
+          cat = Category.new
           cat.cat_name = cat_name
-          cat.parent_id = root_cat.id
           cat.site_cat_id = site_cat_id
+          cat.parent_id = 0
           cat.save
+
+          cats << cat
         end
+
+        cat = cats.first
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
         f_cat.cat_name = cat_name
@@ -526,45 +539,47 @@ class Scrapper
 
   def scrap_active_featured_cates(root_cat, page)
     begin
-      f_cates = page.search("map").search("area")
+      return
 
-      f_cate_count = 0
-      pos = 0
+      # f_cates = page.search("map").search("area")
 
-      f_cates.each do |f_cate|
-        cat_name = f_cate.attributes["alt"].text
+      # f_cate_count = 0
+      # pos = 0
 
-        unless ['go you macys active'].include? cat_name
-          cat_name = replace_macys_info(cat_name)
+      # f_cates.each do |f_cate|
+      #   cat_name = f_cate.attributes["alt"].text
 
-          if cat_name.blank?
-            @logger.info "scrap_active_featured_cates - cat_name is blank - skipped"
-            next
-          end
+      #   unless ['go you macys active'].include? cat_name
+      #     cat_name = replace_macys_info(cat_name)
 
-          cat = Category.find_or_initialize_by(cat_name: cat_name)
+      #     if cat_name.blank?
+      #       @logger.info "scrap_active_featured_cates - cat_name is blank - skipped"
+      #       next
+      #     end
 
-          if cat.new_record?
-            cat.is_shown_in_menu = false
-            cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
-            cat.site_cat_id = cat.site_cat_id unless cat.nil?
-            cat.save
-          end
+      #     cat = Category.find_or_initialize_by(cat_name: cat_name)
+
+      #     if cat.new_record?
+      #       cat.is_shown_in_menu = false
+      #       cat.cat_name = cat_name
+      #       cat.parent_id = root_cat.id
+      #       cat.site_cat_id = cat.site_cat_id unless cat.nil?
+      #       cat.save
+      #     end
           
-          f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, category_id: cat.id)
-          f_cat.cat_name = cat_name
-          f_cat.category_id = cat.id
-          f_cat.parent_id = root_cat.id
-          f_cat.pos = pos
-          f_cat.save
+      #     f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, category_id: cat.id)
+      #     f_cat.cat_name = cat_name
+      #     f_cat.category_id = cat.id
+      #     f_cat.parent_id = root_cat.id
+      #     f_cat.pos = pos
+      #     f_cat.save
 
-          f_cate_count += 1
-          pos += 1
+      #     f_cate_count += 1
+      #     pos += 1
 
-          break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
-        end
-      end
+      #     break if f_cate_count == FEATURE_CATE_LIMIT[root_cat.cat_name]
+      #   end
+      # end
     rescue Exception => e 
       @logger.error(e.message)
       @logger.error(e.backtrace.join("\n"))
@@ -590,15 +605,19 @@ class Scrapper
           next
         end
 
-        cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+        cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-        if cat.new_record?
-          cat.is_shown_in_menu = false
+        unless cats.present?
+          cat = Category.new
           cat.cat_name = cat_name
-          cat.parent_id = root_cat.id
           cat.site_cat_id = site_cat_id
+          cat.parent_id = 0
           cat.save
+
+          cats << cat
         end
+
+        cat = cats.first
         
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
         f_cat.site_cat_id = site_cat_id
@@ -640,15 +659,19 @@ class Scrapper
             next
           end
 
-          cat = Category.find_or_initialize_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
+          cats = Category.where(site_cat_id: site_cat_id).order(:id)
 
-          if cat.new_record?
-            cat.is_shown_in_menu = false
+          unless cats.present?
+            cat = Category.new
             cat.cat_name = cat_name
-            cat.parent_id = root_cat.id
             cat.site_cat_id = site_cat_id
+            cat.parent_id = 0
             cat.save
+
+            cats << cat
           end
+
+          cat = cats.first
 
           f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
           f_cat.site_cat_id = site_cat_id
@@ -692,23 +715,25 @@ class Scrapper
           @logger.info "- Scrapping #{cat_name} filters"
           start = Time.now
 
-          #if cat_name == "WOMEN"
+          if cat_name == "HOME"
             scrape_filters_from_sub_menu(cat_id, @root_url)
-          #end
+          end
 
           cat = Category.where(site_cat_id: cat_id, parent_id: nil).first
 
           if cat_name == "GIFTS"
-            scrape_filters_from_left_nav_gifts(cat, cat_url)
+            #scrape_filters_from_left_nav_gifts(cat, cat_url)
           else
-            scrape_filters_from_left_nav(cat, cat_url)
+            if cat_name == "HOME"
+              scrape_filters_from_left_nav(cat, cat_url)
+            end
           end
 
           @logger.info "- Finished scrapping #{cat_name} filters in #{Time.now - start}\n\n"        
       end
 
       # scrape brand page and brand filters for each brand
-      scrape_filter_and_brand_from_left_nav
+      #scrape_filter_and_brand_from_left_nav
 
 
       # write scraped urls to file
@@ -762,10 +787,8 @@ class Scrapper
 
               @logger.info "cat_name: -------> #{cat_name}"
 
-              root_cat = Category.where(site_cat_id: site_root_cat_id, parent_id: nil).first
-
               puts "cat_name #{cat_name}"
-              scrape_filters_for_subcat(root_cat, site_cat_id, site_cat_url, cat_name, group_cat_name)  
+              scrape_filters_for_subcat(site_cat_id, site_cat_url, cat_name, group_cat_name)  
             end
           else
             @logger.info "leaf_cat: #{leaf_cat}"
@@ -778,7 +801,7 @@ class Scrapper
     end      
   end
 
-  def scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, group_name)
+  def scrape_filters_for_subcat(site_cat_id, url, cat_name, group_name)
     begin
 
       @logger.info "Scrapping filters in #{url}"
@@ -787,177 +810,167 @@ class Scrapper
 
       puts "full_url #{full_url}"
 
-      cat = nil
-
-      if group_name.nil?
-        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name)
-      else
-        cat = Category.find_or_create_by(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name, group_name: group_name)
-      end
-
-      key1 = "#{cat.id}\tf\t#{full_url}"
-
-      key2 = "#{cat.id}\tn\t#{full_url}"
-
-      return if @existing_urls[key1].present? && @existing_urls[key2].present?
-
-      cat.site_cat_id = site_cat_id
-      cat.parent_id = root_cat.id
-      cat.cat_name = cat_name
-      cat.seo_title = seo_title
-      cat.seo_keywords = seo_keywords
-      cat.seo_desc = seo_desc
-      cat.save
-
       page = fetch_page_content(@agent, full_url)
       return if page.nil?
 
-      seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+      cats = Category.where(site_cat_id: site_cat_id)
 
-      facets = page.search("#facets")
+      unless cats.present?
+        cat = Category.new
+        cat.cat_name = cat_name
+        cat.site_cat_id = site_cat_id
+        cat.parent_id = 0
+        cat.save
 
-      if facets.empty?
-        @logger.info "Cannot find filters in this page #{full_url}"
-        @logger.info "-> Scrape category list"
-
-        puts "Cannot find filters in this page #{full_url}"
-        puts "-> Scrape category list"
-
-        scrape_left_nav_details(cat, full_url)
-
-        scrape_filters_from_left_nav(cat, full_url)
-
-        return
+        cats << cat
       end
 
-      @existing_urls[key1] = true
+      cats.each do |cat|
+        key1 = "#{cat.id}\tf\t#{full_url}"
+        key2 = "#{cat.id}\tn\t#{full_url}"
 
-      boxes = facets.children
+        next if @existing_urls[key1].present? && @existing_urls[key2].present?
 
-      if cat.nil?
-        puts "?????????????????????"
-        @logger.info "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"
-        puts "scrape_filters_for_subcat: cannot find cat by site_cat_id #{site_cat_id} - parent_id #{root_cat.id} - cat_name #{cat_name}"        
-        return
-      end
+        seo_title, seo_keywords, seo_desc = extract_seo_information(page)
 
-      group_pos = 0
+        facets = page.search("#facets")
 
-      boxes.each do |box|
-        unless box.text.strip.blank?
-          next if ['UPC_BOPS_PURCHASABLE', 'SPECIAL_OFFERS'].include? box.attributes["id"].text
+        if facets.empty?
+          @logger.info "Cannot find filters in this page #{full_url}"
+          @logger.info "-> Scrape category list"
 
-          box_type = replace_macys_info(box.attributes["aria-label"].text)
-          ui_type = box.attributes["data-uitype"].text
-          filter_product_field_name = box.attributes["id"].text
+          puts "Cannot find filters in this page #{full_url}"
+          puts "-> Scrape category list"
 
-          @logger.info "+ #{box_type}"
+          scrape_left_nav_details(cat, full_url)
 
-          if box.search("h2").count > 1
-            @logger.info "Inside a filter with subs"
+          scrape_filters_from_left_nav(cat, full_url)
 
-            sub_boxes = box.search(".//li[@class='typbox collapsed ']")
-            sub_boxes |= box.search(".//li[@class='typbox groupFacet ']")
-
-            sub_group_pos = 0
-
-            sub_boxes.each do |sub_box|
-              sub_box_type = sub_box.search("h2").first.text
-              @logger.info "  - #{sub_box_type}"
-
-              sub_box.search("a").each do |item|
-                filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
-                filter.filter_ui_type = ui_type
-                filter.group_name = box_type
-                filter.group_pos = group_pos
-                filter.sub_group_name = sub_box_type
-                filter.sub_group_pos = sub_group_pos
-                filter.filter_product_field_name = filter_product_field_name
-                filter_values = []
-
-                sub_box.search("a").each do |item|
-                  displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
-                  value = item.attributes["data-value"].text
-
-                  filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
-                end
-
-                filter.filters = filter_values.to_json
-                filter.save
-              end
-
-              sub_group_pos += 1
-            end
-          elsif box_type == "Brand"          
-            sub_box_type = "Featured Brands"
-
-            filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
-            filter.filter_ui_type = ui_type
-            filter.group_name = box_type
-            filter.group_pos = group_pos
-            filter.sub_group_name = sub_box_type
-            filter.sub_group_pos = 0
-            filter.filter_product_field_name = filter_product_field_name
-            filter_values = []
-
-            @logger.info " - #{sub_box_type}"
-            box.search("a").each_with_index do |item, idx|
-              break if idx > 9
-
-              displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
-              value = item.attributes["data-value"].text
-
-              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
-            end
-            filter.filters = filter_values.to_json
-            filter.save
-
-            sub_box_type = "All Brands"
-            filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
-            filter.filter_ui_type = ui_type
-            filter.group_name = box_type
-            filter.group_pos = group_pos
-            filter.sub_group_name = sub_box_type
-            filter.sub_group_pos = 1
-            filter.filter_product_field_name = filter_product_field_name
-
-            filter_values = []
-
-            @logger.info " - #{sub_box_type}"
-            box.search("a").each_with_index do |item, idx|
-              displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
-              value = item.attributes["data-value"].text
-
-              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
-            end
-
-            filter.filters = filter_values.to_json
-            filter.save
-          else
-            filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: nil)
-            filter.filter_ui_type = ui_type
-            filter.group_name = box_type
-            filter.group_pos = group_pos
-            filter.filter_product_field_name = filter_product_field_name
-
-            filter_values = []
-
-            # crawl details in a box
-            box.search("a").each do |item|
-              displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
-              value = item.attributes["data-value"].text
-
-              filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
-            end
-
-            filter.filters = filter_values.to_json
-            filter.save
-          end
-
-          group_pos += 1
+          next
         end
 
-        @logger.info "\n"
+        @existing_urls[key1] = true
+
+        boxes = facets.children
+
+        group_pos = 0
+
+        boxes.each do |box|
+          unless box.text.strip.blank?
+            next if ['UPC_BOPS_PURCHASABLE', 'SPECIAL_OFFERS'].include? box.attributes["id"].text
+
+            box_type = replace_macys_info(box.attributes["aria-label"].text)
+            ui_type = box.attributes["data-uitype"].text
+            filter_product_field_name = box.attributes["id"].text
+
+            @logger.info "+ #{box_type}"
+
+            if box.search("h2").count > 1
+              @logger.info "Inside a filter with subs"
+
+              sub_boxes = box.search(".//li[@class='typbox collapsed ']")
+              sub_boxes |= box.search(".//li[@class='typbox groupFacet ']")
+
+              sub_group_pos = 0
+
+              sub_boxes.each do |sub_box|
+                sub_box_type = sub_box.search("h2").first.text
+                @logger.info "  - #{sub_box_type}"
+
+                sub_box.search("a").each do |item|
+                  filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
+                  filter.filter_ui_type = ui_type
+                  filter.group_name = box_type
+                  filter.group_pos = group_pos
+                  filter.sub_group_name = sub_box_type
+                  filter.sub_group_pos = sub_group_pos
+                  filter.filter_product_field_name = filter_product_field_name
+                  filter_values = []
+
+                  sub_box.search("a").each do |item|
+                    displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
+                    value = item.attributes["data-value"].text
+
+                    filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
+                  end
+
+                  filter.filters = filter_values.to_json
+                  filter.save
+                end
+
+                sub_group_pos += 1
+              end
+            elsif box_type == "Brand"          
+              sub_box_type = "Featured Brands"
+
+              filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
+              filter.filter_ui_type = ui_type
+              filter.group_name = box_type
+              filter.group_pos = group_pos
+              filter.sub_group_name = sub_box_type
+              filter.sub_group_pos = 0
+              filter.filter_product_field_name = filter_product_field_name
+              filter_values = []
+
+              @logger.info " - #{sub_box_type}"
+              box.search("a").each_with_index do |item, idx|
+                break if idx > 9
+
+                displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
+                value = item.attributes["data-value"].text
+
+                filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
+              end
+              filter.filters = filter_values.to_json
+              filter.save
+
+              sub_box_type = "All Brands"
+              filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: sub_box_type)
+              filter.filter_ui_type = ui_type
+              filter.group_name = box_type
+              filter.group_pos = group_pos
+              filter.sub_group_name = sub_box_type
+              filter.sub_group_pos = 1
+              filter.filter_product_field_name = filter_product_field_name
+
+              filter_values = []
+
+              @logger.info " - #{sub_box_type}"
+              box.search("a").each_with_index do |item, idx|
+                displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
+                value = item.attributes["data-value"].text
+
+                filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
+              end
+
+              filter.filters = filter_values.to_json
+              filter.save
+            else
+              filter = Filter.find_or_create_by(category_id: cat.id, group_name: box_type, sub_group_name: nil)
+              filter.filter_ui_type = ui_type
+              filter.group_name = box_type
+              filter.group_pos = group_pos
+              filter.filter_product_field_name = filter_product_field_name
+
+              filter_values = []
+
+              # crawl details in a box
+              box.search("a").each do |item|
+                displayname = item.search(".//span[@class='item']").first.attributes["data-displayname"].text
+                value = item.attributes["data-value"].text
+
+                filter_values << {name: replace_macys_info(displayname), value: replace_macys_info(value)}
+              end
+
+              filter.filters = filter_values.to_json
+              filter.save
+            end
+
+            group_pos += 1
+          end
+
+          @logger.info "\n"
+        end
       end
     rescue Exception => e
       @logger.error(e.message)
@@ -987,7 +1000,7 @@ class Scrapper
           # due to duplicate urls
           if current_cat_name != cat_name
             @logger.info "cat_name =========> #{cat_name}"
-            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil)
+            scrape_filters_for_subcat(site_cat_id, url, cat_name, nil)
           end
 
           current_cat_name = cat_name
@@ -1030,7 +1043,7 @@ class Scrapper
             end
 
             @logger.info "cat_name =========> #{cat_name}"
-            scrape_filters_for_subcat(root_cat, site_cat_id, url, cat_name, nil)
+            scrape_filters_for_subcat(site_cat_id, url, cat_name, nil)
           end  
         end
 
@@ -2114,7 +2127,7 @@ class Scrapper
 
   def set_cookies(agent)
     if Rails.env.development?
-      #agent.agent.set_socks('localhost', 8123)
+      agent.agent.set_socks('localhost', 8123)
     end
 
     cookie = Mechanize::Cookie.new("shippingCountry", "US")
