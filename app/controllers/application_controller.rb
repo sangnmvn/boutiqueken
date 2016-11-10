@@ -13,8 +13,14 @@ class ApplicationController < ActionController::Base
   protected
 
   def get_browser_location
+    #country_code
+    @country_code = session[:country_code].present? ? session[:country_code] : request.location.country_code
+    session[:country_code] = @country_code
 
-    @country_code = request.location.country_code
+    @currency = session[:currency].present? ? session[:currency] : "USD"
+    session[:currency] = @currency
+
+    #@country_code = request.location.country_code
     if @country_code == "RD"
       @country_code = "US" 
     end

@@ -9,6 +9,22 @@ class HomeController < ApplicationController
     # redirect_to new_user_session_path
   end
 
+  def update_country
+    if params[:user][:currency].present?
+      session[:currency] = params[:user][:currency]
+    end
+
+
+    if params[:user][:country].present?
+      session[:country_code] = params[:user][:country]
+    end
+    if @country_code == "RD"
+      @country_code = "US" 
+    end
+    @country = Carmen::Country.coded(@country_code)
+    redirect_to root_path
+  end
+
   def country_chooser
     
   end
