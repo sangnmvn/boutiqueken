@@ -16,12 +16,12 @@
                     %label.d-block
                       Country:
                     .select-country
-                      =country_select "user","country",{priority: %w(US)}
+                      =country_select "user","country",{priority: %w(US)},:class =>"country-select-currency"
                   .col-md-6.col-xs-12
                     %label.d-block
                       Currency:
                     .select-currency
-                      =currency_select "user","currency",["usd"]
+                      =currency_select "user","currency",["usd"],:selected =>@country_code.to_s.downcase,:class =>"currency-select"
                 .row
                   .col-md-12.col-xs-12
                     .footer

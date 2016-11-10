@@ -19,7 +19,7 @@
             %p
               %ul
                 %li
-                  ="All price in #{@country.name}"
+                  ="All price in #{Money::Currency.find(@currency.downcase.to_sym).name}"
                 %li
                   Duties and taxes calculated at checkout
                 %li
@@ -31,7 +31,7 @@
               .default-txt
                 More information about shipping internationally is available on our website.
               %br
-              .btn-checkout
+              %button.btn-checkout{"data-dismiss"=>"modal"}
                 CONTINUE CHECKOUT
               %div{:style =>"height: 10px"}
               .smaller-txt
