@@ -47,7 +47,7 @@ class Scrapper
 
     @logger = logger
 
-    @root_url = 'https://www.macys.com'
+    @root_url = 'https://www.macys.com/'
 
     @agent = Mechanize.new
 
@@ -253,11 +253,7 @@ class Scrapper
 
   def scrape_left_nav_details(root_cat, url)
     begin
-      full_url = url
-
-      unless url.start_with?("http")
-        full_url = "#{@root_url}#{url}"
-      end
+      full_url = get_full_url(url)
 
       key = "#{root_cat.id}\tn\t#{full_url}"
 
@@ -736,11 +732,7 @@ class Scrapper
     begin
       @logger.info "scrape_filters_from_sub_menu #{url}"
 
-      full_url = url
-
-      unless url.start_with?("http")
-        full_url = "#{@root_url}#{url}"
-      end
+      full_url = get_full_url(url)
 
       page = fetch_page_content(@agent, full_url)
       #page = @agent.get(full_url)
@@ -791,11 +783,7 @@ class Scrapper
 
       @logger.info "Scrapping filters in #{url}"
 
-      full_url = url
-
-      unless url.start_with?("http")
-        full_url = "#{@root_url}#{url}"
-      end
+      full_url = get_full_url(url)
 
       puts "full_url #{full_url}"
 
@@ -834,12 +822,6 @@ class Scrapper
 
         puts "Cannot find filters in this page #{full_url}"
         puts "-> Scrape category list"
-
-        unless url.start_with?("http")
-          full_url = "#{@root_url}#{url}"
-        else
-          full_url = url
-        end
 
         scrape_left_nav_details(cat, full_url)
 
@@ -1559,13 +1541,7 @@ class Scrapper
         return
       end
 
-      full_url = ""
-
-      unless url.start_with?("http")
-        full_url = "#{@root_url}#{url}"
-      else
-        full_url = url
-      end
+      full_url = get_full_url(url)
 
       @logger.info "\nScrapping products from #{full_url}"
 
@@ -2138,7 +2114,7 @@ class Scrapper
 
   def set_cookies(agent)
     if Rails.env.development?
-      agent.agent.set_socks('localhost', 8123)
+      #agent.agent.set_socks('localhost', 8123)
     end
 
     cookie = Mechanize::Cookie.new("shippingCountry", "US")
@@ -2482,5 +2458,19 @@ class Scrapper
     end
 
    return page
+  end
+
+  def get_full_url(url)
+    full_url = ""
+
+    if !url.start_with?("http") && !url.start_with?("macys.com")
+      full_url = "#{@root_url}#{url}"
+    elsif url.start_with?("macys.com")
+      full_url = "https://www.#{url}"
+    else
+      full_url = url
+    end
+
+    return full_url
   end
 end
