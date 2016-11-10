@@ -1,0 +1,30 @@
+%section.section-products-area
+  .container
+    .row
+      .col-md-12.col-sm-12.col-xs-12.pull-right
+        .country-choser
+          %h1 INTERNATIONAL SHIPPING
+          .row
+            .contain-div-gray
+              %h4 Select the country you would like to ship to and the Currency you would like to shop in:
+              %p
+                .row
+                  .col-md-6.col-xs-12
+                    %label.d-block
+                      Country:
+                    .select-country
+                      =country_select "user","country",{priority: %w(US)}
+                  .col-md-6.col-xs-12
+                    %label.d-block
+                      Currency:
+                    .select-currency
+                      =currency_select "user","currency"
+                .row
+                  .col-md-12.col-xs-12
+                    .footer
+                      %span{:alt => "star-icon",:src=>"", class: "flag flag-#{@country_code.downcase}"}
+                      %a{:href =>root_path}
+                        Back to U.S. Site
+                      %a.btn-checkout{:href =>"javascript:;"}
+                        SAVE & CONTINUE CHECKOUT
+

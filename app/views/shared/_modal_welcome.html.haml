@@ -36,7 +36,7 @@
               %div{:style =>"height: 10px"}
               .smaller-txt
                 ="Not shipping to #{@country.name}?"
-                %a{:href =>"#"}
+                %a.link-normal{:href =>country_choser_path}
                   Click here
           .footer-pnl
             .larger-txt
