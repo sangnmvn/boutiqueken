@@ -105,7 +105,7 @@ class Scrapper
   def scrape_all
     scrape_menu
     scrape_left_nav
-    scrape_filters
+    scrape_filter
     scrape_products
     scrape_seo_information
   end
@@ -255,10 +255,11 @@ class Scrapper
     begin
       full_url = get_full_url(url)
 
-      key = "#{root_cat.id}\tn\t#{full_url}"
+
+      key = "#{root_cat.id}\tn\t#{extract_id_from_url(full_url)}"
 
       return if @existing_urls[key].present?
-      @existing_urls[key] = true
+      @existing_urls[key] = full_url
 
       page = @agent.get(full_url)
 
@@ -324,8 +325,6 @@ class Scrapper
           site_cat_id = item.attributes["id"].text
 
           if site_cat_id.to_i == 0
-            #@logger.info "scrape_left_nav_brands - #{site_cat_id}"
-            #@logger.info "Cannot extract site_cat_id of cat_name #{cat_name}"
             next
           end
 
@@ -711,7 +710,7 @@ class Scrapper
     end    
   end
 
-  def scrape_filters
+  def scrape_filter
     begin
       @logger.info "[BEGIN] Scrapping filters"
       start_time = Time.now
@@ -750,7 +749,7 @@ class Scrapper
       # write scraped urls to file
       f = File.open("tmp/#{@start_date}.scraped_url.txt", "a+")
       f.puts "-------------#{@start_date}--------------"
-      @existing_urls.keys.each do |url|
+      @existing_urls.values.each do |url|
         f.puts url
       end
 
@@ -836,8 +835,8 @@ class Scrapper
       end
 
       cats.each do |cat|
-        key1 = "#{cat.id}\tf\t#{full_url}"
-        key2 = "#{cat.id}\tn\t#{full_url}"
+        key1 = "#{cat.id}\tf\t#{extract_id_from_url(full_url)}"
+        key2 = "#{cat.id}\tn\t#{extract_id_from_url(full_url)}"
 
         next if @existing_urls[key1].present? && @existing_urls[key2].present?
 
@@ -863,7 +862,7 @@ class Scrapper
           next
         end
 
-        @existing_urls[key1] = true
+        @existing_urls[key1] = full_url
 
         boxes = facets.children
 
@@ -2141,7 +2140,7 @@ class Scrapper
 
   def set_cookies(agent)
     if Rails.env.development?
-      agent.agent.set_socks('localhost', 8123)
+      #agent.agent.set_socks('localhost', 8123)
     end
 
     cookie = Mechanize::Cookie.new("shippingCountry", "US")
@@ -2499,5 +2498,18 @@ class Scrapper
     end
 
     return full_url
+  end
+
+  def extract_id_from_url(url)
+    site_cat_id = ""
+    site_cat_id = url.split("?id=").last.split("&").first.to_i
+
+    if site_cat_id == 0
+      site_cat_id = url.split("?CategoryID=").last.split("&").first.to_i
+    end
+
+    return url if site_cat_id == 0
+
+    return site_cat_id
   end
 end
