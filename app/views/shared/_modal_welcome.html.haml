@@ -1,0 +1,47 @@
+#modal-welcome.modal.modal-welcome{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document"}
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h2.modal-title
+          .span.flag-2x{:class => "flag-#{@country_code.downcase}"}
+          %span.title-txt
+            NOW SHIPPING TO 
+            =@country.name.upcase
+      .modal-body
+        .content-modal-div
+          .pad-20
+            %h3
+              We make it easy to shop from 
+              =@country.name.upcase
+              with:
+            %p
+              %ul
+                %li
+                  ="All price in #{@country.name}"
+                %li
+                  Duties and taxes calculated at checkout
+                %li
+                  Low international shipping rates
+                %li
+                  Guarantee landed costs (no additional charges at delivery)
+              %br
+              %br
+              .default-txt
+                More information about shipping internationally is available on our website.
+              %br
+              .btn-checkout
+                CONTINUE CHECKOUT
+              %div{:style =>"height: 10px"}
+              .smaller-txt
+                ="Not shipping to #{@country.name}?"
+                %a{:href =>"#"}
+                  Click here
+          .footer-pnl
+            .larger-txt
+              ENJOY FREE SHIPPING & FREE DUTIES
+            .normal-txt.italic-txt
+              ="on all orders to #{@country.name}"
+
+

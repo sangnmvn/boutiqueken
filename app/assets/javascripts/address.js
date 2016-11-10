@@ -205,6 +205,16 @@ var ProductList = {
   }
 }
 
+var WelcomeView = {
+  init: function(){
+    check = Cookies.get('first-visited');
+    if(check==null || typeof(check)=="undefined"){
+      // Show modal here
+      Cookies.set('first-visited',"true");
+    }
+  }
+}
+
 
 var ViewProduct ={
   init: function(){

@@ -9,6 +9,10 @@ class HomeController < ApplicationController
     # redirect_to new_user_session_path
   end
 
+  def country_chooser
+    
+  end
+
   def subregions
   	render partial: "addresses/state_select"
   end

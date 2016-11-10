@@ -4005,3 +4005,48 @@ input[type=number]::-webkit-outer-spin-button {
   margin-bottom: 2.2rem;
   margin-right: 2.2rem;
 }
+
+.modal-welcome{
+  .modal-content{
+    border-radius: 0px;
+  }
+  .modal-header{
+    border: 0px;
+    padding-bottom: 0px;
+  }
+  .title-txt{
+    padding: 0px;
+    display: inline-block;
+    line-height: 32px;
+    vertical-align: top;
+  }
+  .modal-body{
+    padding: 0px;
+  }
+  .pad-20{
+    padding-left: 35px;
+  }
+  ul{
+    font-size: 16px;
+    list-style-type: disc;
+    li{
+      margin-left: 33px;
+    }
+  }
+  .footer-pnl{
+    background-color: black;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  .larger-txt{
+    font-size: 20px;
+  }
+
+  .small-txt{
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: -7px;
+  }
+}
