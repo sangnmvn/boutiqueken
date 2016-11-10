@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   get "/safe-shopping-guarantee" =>"home#safe_shopping_guarantee"
   get "/secure-shopping" =>"home#secure_shopping"
   get "/term-of-use" =>"home#term_of_use"
-  get "/country-choser" =>"home#contry_chooser"
+  get "/country-choser" =>"home#country_chooser"
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
   # Example of regular route:
