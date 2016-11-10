@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     session[:country_code] = @country_code
 
     @currency = session[:currency].present? ? session[:currency] : "USD"
-    session[:currency] = @currency
+    session[:currency] = @currency.upcase
 
     #@country_code = request.location.country_code
     if @country_code == "RD"
