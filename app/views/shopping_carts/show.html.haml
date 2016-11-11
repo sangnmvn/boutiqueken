@@ -1,4 +1,5 @@
 %body
+  -MoneyExchange.get_rate("USD",@currency)
   %section.section-saks-bag
     .container
       .row
@@ -78,10 +79,10 @@
                       / .saks-bag-item-qnt-text
                     %td In Stock
                     %td
-                      $
-                      =i.price
+                      ="#{@currency} $"
+                      =show_price_digit(i.price)
                     %td{:class =>"subtotal_#{i.id}"}
-                      $
+                      ="#{@currency} $"
                       =show_price_digit(i.price * i.quantity.to_i)
             / DESKTOP TABLE MARKUP ENDS
             / MOBILE TABLE MARKUP
@@ -163,33 +164,33 @@
                         %td
                           %b Item Total
                         %td.text-right.total-txt
-                          $
-                          =@shopping_cart.total
+                          ="#{@currency} $"
+                          =show_price_digit(@shopping_cart.total)
                       %tr
                         %td
                           %b Gift Wrap
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr
                         %td
                           %b Estimated Shopping &amp; Handling
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr
                         %td
                           %b Total Before Tax
                         %td.text-right.total-txt
-                          $
+                          ="#{@currency} $"
                           =@shopping_cart.total
                       %tr.checkout-table-last
                         %td
                           %b Estimated Tax
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr.checkout-table-total
                         %td
                           %b Estimated Total
                         %td.text-right
                           %b.total-txt
-                            $
-                            =@shopping_cart.total
+                            ="#{@currency} $"
+                            =show_price_digit(@shopping_cart.total)
                     / checkout-table ends
                   / .saks-bag-shopping
                 / col ends

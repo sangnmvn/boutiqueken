@@ -19,10 +19,10 @@ class Order < ActiveRecord::Base
   end
 
   def show_total_price
-    [self.currency,self.total.to_s].join(" ")
+    [self.currency_by_user,self.total_by_currency.to_s].join(" ")
   end
 
-  def parse_items_from_cart(shop_cart)
+  def parse_items_from_cart(shop_cart,user_currency)
   	# t.integer :order_id
    #    t.integer :product_id
    #    t.integer :product_price_detail_id
@@ -60,6 +60,7 @@ class Order < ActiveRecord::Base
         detail.quantity = i.quantity
         detail.currency = i.price_currency
         detail.product_image = product.main_image_url
+        detail.currency_by_user = user_currency
         detail.save
       else
         product_detail = ProductPriceDetail.find(i.item_id)
@@ -72,6 +73,7 @@ class Order < ActiveRecord::Base
         detail.product_name = product.short_desc
         detail.size = i.size
         detail.currency = i.price_currency
+        detail.currency_by_user = user_currency
         detail.product_image = product.product_image
         detail.save
       end

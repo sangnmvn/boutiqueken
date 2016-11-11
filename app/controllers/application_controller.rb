@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
       @country_code = "US" 
     end
     @country = Carmen::Country.coded(@country_code)
+    MoneyExchange.get_rate("USD",@currency)
   end
 
   def store_location

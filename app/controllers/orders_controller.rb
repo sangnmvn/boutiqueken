@@ -8,9 +8,9 @@ class OrdersController < ApplicationController
 
   def create
   	@success = false
-    @order = Order.new(order_params.merge({user_id: current_user.id}))
+    @order = Order.new(order_params.merge({user_id: current_user.id,:currency_by_user =>@currency}))
     @success = @order.save
-    if @success && @order.parse_items_from_cart(@shopping_cart)
+    if @success && @order.parse_items_from_cart(@shopping_cart,@currency)
       redirect_to payment_order_path(@order)
     end
     

@@ -1,4 +1,5 @@
 %body
+  -MoneyExchange.get_rate("USD",@currency)
   %section.section-billing
     .container
       %header.tablist-holder
@@ -79,7 +80,7 @@
                             %label{:for => "country"} Country
                             .select
                               .country-div-ship
-                                =f.country_select :country,{priority: %w(US),selected: (f.object.country ?  f.object.country : @country)}
+                                =f.country_select :country,{priority: %w(US),selected: (f.object.country ?  f.object.country : @country_code)}
                               .select__arrow.country-select
                       .col-xs-12.col-sm-6.col-md-4.middle-state
                         .info-form-group
@@ -94,7 +95,7 @@
                             /     %option{:value => "5"} Australia
                             /   .select__arrow.state-select
                             .select.select-ship-state
-                              =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[shipping_address_attributes]"}
+                              =render :partial =>"state_select",locals: {country: (f.object.country ?  f.object.country : @country_code), select_state: f.object.state,form: f,name: "order[shipping_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends
@@ -159,14 +160,14 @@
                             %label{:for => "country"} Country
                             .select
                               .country-div-bill
-                                =f.country_select :country,{priority: %w(US),selected: (f.object.country ?  f.object.country : @country)}
+                                =f.country_select :country,{priority: %w(US),selected: (f.object.country ?  f.object.country : @country_code)}
                               .select__arrow.country-select
                       .col-xs-12.col-sm-6.col-md-4.middle-state
                         .info-form-group
                           .account-input-block.state-selecting
                             %label{:for => "state-2"} State
                             .select.select-state-bill
-                              =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f,name: "order[billing_address_attributes]"}
+                              =render :partial =>"state_select",locals: {country: (f.object.country ?  f.object.country : @country_code), select_state: f.object.state,form: f,name: "order[billing_address_attributes]"}
                               .select__arrow.state-select
                             / .select ends
                           / .account-input-block ends
@@ -252,7 +253,7 @@
                             %i.fa.fa-times{"aria-hidden" => "true"}
                             =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
                         %td{:class =>"subtotal_#{i.id}"}
-                          $
+                          ="#{@currency} $"
                           =show_price_digit(i.price * i.quantity.to_i)
               / DESKTOP TABLE MARKUP ENDS
               / MOBILE TABLE MARKUP
@@ -304,7 +305,7 @@
                     %tr
                       %th{:scope => "row"} Subtotal
                       %td{:class =>"subtotal_#{i.id}"}
-                        $
+                        ="#{@currency} $"
                         =show_price_digit(i.price * i.quantity.to_i)
               / MOBILE TABLE MARKUP ENDS
               .table-btm-qt
@@ -330,32 +331,32 @@
                   %td
                     %b Item Total
                   %td.text-right.total-txt
-                    $
+                    ="#{@currency} $"
                     =show_price_digit(@shopping_cart.total)
                 %tr
                   %td
                     %b Gift Wrap
-                  %td.text-right $0.00
+                  %td.text-right="#{@currency} $ 0.00"
                 %tr
                   %td
                     %b Estimated Shopping &amp; Handling
-                  %td.text-right $0.00
+                  %td.text-right="#{@currency} $ 0.00"
                 %tr
                   %td
                     %b Total Before Tax
                   %td.text-right.total-txt
-                    $
+                    ="#{@currency} $"
                     =show_price_digit(@shopping_cart.total)
                 %tr.checkout-table-last
                   %td
                     %b Estimated Tax
-                  %td.text-right $0.00
+                  %td.text-right="#{@currency} $ 0.00"
                 %tr.checkout-table-total
                   %td
                     %b Estimated Total
                   %td.text-right
                     %b.total-txt
-                      $
+                      ="#{@currency} $"
                       =show_price_digit(@shopping_cart.total)
               / CHECKOUT TABLE ENDS
             / LONG TABLE ENDS

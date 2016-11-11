@@ -90,11 +90,11 @@
                   %strong Shopping Method
                   .radio-input-block
                     %label.control.control--radio{:for => "no"}
-                      Standard $0.00
+                      ="Standard #{@currency} $0.00"
                       %input#no{:checked => "checked", :name => "radio", :type => "radio"}/
                       %span.control__indicator
                     %label.control.control--radio{:for => "yes"}
-                      Rush $15.00
+                      ="Standard #{@currency} $15.00"
                       %input#yes{:checked => "checked", :name => "radio", :type => "radio"}/
                       %span.control__indicator
               / COL ENDS
@@ -160,8 +160,12 @@
                           /   %a{:href => "#"} Remove
                         / .saks-bag-item-qnt-text
                       %td In Stock
-                      %td=i.price
-                      %td=i.sub_total
+                      %td
+                        ="#{@currency} $"
+                        =show_price_digit(i.price)
+                      %td
+                        ="#{@currency} $"
+                        =show_price_digit(i.sub_total)
               / DESKTOP TABLE MARKUP ENDS
               %p.about-table-p.hidden-xs
                 %strong Shipping Method:
@@ -214,10 +218,14 @@
                     %td In Stock
                   %tr
                     %th{:scope => "row"} Unit Price
-                    %td=i.price
+                    %td
+                      ="#{@currency} $"
+                      =show_price_digit(i.price)
                   %tr
                     %th{:scope => "row"} Subtotal
-                    %td=i.sub_total
+                    %td
+                      ="#{@currency} $"
+                      =show_price_digit(i.sub_total)
               / MOBILE TABLE MARKUP ENDS
               %p.about-table-p.visible-xs
                 %strong Shipping Method:
@@ -237,33 +245,33 @@
                         %td
                           %b Item Total
                         %td.text-right
-                          $
-                          =@order.total
+                          ="#{@currency} $"
+                          =show_price_digit(@order.total)
                       %tr
                         %td
                           %b Gift Wrap
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $0.00"
                       %tr
                         %td
                           %b Estimated Shopping &amp; Handling
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $0.00"
                       %tr
                         %td
                           %b Total Before Tax
                         %td.text-right
-                          $
-                          =@order.total
+                          ="#{@currency} $"
+                          =show_price_digit(@order.total)
                       %tr.checkout-table-last
                         %td
                           %b Estimated Tax
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $0.00"
                       %tr.checkout-table-total
                         %td
                           %b Estimated Total
                         %td.text-right
                           %b
-                            $
-                            =@order.total
+                            ="#{@currency} $"
+                            =show_price_digit(@order.total)
                     / CHECKOUT TABLE ENDS
                   .check-outing.text-right
                     %button{:type => "submit"} CHECKOUT
