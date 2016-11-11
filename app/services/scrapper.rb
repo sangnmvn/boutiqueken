@@ -1662,6 +1662,7 @@ class Scrapper
               @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
               site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
+              site_cat_id = product_url.split("&CategoryID=").last.split("&").first.to_i if site_cat_id == 0
 
               scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
             }
