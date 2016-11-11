@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     session[:currency] = @currency.upcase
 
     #@country_code = request.location.country_code
-    if @country_code == "RD"
+    if @country_code == "RD" || @country_code.blank?
       @country_code = "US" 
     end
     @country = Carmen::Country.coded(@country_code)

@@ -223,8 +223,11 @@ var WelcomeView = {
     check = Cookies.get('first-visited');
     if(check==null || typeof(check)=="undefined"){
       // Show modal here
-      $(".modal.modal-welcome").modal("show");
-      Cookies.set('first-visited',"true");
+      if($(".ul-top-navigation .flag-us").length <=0){
+        $(".modal.modal-welcome").modal("show");
+        Cookies.set('first-visited',"true");
+      }
+      
     }
   }
 }
