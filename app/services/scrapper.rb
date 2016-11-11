@@ -72,6 +72,8 @@ class Scrapper
     @scrapped_site_cat_ids = {}
     @existing_products = {}
 
+    @scrapped_products = {}
+
     # stop / pause / run
     @request_from_admin = RUN
 
@@ -1649,20 +1651,22 @@ class Scrapper
 
           key = "#{site_cat_id}\t#{tmp_product_id}"
 
-          @existing_products[key] = 0 unless @existing_products[key].present?
+          unless @scrapped_products[key].present?
+            threads[thread_count] = Thread.new {
+              product_id = product.attributes["id"].text
 
-          threads[thread_count] = Thread.new {
-            product_id = product.attributes["id"].text
+              product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+              @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
-            product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-            @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
+              site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
 
-            site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
+              scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
+            }
 
-            scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
-          }
+            thread_count += 1
 
-          thread_count += 1
+            @scrapped_products[key] = true
+          end
 
           if thread_count == @number_of_threads || total_product == product_count
             threads.each {|t| t.join}
@@ -1829,6 +1833,9 @@ class Scrapper
 
       child_site_products.each do |prod|
         product_id = prod["ID"]
+
+        key = "#{site_product_id}\t#{product_id}"
+        
         url = "#{@root_url}#{prod["semanticURL"]}"
 
         @logger.info "Scrapping child product of product #{site_product_id}: #{url}"
