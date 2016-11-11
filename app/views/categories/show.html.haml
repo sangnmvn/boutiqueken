@@ -8,7 +8,10 @@
       -else
         .col-md-10.col-sm-12.col-xs-12.pull-right
           -if @category.parent_id.blank?
-            =render "featured_category"
+            -if @category.cat_name == "GIFTS"
+              =render "shared/gift_page"
+            -else
+              =render "featured_category"
           -elsif @feature_categories.present? && @feature_categories.count > 1
             =render "featured_category"
           -else
