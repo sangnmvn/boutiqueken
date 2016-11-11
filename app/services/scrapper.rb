@@ -1152,7 +1152,7 @@ class Scrapper
             next
           end
 
-          cat = Category.where(site_cat_id: site_cat_id, parent_id: root_cat.id, cat_name: cat_name).first
+          cat = Category.where(site_cat_id: site_cat_id).order(:id).first
 
           next if cat.nil?
 
