@@ -139,7 +139,7 @@
                             %td In Stock
                             %td
                               ="#{i.currency_by_user} $"
-                              =show_2digit(i.price)
+                              =show_2digit(i.price_by_currency)
                             %td
                               ="#{i.currency_by_user} $"
                               =show_2digit(i.subtotal_by_currency)
@@ -197,7 +197,7 @@
                           %th{:scope => "row"} Unit Price
                           %td
                             ="#{i.currency_by_user} $"
-                            =show_2digit(i.price)
+                            =show_2digit(i.price_by_currency)
                         %tr
                           %th{:scope => "row"} Subtotal
                           %td
