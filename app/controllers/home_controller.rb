@@ -2,17 +2,32 @@ class HomeController < ApplicationController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
 
-  layout "static_layout",only: [:about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use]
+  layout "static_layout",only: [:contact_us, :about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use]
 
   protect_from_forgery with: :exception
   def index
     # redirect_to new_user_session_path
   end
 
+  def submit_contact
+    @user = params[:contact]
+
+    UserMailer.contact_us( @user[:topic], @user[:name], @user[:email], @user[:comment]).deliver
+    #UserMailer.contact_us.deliver
+    redirect_to contact_us_path,:notice => "Thank you for your message!"
+
+  end
+
   def subregions
   	render partial: "addresses/state_select"
   end
   
+  def contact_us
+    @seo_title = "Contact Information boutiqueken.com 25/7 & 365 DAYS"
+    @seo_desc = " Free shipping BOTH ways on shoes, clothing, and more! 60-day return policy, over 1000 brands, 24/7 friendly Customer Service."
+    @seo_keywords=" index, boutiqueken.com, boutiqueken, zeta, clothing, shoes."
+  end
+
   def about_us
   	@seo_title = "Women's Clothing, Shoes & Accessories | Boutiqueken"
     @seo_desc = "Shop women's clothing, shoes, accessories, beauty, and more from your favorite brands and designer collections. Free shipping and returns every day."

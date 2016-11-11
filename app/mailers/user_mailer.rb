@@ -16,5 +16,14 @@ class UserMailer < ActionMailer::Base
     @shipping = @order.shipping_address
     mail :to => @order.email,:cc=>[@user.email], :subject => subject if @user
   end
+
+  def contact_us(topic, name_txt, email, comments)
+  #def contact_us
+    subject = topic
+    address = email
+    @name = name_txt
+    @comments = comments
+    mail :to => "care@boutiqueken.com", :subject => subject, :from => address
+  end
 end
  
