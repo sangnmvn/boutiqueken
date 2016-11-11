@@ -20,8 +20,8 @@
 
             -available = Brand.where(:category_id => @category.id)
             -if @category.cat_name.upcase == "BRANDS"
-              -all_brand_cate = Category.find("brands-all-brands")
-              -available = Brand.where(:category_id => all_brand_cate.id).order("group_name asc")
+              -all_brand_cate = @left_navs.where(:cate_name =>"All Brands").first.category_id
+              -available = Brand.where(:category_id => all_brand_cate).order("group_name asc")
             -available_group =  available.order("group_name asc").pluck(:group_name).uniq
             %ul.letter-order-list
               -('A'..'Z').to_a.each do |i|
