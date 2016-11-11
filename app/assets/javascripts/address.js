@@ -300,12 +300,14 @@ var ViewProduct ={
         if(body_width <= 991){
           item_num = 3;
         }
-        sli.destroy();
-        sli = $("#content-slider").lightSlider({
-                  loop:false,
-                  keyPress:true,
-                  item: item_num
-              });
+        if($("#content-slider").length >0){
+          sli.destroy();
+          sli = $("#content-slider").lightSlider({
+                    loop:false,
+                    keyPress:true,
+                    item: item_num
+                });
+        }
       });
     }
     

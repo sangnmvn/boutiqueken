@@ -9,28 +9,28 @@
             We are here 24 hours a day, 7 days a week
             
             / %form{:action => "#"}
-            = form_tag(method: "post", class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off") do |f|
+            = form_tag(contact_us_path, {method: :post, class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do
               .devise-error
                 -flash.each do |name,msg|
-                  %div.error-txt
+                  %div.notice-txt
                     = msg
               %label{:for => "name"} Name (Required)
               .contact_info
-                = text_field_tag "contact[name]","" , autofocus: true, autocomplete: "off", "data-parsley-type" =>"name", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Name is required!",:id =>"name"
+                = text_field_tag "contact[name]","" ,:required => true, autofocus: true, autocomplete: "off", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Name is required!",:id =>"name"
               %label{:for => "email"} Email address (Required)
               / %input#password{:type => "password"}/
               .contact_info
-                = text_field_tag "contact[email]" ,"", autocomplete: "off", "data-parsley-required-message" => "Oops, Email address is required!","data-parsley-trigger" => "change",:id =>"email"
+                = text_field_tag "contact[email]" ,"",:required => true, autocomplete: "off", "data-parsley-required-message" => "Oops, Email address is required!","data-parsley-trigger" => "change","data-parsley-type" =>"email",:id =>"email"
 
               %label{:for => "topic"} Topic (Required)
               / %input#password{:type => "password"}/
               .contact_info
-                = select_tag "contact[topic]", options_for_select([ "Order Status", "Assistance","Product Information", "International Shipping", "Comments","Other Assistance"]),  prompt: "Select a topic", autocomplete: "off", "data-parsley-required-message" => "Oops, Email address is required!", "data-parsley-trigger" => "change", :id =>"topic"
+                = select_tag "contact[topic]", options_for_select([ "Order Status", "Assistance","Product Information", "International Shipping", "Comments","Other Assistance"]),  prompt: "Select a topic",:required =>true, autocomplete: "off", "data-parsley-required-message" => "Oops, Topic is required!", "data-parsley-trigger" => "change", :id =>"topic"
 
               %label{:for => "comment"} Enter Comments and Questions Below (Required)
               / %input#password{:type => "password"}/
               .contact_info
-                = text_area_tag "contact[comment]" ,"", autocomplete: "off", "data-parsley-required-message" => "Oops, Comment is required!","data-parsley-trigger" => "change",:id =>"comments"
+                = text_area_tag "contact[comment]" ,"",:required => true, autocomplete: "off", "data-parsley-required-message" => "Oops, Comment is required!","data-parsley-trigger" => "change",:id =>"comments"
               %br
               .contact_info
                 For your protection, please do not include your credit card number when emailing adboutiqueken.com.
