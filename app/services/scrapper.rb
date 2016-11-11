@@ -1615,7 +1615,7 @@ class Scrapper
       @logger.info "\nScrapping products from #{full_url}"
 
       page = fetch_page_content(@agent, full_url)
-      next unless page.present?
+      return unless page.present?
 
       url_paging_root = page.uri.to_s.split("?").first
 
