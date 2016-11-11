@@ -137,8 +137,12 @@
                                 /   %a{:href => "#"} Remove
                               / .saks-bag-item-qnt-text
                             %td In Stock
-                            %td=i.price
-                            %td=i.sub_total
+                            %td
+                              ="#{i.currency_by_user} $"
+                              =show_2digit(i.price)
+                            %td
+                              ="#{i.currency_by_user} $"
+                              =show_2digit(i.subtotal_by_currency)
                     / DESKTOP TABLE MARKUP ENDS
                     %p.about-table-p.hidden-xs
                       %strong Shipping Method:
@@ -191,10 +195,14 @@
                           %td In Stock
                         %tr
                           %th{:scope => "row"} Unit Price
-                          %td=i.price
+                          %td
+                            ="#{i.currency_by_user} $"
+                            =show_2digit(i.price)
                         %tr
                           %th{:scope => "row"} Subtotal
-                          %td=i.sub_total
+                          %td
+                            ="#{i.currency_by_user} $"
+                            =show_2digit(i.subtotal_by_currency)
                     / MOBILE TABLE MARKUP ENDS
                     %p.about-table-p.visible-xs
                       %strong Shipping Method:
@@ -217,32 +225,32 @@
                               %td
                                 %b Item Total
                               %td.text-right
-                                $
-                                =@order.total
+                                ="#{@order.currency_by_user} $"
+                                =show_2digit(@order.total_by_currency)
                             %tr
                               %td
                                 %b Gift Wrap
-                              %td.text-right $0.00
+                              %td.text-right="#{@order.currency_by_user} $ 0.00"
                             %tr
                               %td
                                 %b Estimated Shopping &amp; Handling
-                              %td.text-right $0.00
+                              %td.text-right="#{@order.currency_by_user} $ 0.00"
                             %tr
                               %td
                                 %b Total Before Tax
                               %td.text-right
-                                $
-                                =@order.total
+                                ="#{@order.currency_by_user} $"
+                                =show_2digit(@order.total_by_currency)
                             %tr.checkout-table-last
                               %td
                                 %b Estimated Tax
-                              %td.text-right $0.00
+                              %td.text-right="#{@order.currency_by_user} $ 0.00"
                             %tr.checkout-table-total
                               %td
                                 %b Estimated Total
                               %td.text-right
                                 %b
-                                  $
-                                  =@order.total
+                                  ="#{@order.currency_by_user} $"
+                                  =show_2digit(@order.total_by_currency)
                   
                   

@@ -26,7 +26,7 @@
                     %td
                       =show_order_status(i.status)
                     %td
-                      $
-                      =i.total
+                      =i.currency_by_user
+                      =show_2digit(i.total_by_currency)
                     %td
                       =link_to "View Detail",order_path(i)

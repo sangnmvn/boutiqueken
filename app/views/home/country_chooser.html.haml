@@ -26,7 +26,7 @@
                   .col-md-12.col-xs-12
                     .footer
                       %span{:alt => "star-icon",:src=>"", class: "flag flag-us"}
-                      %a{:href => root_path}
+                      %a{:href => update_country_path({"user[country]" =>"US", "user[currency]" =>"usd"})}
                         ="Back to U.S. Site"
                       %button.btn-checkout{type: "submit"}
                         ="SAVE & CONTINUE CHECKOUT"
@@ -39,6 +39,6 @@
                   %li
                     No additional payment will be required upon delivery of your order
                   %li
-                    Please note: Not all products sold on saks.com can be shipped internationally and order total cannot exceed U.S. $25,000.
+                    Please note: Not all products sold on boutiqueken.com can be shipped internationally and order total cannot exceed U.S. $25,000.
 
 
