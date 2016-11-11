@@ -53,8 +53,9 @@
                   %div.left-total
                     1 ITEM ADDED TO YOUR BAG
                   %div.right-total
-                    Estimated Total: $
-                    =@shopping_cart.total
+                    Estimated Total: 
+                    ="#{@currency} $"
+                    =show_price_digit(@shopping_cart.total)
 
 
 

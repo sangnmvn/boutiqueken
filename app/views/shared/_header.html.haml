@@ -5,10 +5,11 @@
       %ul.ul-top-navigation.ul-top-navigation-desktop.hidden-xs.pull-right
         %li
           %a{:href => "#"} Order Tracking
-        %li.star-icon
-          %a{:href => "#"}
+        %li
+          %a{:href => country_choser_path}
             Ship To:
-            %img{:alt => "star-icon", :src => asset_path("img/icons/star-icon.png")}/
+            %div{:alt => "star-icon",:src=>"", class: "flag flag-#{@country_code.downcase}"}
+            
         %li
           %a{:href => "#"} Chat
         %li
@@ -93,3 +94,4 @@
   / .container ends
 / HEADER ENDS
 / SECTION HOME CONTENT Starts
+=render "shared/modal_welcome"

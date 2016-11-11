@@ -6,14 +6,14 @@
           %header
             %h1.pull-left BOUTIQUEKEN BAG
             %ul.ul-saks-bag-top-list.pull-right
-              %li
-                %a{:href => "#"} 1.8777.551.7257
-              %li
-                %a{:href => "#"} Email
-              %li
-                %a{:href => "#"} Chat
-              %li
-                %a{:href => "#"} Shipping &amp; Returns
+              / %li
+              /   %a{:href => "#"} 1.8777.551.7257
+              / %li
+              /   %a{:href => "#"} Email
+              / %li
+              /   %a{:href => "#"} Chat
+              / %li
+              /   %a{:href => "#"} Shipping &amp; Returns
           / DESKTOP TABLE MARKUP
           .saks-bag-table
             %table.table.table-bordered.hidden-xs
@@ -78,10 +78,10 @@
                       / .saks-bag-item-qnt-text
                     %td In Stock
                     %td
-                      $
-                      =i.price
+                      ="#{@currency} $"
+                      =show_price_digit(i.price)
                     %td{:class =>"subtotal_#{i.id}"}
-                      $
+                      ="#{@currency} $"
                       =show_price_digit(i.price * i.quantity.to_i)
             / DESKTOP TABLE MARKUP ENDS
             / MOBILE TABLE MARKUP
@@ -163,33 +163,33 @@
                         %td
                           %b Item Total
                         %td.text-right.total-txt
-                          $
-                          =@shopping_cart.total
+                          ="#{@currency} $"
+                          =show_price_digit(@shopping_cart.total)
                       %tr
                         %td
                           %b Gift Wrap
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr
                         %td
                           %b Estimated Shopping &amp; Handling
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr
                         %td
                           %b Total Before Tax
                         %td.text-right.total-txt
-                          $
-                          =@shopping_cart.total
+                          ="#{@currency} $"
+                          =show_price_digit(@shopping_cart.total)
                       %tr.checkout-table-last
                         %td
                           %b Estimated Tax
-                        %td.text-right $0.00
+                        %td.text-right="#{@currency} $ 0.00"
                       %tr.checkout-table-total
                         %td
                           %b Estimated Total
                         %td.text-right
                           %b.total-txt
-                            $
-                            =@shopping_cart.total
+                            ="#{@currency} $"
+                            =show_price_digit(@shopping_cart.total)
                     / checkout-table ends
                   / .saks-bag-shopping
                 / col ends

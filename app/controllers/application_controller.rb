@@ -8,9 +8,25 @@ class ApplicationController < ActionController::Base
   before_filter :extract_shopping_cart
   before_filter :store_current_location, :unless => :devise_controller?
   after_filter :store_location
-
+  before_filter :get_browser_location
   
   protected
+
+  def get_browser_location
+    #country_code
+    @country_code = session[:country_code].present? ? session[:country_code] : request.location.country_code
+    session[:country_code] = @country_code
+
+    @currency = session[:currency].present? ? session[:currency] : "USD"
+    session[:currency] = @currency.upcase
+
+    #@country_code = request.location.country_code
+    if @country_code == "RD" || @country_code.blank?
+      @country_code = "US" 
+    end
+    @country = Carmen::Country.coded(@country_code)
+    MoneyExchange.get_rate("USD",@currency)
+  end
 
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.

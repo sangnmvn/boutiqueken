@@ -3,10 +3,30 @@ class HomeController < ApplicationController
   # For APIs, you may want to use :null_session instead.
 
   layout "static_layout",only: [:about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use]
-
+  layout "devise",only: [:country_chooser]
   protect_from_forgery with: :exception
   def index
     # redirect_to new_user_session_path
+  end
+
+  def update_country
+    if params[:user][:currency].present?
+      session[:currency] = params[:user][:currency]
+    end
+
+
+    if params[:user][:country].present?
+      session[:country_code] = params[:user][:country]
+    end
+    if @country_code == "RD"
+      @country_code = "US" 
+    end
+    @country = Carmen::Country.coded(@country_code)
+    redirect_to root_path
+  end
+
+  def country_chooser
+    
   end
 
   def subregions

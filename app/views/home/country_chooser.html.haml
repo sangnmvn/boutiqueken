@@ -1,0 +1,44 @@
+%section.section-products-area
+  .container
+    .row
+      .col-md-12.col-sm-12.col-xs-12.pull-right
+        .country-choser
+          %h1 INTERNATIONAL SHIPPING
+          .desc-txt-country
+            Boutiqueken.com offers international shipping to more than 150 countries.
+          .row
+            .contain-div-gray
+              %h4 Select the country you would like to ship to and the Currency you would like to shop in:
+              %p
+              =form_tag(update_country_path,:method => :get) do |g|
+                .row
+                  .col-md-6.col-xs-12
+                    %label.d-block
+                      Country:
+                    .select-country
+                      =country_select "user","country",{priority: %w(US)},:class =>"country-select-currency"
+                  .col-md-6.col-xs-12
+                    %label.d-block
+                      Currency:
+                    .select-currency
+                      =currency_select "user","currency",["usd"],:selected =>@country_code.to_s.downcase,:class =>"currency-select"
+                .row
+                  .col-md-12.col-xs-12
+                    .footer
+                      %span{:alt => "star-icon",:src=>"", class: "flag flag-us"}
+                      %a{:href => update_country_path({"user[country]" =>"US", "user[currency]" =>"usd"})}
+                        ="Back to U.S. Site"
+                      %button.btn-checkout{type: "submit"}
+                        ="SAVE & CONTINUE CHECKOUT"
+              .no-background-color
+                %ul.dot-style
+                  %li
+                    View the order total (including shipping fees, customs tariffs and taxes) at checkout
+                  %li
+                    Your total is guaranteed at the exchange rate set when your order is placed
+                  %li
+                    No additional payment will be required upon delivery of your order
+                  %li
+                    Please note: Not all products sold on boutiqueken.com can be shipped internationally and order total cannot exceed U.S. $25,000.
+
+

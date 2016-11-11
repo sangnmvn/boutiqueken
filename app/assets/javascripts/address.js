@@ -6,6 +6,18 @@ $(document).ajaxComplete(function(event, request, settings) {
     $('#loading-indicator').hide();
 });
 
+var CountryChooser ={
+  init: function(selector){
+    if($(selector).length >0){
+      $(".country-select-currency").on("change",function(){
+        selected_val = $(this).val().toLowerCase();
+        console.log(selected_val);
+        $("#user_currency option[value^='" + selected_val +"']").attr("selected","selected")
+      })
+    }
+  }
+}
+
 
 var Address = {
   init: function(selector){
@@ -60,7 +72,8 @@ $(function(){
     $("." + parent + " .form-edit").addClass("hide");
     $("." + parent + " .saks-bag-item-qnt").show();
   });
-
+  CountryChooser.init(".contain-div-gray");
+  WelcomeView.init();
 });
 
 
@@ -202,6 +215,20 @@ var ProductList = {
           
           });
       });
+  }
+}
+
+var WelcomeView = {
+  init: function(){
+    check = Cookies.get('first-visited');
+    if(check==null || typeof(check)=="undefined"){
+      // Show modal here
+      if($(".ul-top-navigation .flag-us").length <=0){
+        $(".modal.modal-welcome").modal("show");
+        Cookies.set('first-visited',"true");
+      }
+      
+    }
   }
 }
 

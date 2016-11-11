@@ -73,17 +73,17 @@
               -if i.macys_sale_price.present?
                 %span.reg-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong 
-                    Reg. $
+                    ="Reg. #{@currency.upcase} $"
                     =show_price_digit(i.macys_sale_price)
               -if i.sale_price.present?
                 %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong
-                    Sale. $
+                    ="Sale. #{@currency} $"
                     =show_price_digit(i.sale_price)
               -elsif i.list_price_range.present?
                 %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong
-                    Sale. $
+                    ="Sale. #{@currency} $"
                     =i.list_price_range.join(" - ")
           / .single-product ends
         / .col-md-4 ends

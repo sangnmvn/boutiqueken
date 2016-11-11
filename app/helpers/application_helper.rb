@@ -211,7 +211,12 @@ module ApplicationHelper
   end
 
   def show_price_digit(price)
-    number_with_precision(price, :precision => 2)
+    val = MoneyExchange.exchange(price,@currency)
+    number_with_precision(val, :precision => 2,:delimiter => ",",:separator => ".")
+  end
+
+  def show_2digit(price)
+    number_with_precision(price, :precision => 2,:delimiter => ",",:separator => ".")
   end
 
 

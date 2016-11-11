@@ -53,7 +53,7 @@
       .info-form-group
         %label{:for => "state"} State
         
-        =render :partial =>"state_select",locals: {country: "US", select_state: f.object.state,form: f}
+        =render :partial =>"state_select",locals: {country: (f.object.country ?  f.object.country : @country_code), select_state: f.object.state,form: f}
         =# f.text_field :state,autocomplete: "off", placeholder: "State",:id =>"state", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, State is required!",:required =>"required"
       .clear-fix
       .info-form-group
@@ -62,7 +62,7 @@
       .clear-fix
       .info-form-group
         %label{:for => "country"} Country
-        =f.country_select :country,{priority: %w(US),selected: f.object.country}
+        =f.country_select :country,{priority: %w(US),(f.object.country ?  f.object.country : @country_code)}
         / = f.text_field :country,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
       
       .clear-fix
