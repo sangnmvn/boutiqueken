@@ -1614,7 +1614,8 @@ class Scrapper
 
       @logger.info "\nScrapping products from #{full_url}"
 
-      page = @agent.get(full_url)
+      page = fetch_page_content(@agent, full_url)
+      next unless page.present?
 
       url_paging_root = page.uri.to_s.split("?").first
 
@@ -1685,7 +1686,8 @@ class Scrapper
           page_index = "/Pageindex/#{current_page}?id=#{site_cat_id}"
           url_paging = "#{url_paging_root}#{page_index}"
 
-          page = @agent.get(url_paging)
+          page = fetch_page_content(@agent, url_paging)
+          return unless page.present?
         end
       end
 
@@ -1702,7 +1704,8 @@ class Scrapper
 
       set_cookies(agent)
 
-      page = agent.get(url)
+      page = fetch_page_content(agent, url)
+      return unless page.present?
 
       product_main_data = page.search("#productMainData")
 
@@ -1835,12 +1838,13 @@ class Scrapper
         product_id = prod["ID"]
 
         key = "#{site_product_id}\t#{product_id}"
-        
+
         url = "#{@root_url}#{prod["semanticURL"]}"
 
         @logger.info "Scrapping child product of product #{site_product_id}: #{url}"
 
-        page = agent.get(url)
+        page = fetch_page_content(agent, url)
+        next unless page.present?
 
         product_main_data = page.search("#productMainData")
 
