@@ -771,6 +771,58 @@ class Scrapper
     end      
   end
 
+  def fix_scrape_filters_for_featured_categories
+    begin
+      h = [
+        {
+         site_cat_id: "2905",
+         url: "http://www1.macys.com/shop/jewelry-watches/pearls?id=2905&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_pearls",
+         cat_name: "Pearls"
+        },
+        {
+         site_cat_id: "21997",
+         url: "http://www1.macys.com/shop/jewelry-watches/silver-jewelry?id=21997&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_silver-jewelry",
+         cat_name: "Silver Jewelry"
+        },
+        {
+         site_cat_id: "2904",
+         url: "http://www1.macys.com/shop/jewelry-watches/gold-jewelry?id=2904&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_gold-jewelry",
+         cat_name: "Gold Jewelry"
+        },
+        {
+         site_cat_id: "7575",
+         url: "http://www1.macys.com/shop/kitchen/toaster-oven?id=7575&edge=hybrid&cm_sp=c2_1111US_catsplash_kitchen-_-row6-_-icon_toasters-and-toaster-ovens",
+         cat_name: "Toasters & Toaster Ovens"
+        },
+        {
+         site_cat_id: "84749",
+         url: "http://www1.macys.com/shop/shoes/block-heel?id=84749&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_block-heel",
+         cat_name: "Block Heel"
+        },
+        {
+         site_cat_id: "72690",
+         url: "http://www1.macys.com/shop/kids-clothes/baby-holiday-outfits?id=72690&edge=hybrid&cm_sp=c2_1111US_catsplash_kids-%26-baby-_-row8-_-icon_baby%27s-first-holiday",
+         cat_name: "Baby's First Holiday"
+        },
+        {
+         site_cat_id: "72690",
+         url: "http://www1.macys.com/shop/shoes/menswear?id=84750&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_mensware-inspired",
+         cat_name: "Mensware Inspired"
+        }
+      ]
+      
+      h.each do |cat|
+        scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
+
+        #scrape_products_per_subcat(site_cat_id, url)
+      end
+
+    rescue Exception => e
+      @logger.error(e.message)
+      @logger.error(e.backtrace.join("\n"))
+    end
+  end
+
   def scrape_filters_from_sub_menu(site_root_cat_id, url)
     begin
       @logger.info "scrape_filters_from_sub_menu #{url}"
