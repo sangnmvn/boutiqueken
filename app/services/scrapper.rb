@@ -1396,7 +1396,7 @@ class Scrapper
       end
 
       unless scrape_cat_name.present?
-        scrape_additional_brand_products
+        scrape_additional_brand_products(number_of_threads)
       end
 
       if update_db && admin_request != STOP
@@ -1416,8 +1416,10 @@ class Scrapper
     end
   end
 
-  def scrape_additional_brand_products
+  def scrape_additional_brand_products(number_of_threads=1)
     begin
+      @number_of_threads = number_of_threads
+
       @current_cat_name = "BRANDS_ADDS"
 
       url = "http://www1.macys.com/shop/all-brands?id=63538&edge=hybrid&cm_sp=us_hdr-_-brands-_-63538_brands"
