@@ -83,7 +83,7 @@ class Scrapper
   def load_existing_products
     begin
       sql =%{
-        SELECT id, site_cat_id, site_product_id FROM products where not is_collection;
+        SELECT id, site_cat_id, site_product_id FROM products;
       }
 
       products = Product.connection.execute(sql)
@@ -293,8 +293,8 @@ class Scrapper
         scrape_others_featured_cates(root_cat, page)
       elsif page.search(kid).present?
         scrape_kids_featured_cates(root_cat, page)
-      elsif page.search(active).search("area").present?
-        scrap_active_featured_cates(root_cat, page)
+      # elsif page.search(active).search("area").present?
+      #   scrap_active_featured_cates(root_cat, page)
       else
         scrap_brand_featured_brands(root_cat, page)
       end
@@ -424,6 +424,12 @@ class Scrapper
     begin
       page = @agent.get(url)
 
+      seo_title, seo_keywords, seo_desc = extract_seo_information(page)
+      root_cat.seo_title = seo_title
+      root_cat.seo_keywords = seo_keywords
+      root_cat.seo_desc = seo_desc
+      root_cat.save
+
       groups = page.search("#hgg-nav").children
 
       group_pos = 0
@@ -507,6 +513,7 @@ class Scrapper
         site_cat_id = cat_el.attributes["href"].text.split("?CategoryID=").last
         site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
         image_url = f_cate_group.search("img").first.attributes["src"].text
+        site_cat_url = cat_el.attributes["href"].text
 
         if site_cat_id.to_i == 0
           next
@@ -521,6 +528,8 @@ class Scrapper
           cat.parent_id = 0
           cat.save
 
+          scrape_filters_for_subcat(site_cat_id, site_cat_url, cat_name, nil)
+          
           cats << cat
         end
 
@@ -528,15 +537,13 @@ class Scrapper
 
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-        #if f_cat.new_record?
-          f_cat.cat_name = cat_name
-          f_cat.parent_id = root_cat.id
-          f_cat.site_cat_id = site_cat_id
-          f_cat.category_id = cat.id unless cat.nil?
-          f_cat.image_url = image_url
-          f_cat.pos = pos
-          f_cat.save
-        #end
+        f_cat.cat_name = cat_name
+        f_cat.parent_id = root_cat.id
+        f_cat.site_cat_id = site_cat_id
+        f_cat.category_id = cat.id unless cat.nil?
+        f_cat.image_url = image_url
+        f_cat.pos = pos
+        f_cat.save
 
         pos += 1
       end
@@ -630,14 +637,12 @@ class Scrapper
         
         f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-        #if f_cat.new_record?
-          f_cat.site_cat_id = site_cat_id
-          f_cat.category_id = cat.id
-          f_cat.cat_name = cat_name
-          f_cat.parent_id = root_cat.id
-          f_cat.pos = pos
-          f_cat.save
-        #end
+        f_cat.site_cat_id = site_cat_id
+        f_cat.category_id = cat.id
+        f_cat.cat_name = cat_name
+        f_cat.parent_id = root_cat.id
+        f_cat.pos = pos
+        f_cat.save
 
         pos += 1
       end
@@ -659,6 +664,7 @@ class Scrapper
         site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?CategoryID=").last.split("&").first
         site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
         image_url = f_cate.search("img").first.attributes["src"].text
+        site_cat_url = f_cate.search("a").first.attributes["href"].text
 
         unless f_cate_ele.nil?
           cat_name = replace_macys_info(f_cate_ele.text)
@@ -680,6 +686,8 @@ class Scrapper
             cat.parent_id = 0
             cat.save
 
+            scrape_filters_for_subcat(site_cat_id, site_cat_url, cat_name, nil)
+
             cats << cat
           end
 
@@ -687,15 +695,13 @@ class Scrapper
 
           f_cat = FeaturedCategory.find_or_create_by(parent_id: root_cat.id, site_cat_id: site_cat_id)
 
-          #if f_cat.new_record?
-            f_cat.site_cat_id = site_cat_id
-            f_cat.cat_name = cat_name
-            f_cat.category_id = cat.id unless cat.nil?
-            f_cat.image_url = image_url
-            f_cat.parent_id = root_cat.id
-            f_cat.pos = pos
-            f_cat.save
-          #end
+          f_cat.site_cat_id = site_cat_id
+          f_cat.cat_name = cat_name
+          f_cat.category_id = cat.id unless cat.nil?
+          f_cat.image_url = image_url
+          f_cat.parent_id = root_cat.id
+          f_cat.pos = pos
+          f_cat.save
 
           pos += 1
 
@@ -1392,8 +1398,8 @@ class Scrapper
       end
 
       if update_db && admin_request != STOP
-        update_products_after_import
-        update_product_price_details_after_import
+        #update_products_after_import
+        #update_product_price_details_after_import
       end
 
       # stop the monitoring admin action thread
@@ -1443,7 +1449,7 @@ class Scrapper
 
       import_crawled_products_to_db(@start_date, @current_cat_name, @current_batch)
       import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
-      
+
     rescue Exception => e
       @logger.error(e.message)
       @logger.error(e.backtrace.join("\n"))
@@ -1510,6 +1516,41 @@ class Scrapper
 
           return if admin_request == STOP
         end
+      end
+
+      # scrape products from kid featured categories
+      f_cate_groups = page.search(".//div[@class='flexPool flexPoolMargin']")
+
+      f_cate_groups.each do |f_cate_group|
+        cat_el = f_cate_group.search("a").first
+
+        site_cat_id = cat_el.attributes["href"].text.split("?CategoryID=").last
+        site_cat_id = cat_el.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
+        site_cat_url = cat_el.attributes["href"].text
+
+        if site_cat_id.to_i == 0
+          next
+        end
+
+        scrape_products_per_subcat(site_cat_id, site_cat_url)
+      end
+
+      # scrape products from featured categories
+      f_cates = page.search(".//div[@class='adCatIcon']")
+
+      f_cates.each do |f_cate|
+        f_cate_ele = f_cate.search("a").search("div").first
+        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?CategoryID=").last.split("&").first
+        site_cat_id = f_cate.search("a").first.attributes["href"].text.split("?id=").last.split("&").first if site_cat_id.to_i == 0
+        site_cat_url = f_cate.search("a").first.attributes["href"].text
+
+        unless f_cate_ele.nil?         
+          if site_cat_id.to_i == 0
+            next
+          end
+
+          scrape_products_per_subcat(site_cat_id, site_cat_url)
+        end     
       end
 
       @logger.info "[END] Scrapping products for left cates in #{Time.now - start}"
@@ -1608,7 +1649,6 @@ class Scrapper
 
           key = "#{site_cat_id}\t#{tmp_product_id}"
 
-          #if !@existing_products[key].present?
           @existing_products[key] = 0 unless @existing_products[key].present?
 
           threads[thread_count] = Thread.new {
@@ -1623,7 +1663,6 @@ class Scrapper
           }
 
           thread_count += 1
-          #end
 
           if thread_count == @number_of_threads || total_product == product_count
             threads.each {|t| t.join}
@@ -1686,7 +1725,9 @@ class Scrapper
 
       set_cookies(agent)
 
-      product_thumbnail_page = agent.get(url)
+      product_thumbnail_page = fetch_page_content(agent, url)
+      return if product_thumbnail_page.nil?
+
       product_thumbnail_data = product_thumbnail_page.body.encode("UTF-8",'binary',invalid: :replace, undef: :replace, replace: "")
       product_thumbnail_data = product_thumbnail_data.gsub(/\t/,'')
 
@@ -1699,8 +1740,6 @@ class Scrapper
       bullet_text = product_thumbnail["bulletText"].collect{|i| CGI.unescapeHTML(i)}.to_json
       child_site_product_ids = product_thumbnail["childProductIds"].to_json
       child_site_products = product_thumbnail["childProducts"]
-
-      #site_category_id = product_thumbnail["categoryId"]
       video_id = product_thumbnail["videoID"]
       product_atts = product_thumbnail["attributes"].collect {|i|
         if i.is_a?(Array) 
@@ -1765,8 +1804,8 @@ class Scrapper
       update_product_price_details(product)
 
       # scrape child products
-      
       return if admin_request == STOP
+
       scrape_child_products_in_collection(site_cat_id, site_product_id, child_site_products, product_url)
 
     rescue Exception => e
@@ -1821,20 +1860,8 @@ class Scrapper
       
       set_cookies(agent)
 
-      product_thumbnail_page = agent.get(url)
-
-      if product_thumbnail_page.present? && product_thumbnail_page.code != "200"
-        retry_times = 0
-
-        @logger.info "Trying to get the url #{url}"
-
-        while retry_times < 3
-          product_thumbnail_page = agent.get(url)
-          break if product_thumbnail_page.code == "200"
-
-          retry_times += 1
-        end
-      end
+      product_thumbnail_page = fetch_page_content(agent, url)
+      return if product_thumbnail_page.nil?
 
       product_thumbnail_data = product_thumbnail_page.body.encode("UTF-8",'binary',invalid: :replace, undef: :replace, replace: "")
 
@@ -2085,7 +2112,7 @@ class Scrapper
   def replace_macys_info(data)
     return nil if data.nil?
 
-    return data.gsub(/Macys.com|macys|Macy's|Macy/, SITE_NAME)
+    return data.gsub(/Macys.com|macys|Macy's|Macy|macy/, SITE_NAME)
   end
 
   def extract_seo_information(page)

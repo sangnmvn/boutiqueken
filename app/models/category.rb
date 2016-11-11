@@ -19,7 +19,7 @@ class Category < ActiveRecord::Base
   	if parent.present?
   		[
       	[parent.cat_name, :cat_name],
-        [parent.cat_name,:id, :cat_name]
+        [parent.cat_name, :id, :cat_name]
     	]
   	else
       [
@@ -27,7 +27,6 @@ class Category < ActiveRecord::Base
         [:id, :cat_name]
       ]
   	end
-    
   end
 
   def should_generate_new_friendly_id?
