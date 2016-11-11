@@ -5,7 +5,7 @@
         .col-md-6
           .sign-in-col.sign-in-col-left
             %h4 sign in
-            %p You have previously created an account at Saks.com.
+            %p You have previously created an account at Boutiqueken.com.
             
             / %form{:action => "#"}
             = form_for(resource, as: resource_name, html: {class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}, url: session_path(resource_name)) do |f|
@@ -28,13 +28,13 @@
         .col-md-6
           .sign-in-col.sign-in-col-right
             %h4 CREATE AN ACCOUNT
-            %p You have not created an account at Saks.com
+            %p You have not created an account at Boutiqueken.com
             %strong Creating An Account Lets You  :
             %ul.ul-create-account-terms
               %li Save your information to take advantage of a faster checkout process
               %li Review your order history online
               %li Track your packages
-              %li Check your SaksFirst rewards
+              %li Check your Boutiqueken.com rewards
               %li Write and submit product reviews
             / %button CREATE AN ACCOUNT
             =link_to "CREATE AN ACCOUNT", new_user_registration_path,class: "btn-cus"
