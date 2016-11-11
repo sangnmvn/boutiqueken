@@ -1,0 +1,48 @@
+%section.section-apparal-area
+  .container
+    .apparal-body
+      %h2.sr-only Main Apparal Area
+      .row
+        .col-md-2.col-sm-3
+          %aside
+            %strong=@category.cat_name.upcase
+            %ul
+              -if @category.parent_id.present?
+                -@left_navs = LeftNav.where(:parent_id => @category.parent_id)
+              -@left_navs.each_with_index do |i,index|
+                -cat = Category.find(i.category_id)
+                %li
+                  %a{:href => category_path(f_id(cat),:vtype =>"brands")}=i.cat_name
+        / .col-md-2 ends
+        .col-md-10.col-sm-9
+          .letter-order
+            %strong=@category.cat_name.upcase
+
+            -available = Brand.where(:category_id => @category.id)
+            -if @category.cat_name.upcase == "BRANDS"
+              -all_brand_cate = Category.find("brands-all-brands")
+              -available = Brand.where(:category_id => all_brand_cate.id).order("group_name asc")
+            -available_group =  available.order("group_name asc").pluck(:group_name).uniq
+            %ul.letter-order-list
+              -('A'..'Z').to_a.each do |i|
+                %li{class: available_group.include?(i) ? "" : "unavailable"}
+                  %a{:href => "#"}=i
+              %li
+                %a{:href => "#"} #
+          / .letter-order ends
+          .all-letter-ordered-items
+            / SINGLE LETTER ORDER starts
+            -available_group.each do |i|
+              .single-letter-order-item
+                .letter
+                  %strong=i
+                .letter-list
+                  -list = available.where(:group_name =>i)
+                  %ul.ul-letter-list
+                    -list.each do |links|
+                      -search_key = [@category.cat_name.to_s,links.brand_name.to_s].join(" ")
+                      %li
+                        %a{:href => search_products_path({:search_txt =>search_key})}=links.brand_name
+                  
+            
+
