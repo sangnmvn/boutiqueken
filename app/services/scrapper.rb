@@ -805,7 +805,7 @@ class Scrapper
          cat_name: "Baby's First Holiday"
         },
         {
-         site_cat_id: "72690",
+         site_cat_id: "84750",
          url: "http://www1.macys.com/shop/shoes/menswear?id=84750&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_mensware-inspired",
          cat_name: "Mensware Inspired"
         }
