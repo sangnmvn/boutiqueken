@@ -56,6 +56,8 @@ class Scrapper
     @number_of_threads = 10
 
     @mutex = Mutex.new
+    @check_existing_product_mutex = Mutex.new
+
     @current_batch = 0
     @number_of_products = 0
     @current_file = nil
@@ -1801,24 +1803,33 @@ class Scrapper
 
           key = "#{site_cat_id}\t#{tmp_product_id}"
 
-          unless @scrapped_products[key].present?
-            threads[thread_count] = Thread.new {
-              product_id = product.attributes["id"].text
+          begin
+            @check_existing_product_mutex.lock
+            
+            unless @scrapped_products[key].present?
+              threads[thread_count] = Thread.new {
+                product_id = product.attributes["id"].text
 
-              product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
-              @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
+                product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
+                @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
-              site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
-              site_cat_id = product_url.split("&CategoryID=").last.split("&").first.to_i if site_cat_id == 0
+                site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
+                site_cat_id = product_url.split("&CategoryID=").last.split("&").first.to_i if site_cat_id == 0
 
-              scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
-            }
+                scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
+              }
 
-            thread_count += 1
+              thread_count += 1
 
-            @scrapped_products[key] = true
+              @scrapped_products[key] = true
+            end
+          rescue Exception => e
+            @logger.error(e.message)
+            @logger.error(e.backtrace.join("\n"))
+          ensure
+            @check_existing_product_mutex.unlock
           end
-
+          
           if thread_count == @number_of_threads || total_product == product_count
             threads.each {|t| t.join}
 
@@ -1988,6 +1999,19 @@ class Scrapper
         product_id = prod["ID"]
 
         key = "#{site_product_id}\t#{product_id}"
+
+        begin
+          @check_existing_product_mutex.lock
+            
+          next if @scrapped_products[key].present?
+          @scrapped_products[key] = true
+          
+        rescue Exception => e
+          @logger.error(e.message)
+          @logger.error(e.backtrace.join("\n"))
+        ensure
+          @check_existing_product_mutex.unlock
+        end
 
         url = "#{@root_url}#{prod["semanticURL"]}"
 
