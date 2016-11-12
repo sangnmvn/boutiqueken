@@ -8,9 +8,9 @@ class OrdersController < ApplicationController
 
   def create
   	@success = false
-    @order = Order.new(order_params.merge({user_id: current_user.id,:currency_by_user =>@currency}))
+    @order = Order.new(order_params.merge({user_id: current_user.id}))
     @success = @order.save
-    if @success && @order.parse_items_from_cart(@shopping_cart,@currency)
+    if @success && @order.parse_items_from_cart(@shopping_cart)
       redirect_to payment_order_path(@order)
     end
     
@@ -41,7 +41,6 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     @order.update_attributes({:status =>1})
     @shopping_cart.clear
-    UserMailer.order_confirmation(@order,current_user).deliver
     redirect_to orders_user_path(current_user)
   end
 
@@ -53,8 +52,8 @@ class OrdersController < ApplicationController
       params[:order][:billing_address_attributes] = params[:order][:shipping_address_attributes]
       params[:order][:billing_address_attributes][:is_default_billing] = "0"
     end
-  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:shipping_address_id,:order_id,:user_id,:address_type,:country],
-      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:billing_address_id,:user_id,:order_id,:address_type,:country]).permit!  
+  	params.require(:order).permit(:email,:phone,:shipping_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:shipping_address_id,:order_id,:user_id,:address_type],
+      :billing_address_attributes =>[:first_name,:last_name,:company_name,:telephone, :fax,:street_address,:street_address2,:city,:state,:zip_code,:country,:is_default_billing,:is_default_shipping,:billing_address_id,:user_id,:order_id,:address_type]).permit!  
   end
 
   def check_user_orders

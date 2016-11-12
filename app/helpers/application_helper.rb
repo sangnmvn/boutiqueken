@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def admin_current_section?(section)
+    section_arr = {index:['index'],
+      scrapper:['scrapper'],
+      user_mgmt:['user_mgmt', 'create_user', 'save_user', 'edit_user', 'delete_user'],
+      my_profile:['my_profile']
+      }[section]
+    (section_arr && section_arr.include?(params[:action]))? 'class="current_section"'.html_safe : ''
+  end
+  
   def set_seo
     if params[:controller] == "devise/sessions" && params[:action] == "new"
       @seo_title = "Log In or Register for a boutiqueken.com Account | Women's Discount Shoes, Clothing, Accessories"

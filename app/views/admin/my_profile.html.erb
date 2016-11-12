@@ -1,0 +1,38 @@
+<h3 class="heading_b uk-margin-bottom">My Profile</h3>
+<div class="uk-grid" data-uk-grid-margin>
+    <div class="uk-width-small-1-1">
+        <div class="md-card">
+            <div class="md-card-content">
+                <ul class="md-list">
+                    <li>
+                        <div class="md-list-content">
+                            <span class="md-list-heading">First Name:</span>
+                            <span class="uk-text-small uk-text-muted"><%= @user.first_name %></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="md-list-content">
+                            <span class="md-list-heading">Middle Name:</span>
+                            <span class="uk-text-small uk-text-muted"><%= @user.middle_name %></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="md-list-content">
+                            <span class="md-list-heading">Last Name:</span>
+                            <span class="uk-text-small uk-text-muted"><%= @user.last_name %></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="md-list-content">
+                            <span class="md-list-heading">Email:</span>
+                            <span class="uk-text-small uk-text-muted uk-text-truncate"><%= @user.email %></span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="md-fab-wrapper md-fab-in-card">
+                    <a class="md-fab md-fab-success" href="/admin/edit_user?user_id=<%=session[:admin_id]%>"><i class="material-icons">&#xE254;</i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -84,5 +84,11 @@ class ApplicationController < ActionController::Base
     @shopping_cart = session[:shopping_cart_id] ? (ShoppingCart.find(shopping_cart_id) rescue ShoppingCart.create)  : ShoppingCart.create
     session[:shopping_cart_id] = @shopping_cart.id
   end
+  
+  def admin_logged?
+    if !(session[:admin_id] ||= cookies.signed[:admin_id])
+      redirect_to action: :login 
+    end
+  end
 
 end
