@@ -25,6 +25,10 @@ class Product < ActiveRecord::Base
     integer :category_id
     string :site_cat_id
 
+    text :seo_title, :stored => true
+    text :seo_keywords, :stored => true
+    text :seo_desc, :stored => true
+
     boolean :is_child, :stored => true
     
     string :color_name,:multiple => true do

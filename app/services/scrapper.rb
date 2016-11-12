@@ -31,7 +31,7 @@ class Scrapper
 
   SITE_NAME = "Boutiqueken"
   MAX_THREAD = 15
-  BATCH_SIZE = 25000
+  BATCH_SIZE = 10000
 
   # action codes from admin
   PAUSE = "pause"
@@ -773,6 +773,8 @@ class Scrapper
 
   def fix_scrape_filters_for_featured_categories
     begin
+      @current_cat_name = "FIX_DATA"
+
       h = [
         {
          site_cat_id: "2905",
@@ -811,11 +813,16 @@ class Scrapper
         }
       ]
       
+      load_existing_products
+
       h.each do |cat|
         scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
 
-        #scrape_products_per_subcat(site_cat_id, url)
+        scrape_products_per_subcat(cat[:site_cat_id], cat[:url])
       end
+
+      import_crawled_products_to_db(@start_date, @current_cat_name, @current_batch)
+      import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
 
     rescue Exception => e
       @logger.error(e.message)
@@ -2313,9 +2320,11 @@ class Scrapper
                             external_encoding: "ISO8859-1",
                             internal_encoding: "utf-8")
         
-        TmpProduct.transaction do
-          columns = TmpProduct.attribute_names
-          TmpProduct.import columns, products, validate: false
+        products.each_slice(5000) do |batch|
+          TmpProduct.transaction do
+            columns = TmpProduct.attribute_names
+            TmpProduct.import columns, batch, validate: false
+          end
         end
 
         @logger.info "Finished importing batch #{i} in #{Time.now - start}\n"
