@@ -773,50 +773,138 @@ class Scrapper
 
   def fix_scrape_filters_for_featured_categories
     begin
-      @current_cat_name = "FIX_DATA"
+      @current_cat_name = "FIX_DATA1"
 
+      # h = [
+      #   {
+      #    site_cat_id: "2905",
+      #    url: "http://www1.macys.com/shop/jewelry-watches/pearls?id=2905&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_pearls",
+      #    cat_name: "Pearls"
+      #   },
+      #   {
+      #    site_cat_id: "21997",
+      #    url: "http://www1.macys.com/shop/jewelry-watches/silver-jewelry?id=21997&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_silver-jewelry",
+      #    cat_name: "Silver Jewelry"
+      #   },
+      #   {
+      #    site_cat_id: "2904",
+      #    url: "http://www1.macys.com/shop/jewelry-watches/gold-jewelry?id=2904&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_gold-jewelry",
+      #    cat_name: "Gold Jewelry"
+      #   },
+      #   {
+      #    site_cat_id: "7575",
+      #    url: "http://www1.macys.com/shop/kitchen/toaster-oven?id=7575&edge=hybrid&cm_sp=c2_1111US_catsplash_kitchen-_-row6-_-icon_toasters-and-toaster-ovens",
+      #    cat_name: "Toasters & Toaster Ovens"
+      #   },
+      #   {
+      #    site_cat_id: "84749",
+      #    url: "http://www1.macys.com/shop/shoes/block-heel?id=84749&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_block-heel",
+      #    cat_name: "Block Heel"
+      #   },
+      #   {
+      #    site_cat_id: "72690",
+      #    url: "http://www1.macys.com/shop/kids-clothes/baby-holiday-outfits?id=72690&edge=hybrid&cm_sp=c2_1111US_catsplash_kids-%26-baby-_-row8-_-icon_baby%27s-first-holiday",
+      #    cat_name: "Baby's First Holiday"
+      #   },
+      #   {
+      #    site_cat_id: "84750",
+      #    url: "http://www1.macys.com/shop/shoes/menswear?id=84750&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_mensware-inspired",
+      #    cat_name: "Mensware Inspired"
+      #   }
+      # ]
+      
       h = [
         {
-         site_cat_id: "2905",
-         url: "http://www1.macys.com/shop/jewelry-watches/pearls?id=2905&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_pearls",
-         cat_name: "Pearls"
+         site_cat_id: "108842",
+         url: "http://www1.macys.com/shop/junior-clothing/pokemon?id=108842&edge=hybrid",
+         cat_name: "Pokemon"
         },
         {
-         site_cat_id: "21997",
-         url: "http://www1.macys.com/shop/jewelry-watches/silver-jewelry?id=21997&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_silver-jewelry",
-         cat_name: "Silver Jewelry"
+         site_cat_id: "109943",
+         url: "http://www1.macys.com/shop/for-the-home/elf-on-the-shelf/Pageindex,Productsperpage/1,40?id=109943",
+         cat_name: "Elf on the Shelf"
         },
         {
-         site_cat_id: "2904",
-         url: "http://www1.macys.com/shop/jewelry-watches/gold-jewelry?id=2904&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_gold-jewelry",
-         cat_name: "Gold Jewelry"
+         site_cat_id: "65931",
+         url: "http://www1.macys.com/shop/womens-clothing/petite-pajamas-robes?id=65931&edge=hybrid",
+         cat_name: "Pajamas & Robes"
         },
         {
-         site_cat_id: "7575",
-         url: "http://www1.macys.com/shop/kitchen/toaster-oven?id=7575&edge=hybrid&cm_sp=c2_1111US_catsplash_kitchen-_-row6-_-icon_toasters-and-toaster-ovens",
-         cat_name: "Toasters & Toaster Ovens"
+         site_cat_id: "91603",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/whimsical-shop?id=91603&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_holidaygiftguide_whimsicalshop",
+         cat_name: "Whimsical Shop"
         },
         {
-         site_cat_id: "84749",
-         url: "http://www1.macys.com/shop/shoes/block-heel?id=84749&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_block-heel",
-         cat_name: "Block Heel"
+         site_cat_id: "91457",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/luxe-gifts?id=91457&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forher_luxegifts",
+         cat_name: "Luxe Gifts"
         },
         {
-         site_cat_id: "72690",
-         url: "http://www1.macys.com/shop/kids-clothes/baby-holiday-outfits?id=72690&edge=hybrid&cm_sp=c2_1111US_catsplash_kids-%26-baby-_-row8-_-icon_baby%27s-first-holiday",
-         cat_name: "Baby's First Holiday"
+         site_cat_id: "91467",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/shoes?id=91467&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forhim_shoes",
+         cat_name: "Shoes"
         },
         {
-         site_cat_id: "84750",
-         url: "http://www1.macys.com/shop/shoes/menswear?id=84750&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_mensware-inspired",
-         cat_name: "Mensware Inspired"
-        }
+         site_cat_id: "91548",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/coffee-tea-espresso?id=91548&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_coffeeteaespresso",
+         cat_name: "Coffee, Tea & Espresso"
+        },
+        {
+         site_cat_id: "91551",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/gift-sets?id=91551&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_giftsets",
+         cat_name: "Gift Sets"
+        },
+        {
+         site_cat_id: "91546",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/gourmet-food?id=91546&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_gourmetfood",
+         cat_name: "Gourmet Food"
+        },
+        {
+         site_cat_id: "91549",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/healthy-living?id=91549&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_healthyliving",
+         cat_name: "Healthy Living"
+        },
+        {
+         site_cat_id: "91547",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/luxury-gifts?id=91547&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_luxurygifts",
+         cat_name: "Luxury Gifts"
+        },
+        {
+         site_cat_id: "91589",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/bath-body-candles?id=91589&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_beauty_bathbodycandles",
+         cat_name: "Bath, Body & Candles"
+        },
+        {
+         site_cat_id: "91586",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/cologne-grooming?id=91586&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_beauty_colognegrooming",
+         cat_name: "Cologne & Grooming"
+        },
+        {
+         site_cat_id: "91564",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/coats-accessories?id=91564&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forkids_coatsaccessories",
+         cat_name: "Coats & Accessories"
+        },
+        {
+         site_cat_id: "91561",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/shoes?id=91561&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forkids_shoesaccessories",
+         cat_name: "Shoes"
+        },
+        {
+         site_cat_id: "91577",
+         url: "http://www1.macys.com/shop/holiday-gift-guide/beauty-cologne?id=91577&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forteens_juniorsguysbeautycologne",
+         cat_name: "Beauty & Cologne"
+        },
+        {
+         site_cat_id: "30668",
+         url: "http://www1.macys.com/shop/gift-cards/all-occasions/Pageindex,Productsperpage/1,40?id=30668",
+         cat_name: "All Occasions"
+        },
       ]
-      
+
       load_existing_products
 
       h.each do |cat|
-        scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
+        #scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
 
         scrape_products_per_subcat(cat[:site_cat_id], cat[:url])
       end
@@ -2124,9 +2212,9 @@ class Scrapper
             ppd.color_name = color_name
             ppd.color_image = color_img_map[color_name]
             ppd.product_image = product_img_map[color_name]
-            
+            ppd.product_id = product.id
+
             if update_db
-              ppd.product_id = product.id
               ppd.save
             else
               add_product_price_details_to_file(ppd)
@@ -2141,9 +2229,9 @@ class Scrapper
           ppd.color_name = color_name
           ppd.color_image = color_img
           ppd.product_image = product_img_map[color_name]
-            
+          ppd.product_id = product.id
+
           if update_db
-            ppd.product_id = product.id
             ppd.save
           else
             add_product_price_details_to_file(ppd)
