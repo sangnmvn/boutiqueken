@@ -914,9 +914,9 @@ class Scrapper
       #load_existing_products
 
       h.each do |cat|
-        cat = Category.where(site_cat_id: cat[:site_cat_id]).first
+        cat1 = Category.where(site_cat_id: cat[:site_cat_id]).first
 
-        scrape_left_nav_details(cat, cat[:url])
+        scrape_left_nav_details(cat1, cat[:url])
         scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
 
         #scrape_products_per_subcat(cat[:site_cat_id], cat[:url])
