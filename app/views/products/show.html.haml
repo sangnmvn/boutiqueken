@@ -48,7 +48,7 @@
                 -@product.product_details.order("product_image asc").each_with_index do |i,index|
                   %li{"data-color" => i.color_name}
                     %a.color-picking.tt{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,class: index==0 ? 'active' : '', "data-detail-id": i.id}
-                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+                      %img.img-responsive{:alt => @product.short_desc, :src => show_image_url(i.color_image)}/
             -else
               %ul.coloring-ul
                 -group_price = 0
@@ -64,7 +64,7 @@
                     .seper-small
                   %li{"data-color" => i.color_name}
                     %a.color-picking.price-color{"data-price" => "#{i.price}",:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
-                      %img.img-responsive{:alt => "", :src => show_image_url(i.color_image)}/
+                      %img.img-responsive{:alt => @product.short_desc, :src => show_image_url(i.color_image)}/
               .seper-small
               
           -if @product.list_sizes.present?
@@ -161,9 +161,9 @@
                     %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
                     -is_need_main = false
                 -if is_need_main == true
-                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+                  %img.img-responsive.has-color.active{:alt => child.short_desc, "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
               -else
-                %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
+                %img.img-responsive.has-color.active{:alt => child.short_desc, "data-img" => "p-1", :src => show_image_url(child.main_image_url)}/
             .product-details-info.right-content-side
               .row
                 .col-md-12.col-sm-12.col-xs-12
@@ -179,7 +179,7 @@
                       -child.product_details.order("product_image asc").each_with_index do |detail,index|
                         %li.color-picking{"data-color" => "Black", "data-img" => "p-#{index}" ,class: index==0 ? 'active' : '',"data-detail-id": detail.id}
                           %a{:href => "javascript:;"}
-                            %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                            %img.img-responsive{:alt => child.short_desc, :src => show_image_url(detail.color_image)}/
                 .col-md-12.col-sm-12.col-xs-12
                   -if child.macys_sale_price.present? && child.macys_sale_price > 0
                     %span.del-price

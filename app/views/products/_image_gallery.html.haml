@@ -19,14 +19,14 @@
           -class_t = 'active' if list_addtion_images.count ==0
           -if index ==0
             %a.elevatezoom-gallery.product-thumb-image.width-25{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#",class: class_t}
-              %img{:src => show_image_50_50(i.product_image)}/
+              %img{:src => show_image_50_50(i.product_image),alt: @product.short_desc}/
           -else 
             %a.elevatezoom-gallery.product-thumb-image.width-25.hide{"color-name" =>i.color_name, "data-image" => show_image_product_detail(i.product_image), "data-update" => "", "data-zoom-image" => show_large_image_url(i.product_image), :href => "#"}
-              %img{:src => show_image_50_50(i.product_image)}/
+              %img{:src => show_image_50_50(i.product_image),alt: @product.short_desc}/
 
       -list_addtion_images.each_with_index do |i,index|
         %a.elevatezoom-gallery.width-25{"data-image" => show_image_product_detail(i), "data-update" => "", "data-zoom-image" => show_large_image_url(i), :href => "#", class: index==0 ? "active" : ""}
-          %img{:src => show_image_50_50(i)}/
+          %img{:src => show_image_50_50(i),alt: @product.short_desc}/
         
 
   .zoom-left
@@ -37,5 +37,5 @@
       -else
         -url = @product.product_details.order("price asc,product_image asc").first.product_image
     -url = @product.main_image_url if url.blank?
-    %img#zoom_03{"data-zoom-image" => show_large_image_url(url), :src => show_image_in_detail(url), :style => "border:1px solid #e8e8e6;", :width => "400"}/
+    %img#zoom_03{"data-zoom-image" => show_large_image_url(url), :src => show_image_in_detail(url), :style => "border:1px solid #e8e8e6;", :width => "400",alt: @product.short_desc}/
     
