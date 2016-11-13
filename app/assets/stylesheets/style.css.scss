@@ -4196,3 +4196,143 @@ input[type=number]::-webkit-outer-spin-button {
 .white{
   color: white;
 }
+
+.home-left-menu{
+  h1{
+    font-size: 14px;
+    margin-top: 8.5px;
+    margin-bottom: 8.5px;
+    width: 11rem;
+  }
+  .catagory-item-ul{
+    h2{
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0px;
+      display: inline-block;
+    }
+  }
+  
+}
+
+.footer-top-inner{
+  h2{
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0px;
+  }
+  h3{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0px;
+    text-decoration: underline;
+  }
+}
+
+.footer-bottom-inner{
+  h2{
+    font-size: 2rem;
+    font-weight: 400;
+    padding-bottom: 0.5rem;
+    display: block;
+    margin: 0px;
+    text-align: left;
+  }
+}
+
+.left-cate{
+  h1{
+    font-weight: 600;
+    font-size: 1.6rem;
+    margin: 0;
+    margin-bottom: 1rem
+  }
+  h2{
+    display: block;
+    padding: 1rem 0 0.6rem;
+    cursor: pointer;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    line-height: 17px;
+    span{
+      float: right;
+    }
+  }
+
+  h3{
+    display: block;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 0.6rem;
+    font-size: 12px;
+    line-height: 17px;
+  }
+}
+.featured-items{
+  h4{
+    font-size: 12px;
+    line-height: 17px;
+    text-align: center;
+    display: block;
+    margin-bottom: 8.5px;
+    font-weight: normal;
+  }
+}
+
+#filters{
+  h2{
+    display: block;
+    padding: 1rem 0 0.6rem;
+    cursor: pointer;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    line-height: 17px;
+    span{
+      float: right;
+    }
+  }
+
+  label{
+    h3{
+      font-size: 12px;
+      margin: 0px;
+      font-weight: normal;
+      display: inline-block;
+    }
+  }
+}
+.collection-list{
+  img{
+    border-bottom: 1px solid transparent;
+  }
+}
+.section-products-details-2-area{
+  .details-2-price{
+    font-weight: normal;
+    font-size: 13px;
+  }
+}
+
+.p-details-2-last{
+  h3{
+    font-size: 12px;
+    line-height: 17px;
+    margin: 0px;
+  }
+  .ch-3{
+    .rote-me{
+      margin-top: -15px;
+    }
+  }
+}
+.rl-h1{
+      color: #000;
+    font-size: 2.8rem;
+    font-weight: 300;
+    margin-bottom: 1.4rem;
+    margin-top: 0;
+    padding-bottom: 0.7rem;
+}

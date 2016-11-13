@@ -1,9 +1,9 @@
 %aside.left-cate
-  %h2
+  %h1
     =@category.cat_name.upcase
   -if @category.cat_name.upcase == "BRANDS"
     .single-product-cat
-      %strong.trigger
+      %h2.trigger
         =@left_navs.first.cat_name
         %span
           %i.fa.fa-chevron-down
@@ -12,10 +12,12 @@
           -if index !=0
             -cat = Category.find(i.category_id)
             %li
-              %a{:href => category_path(f_id(cat))}=i.cat_name
+              %a{:href => category_path(f_id(cat))}
+                %h3
+                  =i.cat_name
   -elsif @left_navs.present? &&  @left_navs.first.group_name.blank?
     .single-product-cat
-      %strong.trigger
+      %h2.trigger
         =@left_navs.first.cat_name
         %span
           %i.fa.fa-chevron-down
@@ -24,14 +26,16 @@
           -if index !=0
             -cat = Category.find(i.category_id)
             %li
-              %a{:href => category_path(f_id(cat))}=i.cat_name
+              %a{:href => category_path(f_id(cat))}
+                %h3
+                  =i.cat_name
   -else
     -group_name = ""
     - main_subs = @left_navs.group_by(&:group_name)
     -main_subs.keys.each do |key|
       -if key.present?
         .single-product-cat
-          %strong.trigger
+          %h2.trigger
             =key.upcase
             %span
               %i.fa.fa-chevron-down
@@ -39,5 +43,6 @@
             -main_subs[key].each do |i|
               -cat = Category.find(i.category_id)
               %li
-                %a{:href => category_path(f_id(cat))}=i.cat_name
+                %a{:href => category_path(f_id(cat))}
+                  %h3=i.cat_name
       

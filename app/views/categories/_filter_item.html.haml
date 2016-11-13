@@ -13,13 +13,14 @@
 -elsif group_name.downcase == "brand"
   %input.brand-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
   %label{:for =>id}
-    =i["name"]
+    %h3
+      =i["name"]
     
 
 -elsif group_name.downcase.gsub(" ","") == "price" || group_name.downcase.gsub(" ","") == "price"
   %input.price-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
   %label{:for =>id}
-    =i["name"]
+    %h3=i["name"]
 -else
   -value = i["value"]
   -if field_name.include?("SIZE") && value.split(",").count>1
@@ -27,7 +28,7 @@
 
   %input.filter-item{:type=>"checkbox",name: "filter",value: value,id: id, "data-filter" =>file_filter,"filter-field" =>field_name}
   %label{:for =>id}
-    =i["name"]
+    %h3=i["name"]
 / -elsif group_name.downcase.gsub(" ","") == "bed size" || group_name.downcase.gsub(" ","") == "size"
 /   %input.size-filter{:type=>"checkbox",name: "filter",value: i["value"],id: id, "data-filter" =>file_filter}
 /   %label{:for =>id}

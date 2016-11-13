@@ -10,7 +10,7 @@
             %a{:href => category_path(f_id(i))}
               %img{:alt => "product", :src => i.image_url}/
             %a{:href => category_path(i)}
-              %p=i.category.cat_name
+              %h4=i.category.cat_name
         .clear-fix
       / popup single item ends
     / .designer-popup-items ends
@@ -27,12 +27,12 @@
               %a{:href => category_path(f_id(cat))}
                 %img.img-responsive{:alt => "", :src => i.image_url}/
               %a{:href => category_path(f_id(cat))}
-                %p=i.try(:cat_name)
+                %h4=i.try(:cat_name)
             -else
               %a{:href => category_path(i.category_id)}
                 %img.img-responsive{:alt => "", :src => i.image_url}/
               %a{:href => category_path(i.category_id)}
-                %p=i.try(:cat_name)
+                %h4=i.try(:cat_name)
       / featured item ends
     / featured-items ends
   / featured-categories-div starts

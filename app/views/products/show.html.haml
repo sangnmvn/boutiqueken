@@ -14,7 +14,7 @@
         .p-details-2-top
           %h1=@product.brand_name
           %h1=@product.short_desc
-          %p.details-2-price
+          %h2.details-2-price
             -if @product.macys_sale_price.present?
               %span.del-price
                 %strong Was
@@ -90,8 +90,8 @@
         / PRODUCT DETAILS 2 LAST STARTS
         .p-details-2-last
           %dl
-            %dt
-              Details
+            %dt.ch-3
+              %h3 Details
               %i.fa.fa-plus.pull-right.rote-me{"aria-hidden" => "true"}
             %dd
               =@product.long_desc
@@ -209,7 +209,7 @@
 
     .customers-recent-view.recent-view
       -if @product_loved.present?
-        %h1 Customers Who Viewed This Item Also Viewed
+        %h2.rl-h1 Customers Who Viewed This Item Also Viewed
         .recent-view-all-item
           / RECENT VIEW SINGLE ITEM
           -@product_loved.each do |product|
@@ -236,7 +236,7 @@
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
     .recent-view.custom-recent-view.hide
-      %h1
+      %h2.rl-h1
         Recent Views
       .recent-view-all-item
         .item
