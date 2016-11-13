@@ -1,5 +1,6 @@
 class AdminController < ApplicationController
-  before_filter :admin_logged?, only: [:index,:scrapper,:delete_user, :interact_with_scrapper, :user_mgmt, :create_user, :edit_user, :save_user, :my_profile]
+  before_filter :authenticate_user!
+  before_filter :admin_logged?
   layout "admin"
 
   def index
@@ -16,8 +17,8 @@ class AdminController < ApplicationController
   end
   
   def logout
-    cookies.clear
-    session.clear
+    cookies.delete(:admin_id)
+    session.delete(:admin_id)
     redirect_to action: :login
   end
   
@@ -45,7 +46,7 @@ class AdminController < ApplicationController
   end
   
   def my_profile
-    @user = User.find(session[:admin_id])
+    @user = User.find(current_user.id)
   end
   
   def delete_user

@@ -12,6 +12,7 @@
     <link rel="icon" type="image/png" href="assets/img/favicon-32x32.png" sizes="32x32">
 
     <title>Admin</title>
+    <%= csrf_meta_tag %>
 
     <%= stylesheet_link_tag 'admin' %>
     <script>
@@ -108,10 +109,7 @@
                     </a>
                 </li>
                 <li title="Log Out">
-                    <a href="/admin/logout">
-                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
-                        <span class="menu_title">Log Out</span>
-                    </a>
+                    <%= link_to %{<span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span><span class="menu_title">Log Out</span>}.html_safe, destroy_user_session_path,method: :delete %>
                 </li>
             </ul>
         </div>

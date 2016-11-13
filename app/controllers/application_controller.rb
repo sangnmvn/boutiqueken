@@ -43,7 +43,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    session[:previous_url] || profile_user_path(resource.id)
+    if (resource && resource.is_admin)
+      session[:previous_url] = "/admin/index"
+    else
+      session[:previous_url] || profile_user_path(resource.id)
+    end
   end
   
   def store_current_location
@@ -86,8 +90,8 @@ class ApplicationController < ActionController::Base
   end
   
   def admin_logged?
-    if !(session[:admin_id] ||= cookies.signed[:admin_id])
-      redirect_to action: :login 
+    if !(current_user && current_user.is_admin==true)
+      redirect_to root_path
     end
   end
 
