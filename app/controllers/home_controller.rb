@@ -2,9 +2,17 @@ class HomeController < ApplicationController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
 
-  layout "static_layout",only: [:contact_us,:about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use]
-  layout "devise",only: [:country_chooser]
+  layout :detemine_layout
   protect_from_forgery with: :exception
+  def detemine_layout
+    if [:contact_us,:about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use].include?(params[:action].to_sym)
+      "static_layout"
+    elsif [:country_chooser].include?(params[:action].to_sym)
+      "devise"
+    else
+      "application"
+    end
+  end
   def index
     # redirect_to new_user_session_path
   end
