@@ -775,7 +775,7 @@ class Scrapper
 
   def fix_scrape_filters_for_featured_categories
     begin
-      @current_cat_name = "FIX_DATA1"
+      @current_cat_name = "FIX_DATA2"
 
       # h = [
       #   {
@@ -903,27 +903,37 @@ class Scrapper
       #   },
       # ]
 
-      h = [
-        {
-         site_cat_id: "1405",
-         url: "http://www1.macys.com/shop/gift-cards?id=1405&edge=hybrid&cm_sp=us_hdr-_-gifts-_-1405_gift-cards_COL3",
-         cat_name: "Gift Cards"
-        }
-      ]
+      # h = [
+      #   {
+      #    site_cat_id: "1405",
+      #    url: "http://www1.macys.com/shop/gift-cards?id=1405&edge=hybrid&cm_sp=us_hdr-_-gifts-_-1405_gift-cards_COL3",
+      #    cat_name: "Gift Cards"
+      #   }
+      # ]
 
       #load_existing_products
 
-      h.each do |cat|
-        cat1 = Category.where(site_cat_id: cat[:site_cat_id]).first
+      h = [
+        {
+         site_cat_id: "28067",
+         url: "http://www1.macys.com/shop/jewelry-watches/watch-sale?id=28067&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-watches-watches-_-row5-_-icon_sale-watches",
+         cat_name: "Sale Watches"
+        }
+      ]
 
-        scrape_left_nav_details(cat1, cat[:url])
+      reset_tmp_tables
+
+      h.each do |cat|
+        #cat1 = Category.where(site_cat_id: cat[:site_cat_id]).first
+
+        #scrape_left_nav_details(cat1, cat[:url])
         scrape_filters_for_subcat(cat[:site_cat_id], cat[:url], cat[:cat_name], nil)
 
-        #scrape_products_per_subcat(cat[:site_cat_id], cat[:url])
+        scrape_products_per_subcat(cat[:site_cat_id], cat[:url])
       end
 
-      # import_crawled_products_to_db(@start_date, @current_cat_name, @current_batch)
-      # import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
+      import_crawled_products_to_db(@start_date, @current_cat_name, @current_batch)
+      import_product_price_details_to_db(@start_date, @current_cat_name, @ppd_current_batch)
 
     rescue Exception => e
       @logger.error(e.message)
