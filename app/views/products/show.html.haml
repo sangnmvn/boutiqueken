@@ -13,7 +13,7 @@
         / PRODUCT DETAILS 2 TOP STARTS
         .p-details-2-top
           %h1=@product.brand_name
-          %p=@product.short_desc
+          %h1=@product.short_desc
           %p.details-2-price
             -if @product.macys_sale_price.present?
               %span.del-price

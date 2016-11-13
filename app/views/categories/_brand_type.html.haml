@@ -1,4 +1,4 @@
-%section.section-apparal-area
+%section.section-apparal-area.brand-type-page
   .container
     .apparal-body
       %h2.sr-only Main Apparal Area
@@ -26,14 +26,14 @@
             %ul.letter-order-list
               -('A'..'Z').to_a.each do |i|
                 %li{class: available_group.include?(i) ? "" : "unavailable"}
-                  %a{:href => "#"}=i
+                  %a.group-letter{:href => "javascript:;","data-id" =>"letter_#{i}"}=i
               %li
-                %a{:href => "#"} #
+                %a.group-letter{:href => "javascript:;","data-id" =>"letter_#"} #
           / .letter-order ends
           .all-letter-ordered-items
             / SINGLE LETTER ORDER starts
             -available_group.each do |i|
-              .single-letter-order-item
+              .single-letter-order-item{:class=>"letter_#{i}"}
                 .letter
                   %strong=i
                 .letter-list

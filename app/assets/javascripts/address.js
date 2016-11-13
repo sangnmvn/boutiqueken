@@ -18,6 +18,18 @@ var CountryChooser ={
   }
 }
 
+var BrandType ={
+  init: function(selector){
+    if($(selector).length >0){
+      $(".group-letter").on("click",function(){
+        victim = $(this).attr("data-id");
+        $('html,body').animate({
+            scrollTop: $("." + victim).offset().top},
+            'slow');
+      });
+    }
+  }
+}
 
 var Address = {
   init: function(selector){
@@ -40,7 +52,7 @@ $(function(){
   ViewProduct.render();
   Product.init(".image-product-detail");
   Billing.init(".section-billing");
-
+  BrandType.init(".brand-type-page");
   $(".a-to-bag").on("click",function(){
     selected_detail_id = $(this).closest(".product-panel").find(".color-picking.active").attr("data-detail-id");
     selected_size = $(this).closest(".product-panel").find(".size-picking.active").attr("data-value");
