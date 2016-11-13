@@ -102,6 +102,13 @@
                         <span class="menu_title">User Management</span>
                     </a>
                 </li>
+                <li <%=admin_current_section?(:order_mgmt)%> title="Orders Management">
+                    <a href="/admin/order_mgmt">
+                        <span class="menu_icon"><i class="material-icons">&#xE53E;</i></span>
+                        <span class="menu_title">Orders Management</span>
+                    </a>
+                </li>
+
                 <li <%=admin_current_section?(:my_profile)%> title="My Profile">
                     <a href="/admin/my_profile">
                         <span class="menu_icon"><i class="material-icons">&#xE87C;</i></span>

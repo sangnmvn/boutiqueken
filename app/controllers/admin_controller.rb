@@ -75,7 +75,14 @@ class AdminController < ApplicationController
     @users = User.where(is_admin: false).paginate(page: @current_page, per_page: @per_page).order('updated_at DESC')
   end
 
+  def order_mgmt
+    @current_page = [1,params[:page].to_i].max
+    @per_page = 20
+    @orders = Order.where("status >= 1").paginate(page: @current_page, per_page: @per_page).order('updated_at DESC')
+  end
+
   def create_user
+
   end
   
   def edit_user
