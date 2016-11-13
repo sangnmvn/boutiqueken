@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   root 'home#index'
   get "home/subregions"
 
+  get "/contact-us" => "home#contact_us"
   get "/about-us" =>"home#about_us"
   get "/faq" => "home#faq"
   get "/domestic-shipping-and-return" =>"home#domestic_shipping_return"
@@ -21,6 +22,7 @@ Rails.application.routes.draw do
   get "/term-of-use" =>"home#term_of_use"
   get "/country-choser" =>"home#country_chooser"
   get "/update-country" =>"home#update_country"
+  post "/contact-us" =>"home#submit_contact"
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
   # Example of regular route:
