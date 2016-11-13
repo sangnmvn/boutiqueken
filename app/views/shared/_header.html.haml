@@ -1,6 +1,15 @@
 %header.header-area
   .header-top
     .container
+      %ul.ul-top-navigation.ul-top-navigation-desktop.hidden-xs.pull-left
+        %li
+          -if @country_code == "US"
+            %a.white.pull-left{:href =>domestic_shipping_and_return_path}
+              Free Shipping and Free Duties on all Orders
+          -else
+            %a.white.pull-left{:href =>international_shipping_and_return_path}
+              ="Free Shipping and Free Duties on all Orders to #{@country}"
+      
       / DESKTOP TOP LINKS STARTS
       %ul.ul-top-navigation.ul-top-navigation-desktop.hidden-xs.pull-right
         %li
