@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   helper :application
   #default from: "Boutiqueken <boutique-ken@boutiqueken.com>"
-  default from: "Boutiqueken <care@boutiqueken.com>"
+  default from: "Boutiqueken <boutique-ken@boutiqueken.com>"
 
   def welcome(user)
   	@user = user
