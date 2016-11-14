@@ -38,50 +38,52 @@ class Scrapper
   STOP = "stop"
   RUN = "run"
 
-  MAX_SLEEP_TIME = 60.seconds
+  MAX_SLEEP_TIME = 10.seconds
 
   def initialize(logger=Rails.logger, task_id=nil)
-    @task_id = task_id
+    begin
+      @task_id = task_id
 
-    puts "@task_id: #{@task_id}"
+      @logger = logger
 
-    @logger = logger
+      @root_url = 'https://www.macys.com/'
 
-    @root_url = 'https://www.macys.com/'
+      @agent = Mechanize.new
 
-    @agent = Mechanize.new
+      set_cookies(@agent)
 
-    set_cookies(@agent)
+      @number_of_threads = 10
 
-    @number_of_threads = 10
+      @mutex = Mutex.new
+      @check_existing_product_mutex = Mutex.new
 
-    @mutex = Mutex.new
-    @check_existing_product_mutex = Mutex.new
+      @current_batch = 0
+      @number_of_products = 0
+      @current_file = nil
 
-    @current_batch = 0
-    @number_of_products = 0
-    @current_file = nil
+      @ppd_mutex = Mutex.new
+      @ppd_current_batch = 0
+      @ppd_number_of_products = 0
+      @ppd_current_file = nil
 
-    @ppd_mutex = Mutex.new
-    @ppd_current_batch = 0
-    @ppd_number_of_products = 0
-    @ppd_current_file = nil
+      @start_date = Time.now.strftime("%Y%m%d")
+      FileUtils.mkdir_p("./tmp/#{@start_date}")
+      @current_cat_name = ""
 
-    @start_date = Time.now.strftime("%Y%m%d")
-    FileUtils.mkdir_p("./tmp/#{@start_date}")
-    @current_cat_name = ""
+      @scrapped_site_cat_ids = {}
+      @existing_products = {}
 
-    @scrapped_site_cat_ids = {}
-    @existing_products = {}
+      @scrapped_products = {}
 
-    @scrapped_products = {}
+      # stop / pause / run
+      @request_from_admin = RUN
 
-    # stop / pause / run
-    @request_from_admin = RUN
-
-    @is_full_scrapping = true
-    @existing_urls = {}
-
+      @is_full_scrapping = true
+      @existing_urls = {}
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.join("\n")
+    end
   end
 
   def load_existing_products
@@ -777,141 +779,7 @@ class Scrapper
     begin
       @current_cat_name = "FIX_DATA2"
 
-      # h = [
-      #   {
-      #    site_cat_id: "2905",
-      #    url: "http://www1.macys.com/shop/jewelry-watches/pearls?id=2905&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_pearls",
-      #    cat_name: "Pearls"
-      #   },
-      #   {
-      #    site_cat_id: "21997",
-      #    url: "http://www1.macys.com/shop/jewelry-watches/silver-jewelry?id=21997&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_silver-jewelry",
-      #    cat_name: "Silver Jewelry"
-      #   },
-      #   {
-      #    site_cat_id: "2904",
-      #    url: "http://www1.macys.com/shop/jewelry-watches/gold-jewelry?id=2904&edge=hybrid&cm_sp=c2_1111US_catsplash_jewelry-%26-watches-_-row7-_-icon_gold-jewelry",
-      #    cat_name: "Gold Jewelry"
-      #   },
-      #   {
-      #    site_cat_id: "7575",
-      #    url: "http://www1.macys.com/shop/kitchen/toaster-oven?id=7575&edge=hybrid&cm_sp=c2_1111US_catsplash_kitchen-_-row6-_-icon_toasters-and-toaster-ovens",
-      #    cat_name: "Toasters & Toaster Ovens"
-      #   },
-      #   {
-      #    site_cat_id: "84749",
-      #    url: "http://www1.macys.com/shop/shoes/block-heel?id=84749&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_block-heel",
-      #    cat_name: "Block Heel"
-      #   },
-      #   {
-      #    site_cat_id: "72690",
-      #    url: "http://www1.macys.com/shop/kids-clothes/baby-holiday-outfits?id=72690&edge=hybrid&cm_sp=c2_1111US_catsplash_kids-%26-baby-_-row8-_-icon_baby%27s-first-holiday",
-      #    cat_name: "Baby's First Holiday"
-      #   },
-      #   {
-      #    site_cat_id: "84750",
-      #    url: "http://www1.macys.com/shop/shoes/menswear?id=84750&edge=hybrid&cm_sp=c2_1111US_catsplash_shoes-_-row8-_-icon_mensware-inspired",
-      #    cat_name: "Mensware Inspired"
-      #   }
-      # ]
-      
-      # h = [
-      #   {
-      #    site_cat_id: "108842",
-      #    url: "http://www1.macys.com/shop/junior-clothing/pokemon?id=108842&edge=hybrid",
-      #    cat_name: "Pokemon"
-      #   },
-      #   {
-      #    site_cat_id: "109943",
-      #    url: "http://www1.macys.com/shop/for-the-home/elf-on-the-shelf/Pageindex,Productsperpage/1,40?id=109943",
-      #    cat_name: "Elf on the Shelf"
-      #   },
-      #   {
-      #    site_cat_id: "65931",
-      #    url: "http://www1.macys.com/shop/womens-clothing/petite-pajamas-robes?id=65931&edge=hybrid",
-      #    cat_name: "Pajamas & Robes"
-      #   },
-      #   {
-      #    site_cat_id: "91603",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/whimsical-shop?id=91603&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_holidaygiftguide_whimsicalshop",
-      #    cat_name: "Whimsical Shop"
-      #   },
-      #   {
-      #    site_cat_id: "91457",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/luxe-gifts?id=91457&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forher_luxegifts",
-      #    cat_name: "Luxe Gifts"
-      #   },
-      #   {
-      #    site_cat_id: "91467",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/shoes?id=91467&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forhim_shoes",
-      #    cat_name: "Shoes"
-      #   },
-      #   {
-      #    site_cat_id: "91548",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/coffee-tea-espresso?id=91548&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_coffeeteaespresso",
-      #    cat_name: "Coffee, Tea & Espresso"
-      #   },
-      #   {
-      #    site_cat_id: "91551",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/gift-sets?id=91551&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_giftsets",
-      #    cat_name: "Gift Sets"
-      #   },
-      #   {
-      #    site_cat_id: "91546",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/gourmet-food?id=91546&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_gourmetfood",
-      #    cat_name: "Gourmet Food"
-      #   },
-      #   {
-      #    site_cat_id: "91549",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/healthy-living?id=91549&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_healthyliving",
-      #    cat_name: "Healthy Living"
-      #   },
-      #   {
-      #    site_cat_id: "91547",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/luxury-gifts?id=91547&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forthehome_luxurygifts",
-      #    cat_name: "Luxury Gifts"
-      #   },
-      #   {
-      #    site_cat_id: "91589",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/bath-body-candles?id=91589&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_beauty_bathbodycandles",
-      #    cat_name: "Bath, Body & Candles"
-      #   },
-      #   {
-      #    site_cat_id: "91586",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/cologne-grooming?id=91586&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_beauty_colognegrooming",
-      #    cat_name: "Cologne & Grooming"
-      #   },
-      #   {
-      #    site_cat_id: "91564",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/coats-accessories?id=91564&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forkids_coatsaccessories",
-      #    cat_name: "Coats & Accessories"
-      #   },
-      #   {
-      #    site_cat_id: "91561",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/shoes?id=91561&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forkids_shoesaccessories",
-      #    cat_name: "Shoes"
-      #   },
-      #   {
-      #    site_cat_id: "91577",
-      #    url: "http://www1.macys.com/shop/holiday-gift-guide/beauty-cologne?id=91577&cm_sp=imp-_-holidaygiftguide-_-lhncatnav_forteens_juniorsguysbeautycologne",
-      #    cat_name: "Beauty & Cologne"
-      #   },
-      #   {
-      #    site_cat_id: "30668",
-      #    url: "http://www1.macys.com/shop/gift-cards/all-occasions/Pageindex,Productsperpage/1,40?id=30668",
-      #    cat_name: "All Occasions"
-      #   },
-      # ]
-
-      # h = [
-      #   {
-      #    site_cat_id: "1405",
-      #    url: "http://www1.macys.com/shop/gift-cards?id=1405&edge=hybrid&cm_sp=us_hdr-_-gifts-_-1405_gift-cards_COL3",
-      #    cat_name: "Gift Cards"
-      #   }
-      # ]
-
-      #load_existing_products
+      load_existing_products
 
       h = [
         {
@@ -1470,10 +1338,12 @@ class Scrapper
     end
   end
 
-  def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=1)
+  def scrape_products(scrape_cat_name=nil, update_db=false, number_of_threads=1)
     begin
 
       @number_of_threads = number_of_threads
+
+      puts "[BEGIN] Scrapping products by #{@number_of_threads} threads"
 
       @logger.info "[BEGIN] Scrapping products by #{@number_of_threads} threads"
 
@@ -1821,6 +1691,8 @@ class Scrapper
         thread_count = 0
 
         products.each do |product_m|
+          product = product_m.clone
+          
           total_product_t = total_product
           
           tmp_product_id = product.attributes["id"].text
@@ -1831,7 +1703,6 @@ class Scrapper
           begin
             @check_existing_product_mutex.lock
             
-            product = product_m.clone
 
             unless @scrapped_products[key].present?
               threads[thread_count] = Thread.new {
@@ -2381,7 +2252,7 @@ class Scrapper
 
   def set_cookies(agent)
     if Rails.env.development?
-      #agent.agent.set_socks('localhost', 8123)
+      agent.agent.set_socks('localhost', 8123)
     end
 
     cookie = Mechanize::Cookie.new("shippingCountry", "US")

@@ -44,11 +44,15 @@ class ScrapperWorker
         task.status = "in-progress"
         task.save
 
-        Scrapper.new(Delayed::Worker.logger, task.id).delay.scrape_products
+        ScrapperWorker.delay.invoke_scrapper(task.id)
       end
     rescue Exception => e
       logger.error "Message: #{e.message}"
       logger.error "Backtrace: #{e.backtrace.join("\n")}"
     end
+  end
+
+  def self.invoke_scrapper(task_id)
+    Scrapper.new(Delayed::Worker.logger, task_id).scrape_products
   end
 end

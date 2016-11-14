@@ -64,6 +64,8 @@ class AdminController < ApplicationController
 
     action = run || pause || stop
 
+    action = "stop" if action.nil?
+
     ::ScrapperWorker.interact_with_scrapper(action)
 
     redirect_to :action => 'scrapper'
