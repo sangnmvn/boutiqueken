@@ -281,6 +281,15 @@ var ViewProduct ={
 
     Cookies.set("product-views",list_views);
   },
+  cal_with_rate: function(price){
+    if(txt_currency !="USD"){
+      cal_price = price * rate_exchange;  
+    }else{
+      cal_price = price;
+    }
+    
+    return cal_price;
+  },
   render: function(){
     saved_cookies = Cookies.get("product-views");
     if(saved_cookies !=""){
@@ -301,13 +310,13 @@ var ViewProduct ={
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
         if(macys_sale_price !=""){
-          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. $" + macys_sale_price + "</strong>").appendTo(div_single);
+          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. "+ txt_currency + " $" + macys_sale_price + "</strong>").appendTo(div_single);
         }
         if(sale_price !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. $" + sale_price + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $" + sale_price + "</strong>").appendTo(div_single);
         }
         else if(price_range !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
         }
         else{
           $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
@@ -356,7 +365,7 @@ var ViewProduct ={
     if(price == null){
       return "";
     }else{
-      return Number(price).toFixed();
+      return ViewProduct.cal_with_rate(Number(price)).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
     }
   }
 }
