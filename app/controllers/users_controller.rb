@@ -4,25 +4,37 @@ class UsersController < ApplicationController
   protect_from_forgery with: :exception
   layout "devise"
   before_filter :get_user, :only =>[:profile,:update,:dashboard]
-  # before_filter :authenticate_user!
+  before_filter :authenticate_user!
   def index
     # redirect_to new_user_session_path
   end
-  
+
   def update
     user = current_user
-
-    if user.valid_password?(params[:user][:current_password])
-      if user.update_attributes(user_params)
-        sign_in user, :bypass => true
-        flash[:notice] = "Your Password is updated successfully!"
-        redirect_to profile_user_path(current_user)
+    if params[params[:user][:current_password].present?]
+      if user.valid_password?(params[:user][:current_password])
+        if user.update_attributes(user_params)
+          sign_in user, :bypass => true
+          flash[:notice] = "Your Password is updated successfully!"
+          redirect_to profile_user_path(current_user)
+        else
+          flash[:error] = user.errors.full_messages.first.html_safe
+        end
       else
-        flash[:error] = user.errors.full_messages.first.html_safe
+        flash[:error] = "Your entered Current Password is incorrect."
+        redirect_to profile_user_path
       end
     else
-      flash[:error] = "Your entered Current Password is incorrect."
-      redirect_to profile_user_path
+      if user.update_attributes(user_params.delete_if{|key,value| (key=="password" || key == "password_confirmation")})
+        sign_in user, :bypass => true
+        flash[:notice] = "Your profile is updated successfully!"
+        redirect_to profile_user_path(current_user)
+      else
+        puts "====WEEE"
+        puts user.errors.inspect
+        flash[:error] = "Can't update your profile."
+        redirect_to profile_user_path
+      end
     end
   end
 

@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 require 'money'
 require 'money/bank/google_currency'
+require 'carmen-iso-4217/version'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
