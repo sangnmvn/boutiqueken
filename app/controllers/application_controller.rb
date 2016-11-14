@@ -21,14 +21,15 @@ class ApplicationController < ActionController::Base
     @country_code = session[:country_code].present? ? session[:country_code] : request.location.country_code
     session[:country_code] = @country_code
 
-    @currency = session[:currency].present? ? session[:currency] : "USD"
-    session[:currency] = @currency.upcase
+    
 
     #@country_code = request.location.country_code
     if @country_code == "RD" || @country_code.blank?
       @country_code = "US" 
     end
     @country = Carmen::Country.coded(@country_code)
+    @currency = session[:currency].present? ? session[:currency] : @country.currency_code
+    session[:currency] = @currency.upcase
     @rate_exchange =  MoneyExchange.get_rate("USD",@currency)
   end
 
