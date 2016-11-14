@@ -24,10 +24,11 @@ class Product < ActiveRecord::Base
     text :shipping_return
     integer :category_id
     string :site_cat_id
+    string :site_product_id
 
-    text :seo_title, :stored => true
-    text :seo_keywords, :stored => true
-    text :seo_desc, :stored => true
+    text :seo_title
+    text :seo_keywords
+    text :seo_desc
 
     boolean :is_child, :stored => true
     

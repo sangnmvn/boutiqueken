@@ -1488,7 +1488,7 @@ class Scrapper
       menu = page.search("#globalMastheadCategoryMenu")
 
       menu_count = menu.search("li").count
-      percentage_per_menu = 100 / menu_count
+      percentage_per_menu = 100 / (menu_count + 1)
       current_percentage = 0
 
       unless scrape_cat_name.nil?
@@ -1565,13 +1565,17 @@ class Scrapper
         end
       end
 
+      return if admin_request == STOP
+
       unless scrape_cat_name.present?
         scrape_additional_brand_products(number_of_threads)
       end
 
+      return if admin_request == STOP
+
       if update_db && admin_request != STOP
-        #update_products_after_import
-        #update_product_price_details_after_import
+        update_products_after_import
+        update_product_price_details_after_import
       end
 
       # stop the monitoring admin action thread
@@ -1816,7 +1820,7 @@ class Scrapper
         threads = []
         thread_count = 0
 
-        products.each do |product|
+        products.each do |product_m|
           total_product_t = total_product
           
           tmp_product_id = product.attributes["id"].text
@@ -1827,6 +1831,8 @@ class Scrapper
           begin
             @check_existing_product_mutex.lock
             
+            product = product_m.clone
+
             unless @scrapped_products[key].present?
               threads[thread_count] = Thread.new {
                 product_id = product.attributes["id"].text
@@ -1834,7 +1840,7 @@ class Scrapper
                 product_url = "#{@root_url}#{product.search("a").first.attributes["href"].text}"
                 @logger.info "#{total_product_t}/#{product_count}/#{current_page} - #{product_url}"
 
-                site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i if site_cat_id == 0
+                site_cat_id = product_url.split("&CategoryID=").last.split("#").first.to_i
                 site_cat_id = product_url.split("&CategoryID=").last.split("&").first.to_i if site_cat_id == 0
 
                 scrape_product_or_product_collection_page(product_id, product_url, total_product_t, site_cat_id)
@@ -2250,7 +2256,8 @@ class Scrapper
           price = price_with_sign.gsub(/\$/,'')
 
           colors.each do |color_name, nothing|
-            ppd = ProductPriceDetail.new
+            ppd = update_db ? TmpProductPriceDetail.new : ProductPriceDetail.new
+
             ppd.site_product_id = product.site_product_id
             ppd.site_cat_id = product.site_cat_id
             ppd.price = calculate_sale_price(price.to_f)
@@ -2268,7 +2275,8 @@ class Scrapper
         end
       else
         color_img_map.each do |color_name, color_img|
-          ppd = ProductPriceDetail.new
+          ppd = update_db ? TmpProductPriceDetail.new : ProductPriceDetail.new
+          
           ppd.site_product_id = product.site_product_id
           ppd.site_cat_id = product.site_cat_id
           ppd.color_name = color_name
@@ -2481,8 +2489,8 @@ class Scrapper
 
       sql =<<-STR 
         INSERT INTO products(#{atts})
-        SELECT #{atts} FROM tmp_products
-        WHERE tmp_products.id = 0;
+        SELECT distinct on (site_cat_id, site_product_id) #{atts} FROM tmp_products
+        WHERE tmp_products.id = 0 and site_cat_id != 0 and site_product_id != 0;
       STR
 
       puts "sql: #{sql.inspect}"
@@ -2510,25 +2518,25 @@ class Scrapper
       Product.connection.execute(sql)
 
       # Delete out-of-date products
-      sql =<<-STR
-        UPDATE tmp_products
-        SET 
-          id = products.id
-        FROM products
-        WHERE tmp_products.site_product_id = products.site_product_id and
-              tmp_products.site_cat_id = products.site_cat_id;
+      # sql =<<-STR
+      #   UPDATE tmp_products
+      #   SET 
+      #     id = products.id
+      #   FROM products
+      #   WHERE tmp_products.site_product_id = products.site_product_id and
+      #         tmp_products.site_cat_id = products.site_cat_id;
 
-        DELETE FROM products
-        WHERE id = any(
-          SELECT id from products
-          EXCEPT
-          SELECT id from tmp_products
-        );
-      STR
+      #   DELETE FROM products
+      #   WHERE id = any(
+      #     SELECT id from products
+      #     EXCEPT
+      #     SELECT id from tmp_products
+      #   );
+      # STR
 
-      if @is_full_scrapping
-        Product.connection.execute(sql)
-      end
+      # if @is_full_scrapping
+      #   Product.connection.execute(sql)
+      # end
 
       @logger.info "Finished updating products in #{Time.now - start}"
     rescue Exception => e
@@ -2556,7 +2564,7 @@ class Scrapper
         );
 
         INSERT INTO product_price_details(#{atts})
-        SELECT #{atts} FROM tmp_product_price_details;
+        SELECT DISTINCT ON (site_product_id, site_cat_id, price, color_name, color_image, product_image) #{atts} FROM tmp_product_price_details;
 
         UPDATE product_price_details p
         SET product_id = c.id
