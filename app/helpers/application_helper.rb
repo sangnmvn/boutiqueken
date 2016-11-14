@@ -260,7 +260,7 @@ module ApplicationHelper
     if status <4
       return map_k[status]
     else
-      raw "<a href='javascript:;' class='track-order-#{order_id}' data-id='#{order_id}' onclick=show_order_dt_table('.track-order-#{order_id}') >Track this order</a>"
+      raw "<a href='javascript:;' class='track-order-#{order_id} t-order' data-id='#{order_id}' onclick=show_order_dt_table('.track-order-#{order_id}') >Track this order</a>"
     end
   end
 
