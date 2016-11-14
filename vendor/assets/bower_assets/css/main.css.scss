@@ -5585,9 +5585,9 @@ label.md-label {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url("../icons/material-design-icons/MaterialIcons-Regular.eot");
+  src: asset_path("icons/material-design-icons/MaterialIcons-Regular.eot");
   /* For IE6-8 */
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url("../icons/material-design-icons/MaterialIcons-Regular.woff2") format('woff2'), url("../icons/material-design-icons/MaterialIcons-Regular.woff") format('woff'), url("../icons/material-design-icons/MaterialIcons-Regular.ttf") format('truetype');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), asset_path("../icons/material-design-icons/MaterialIcons-Regular.woff2") format('woff2'), asset_path("icons/material-design-icons/MaterialIcons-Regular.woff") format('woff'), asset_path("icons/material-design-icons/MaterialIcons-Regular.ttf") format('truetype');
 }
 .material-icons {
   font-family: 'Material Icons';
@@ -9256,7 +9256,7 @@ div.ganttview .ui-resizable-w {
 .tablesorter-altair .tablesorter-processing {
   background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-image: url(assets/img/spinners/spinner.gif) !important;
+  background-image: image-url("img/spinners/spinner.gif") !important;
 }
 .tablesorter-altair caption {
   background-color: #fff;
@@ -9778,13 +9778,13 @@ div.ganttview .ui-resizable-w {
   height: 89px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 20px;
-  background-image: url("../img/sidebar_head_bg.png");
+  background-image: image-url("img/sidebar_head_bg.png");
   background-repeat: no-repeat;
   background-position: -20px -124px;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 192), only screen and (min-resolution: 192dppx), only screen and (min-resolution: 2dppx) {
   #sidebar_main .sidebar_main_header {
-    background-image: url("../img/sidebar_head_bg@2x.png");
+    background-image: image-url("img/sidebar_head_bg@2x.png");
     background-size: 310px 310px;
   }
 }
@@ -10368,14 +10368,14 @@ div.ganttview .ui-resizable-w {
   border: 2px solid #fff;
   display: inline-block;
   background-color: #ededed;
-  background-image: url("../img/avatars/user.png");
+  background-image: image-url("img/avatars/user.png");
   background-repeat: no-repeat;
   background-position: 50% 0;
   vertical-align: top;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2), only screen and (-webkit-min-device-pixel-ratio: 192), only screen and (min-resolution: 192dppx), only screen and (min-resolution: 2dppx) {
   .user_heading_avatar img {
-    background-image: url("../img/avatars/user@2x.png");
+    background-image: image-url("img/avatars/user@2x.png");
     background-size: 64px 64px;
   }
 }
