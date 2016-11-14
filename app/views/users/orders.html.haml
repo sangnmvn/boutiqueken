@@ -51,7 +51,8 @@
                               Shipping Status
                           %div.center-txt
                             %strong
-                              =i.order_comments.last.track_status.to_s + " %" 
+                              /=i.order_comments.last.track_status.to_s + " %" 
+                    
                         %div.right-side
                           %div
                             %div
@@ -62,6 +63,11 @@
                             %div.c-tx=i.shipping_address.city_state
                             / %span.c-city US
                             %div.c-contact=i.phone
+                        .clear-fix
+                        %div#order-status-progress-bar
+                          %div#order-status-bar{:style => "width: #{i.order_comments.last.track_status}%;"} 
+                            %div#order-status-label #{i.order_comments.last.track_status}%
+                        .clear-fix{:style =>"height: 10px;"}       
                         %div.table-comments
                           %table.table.table-bordered
                             %thead
@@ -79,4 +85,11 @@
                                     =order_comment.expected_arrived.strftime("%d %b, %Y")
                                   %td=order_comment.track_status
                                   %td=order_comment.comment
+                           
+
+
+
+                       
+
+
 

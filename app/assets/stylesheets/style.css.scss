@@ -4365,3 +4365,23 @@ input[type=number]::-webkit-outer-spin-button {
 .t-order:hover{
   color: blue;
 }
+
+#order-status-progress-bar {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: grey;
+    border-radius:25px;
+}
+#order-status-bar {
+    position: absolute;
+    width: 10%;
+    height: 100%;
+    background-color: green;
+    border-radius:25px;
+}
+#order-status-label {
+    text-align: center; 
+    line-height: 30px;
+    color: white;
+}
