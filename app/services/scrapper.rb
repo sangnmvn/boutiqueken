@@ -1338,7 +1338,7 @@ class Scrapper
     end
   end
 
-  def scrape_products(scrape_cat_name=nil, update_db=false, number_of_threads=1)
+  def scrape_products(scrape_cat_name=nil, update_db=true, number_of_threads=1)
     begin
 
       @number_of_threads = number_of_threads
@@ -2421,28 +2421,16 @@ class Scrapper
       @logger.info "Begin to update product price details"
       start = Time.now
 
-      # Insert new products
-      atts = ProductPriceDetail.attribute_names.clone
-      atts.delete("id")
-      
-      atts = atts.join(",")
-
+      # Insert new product price details
       sql =<<-STR
-        DELETE FROM product_price_details
-        WHERE (site_product_id, site_cat_id) = any(
-          SELECT (site_product_id, site_cat_id)
-          FROM tmp_product_price_details
-        );
+        INSERT INTO product_price_details(site_product_id, price, color_name, color_image, product_image, site_cat_id)
+        (select distinct site_product_id, price, color_name, color_image, product_image, site_cat_id 
+        from tmp_product_price_details
 
-        INSERT INTO product_price_details(#{atts})
-        SELECT DISTINCT ON (site_product_id, site_cat_id, price, color_name, color_image, product_image) #{atts} FROM tmp_product_price_details;
+        EXCEPT
 
-        UPDATE product_price_details p
-        SET product_id = c.id
-        FROM products c
-        WHERE c.site_product_id = p.site_product_id 
-          and c.site_cat_id = p.site_cat_id 
-          and c.site_cat_id != 0;
+        SELECT site_product_id, price, color_name, color_image, product_image, site_cat_id 
+        FROM product_price_details);
       STR
 
       puts "sql: #{sql.inspect}"
