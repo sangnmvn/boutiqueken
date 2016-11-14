@@ -19,7 +19,7 @@
           %div.left-ct
             %b Expected arrive
           %div.right-ct
-            %input#kUI_datepicker_a{:name =>"order[arrived_date]",:value => "10-06-2015",:required => true}/
+            %input#kUI_datepicker_a{:name =>"order[arrived_date]",:value => Time.now.strftime("%d-%m-%Y"),:required => true}/
           .clear-fix
           %div.left-ct
             %b Tracking %
