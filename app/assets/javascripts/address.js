@@ -500,3 +500,14 @@ var Billing ={
     }
   }
 }
+
+function show_order_dt_table(link_a){
+  id = $(link_a).attr("data-id");
+  table_id =  '.dt_' + id;
+  if($(table_id).hasClass("hide")){
+    $(table_id).removeClass("hide");  
+  }else{
+    $(table_id).addClass("hide");
+  }
+  
+}

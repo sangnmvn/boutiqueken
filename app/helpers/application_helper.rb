@@ -255,12 +255,12 @@ module ApplicationHelper
     map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
     return map_k[status]
   end
-  def show_order_status(status)
+  def show_order_status(status,order_id)
     map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
     if status <4
       return map_k[status]
     else
-      
+      raw "<a href='javascript:;' class='track-order-#{order_id}' data-id='#{order_id}' onclick=show_order_dt_table('.track-order-#{order_id}') >Track this order</a>"
     end
   end
 

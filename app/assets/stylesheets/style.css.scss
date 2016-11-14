@@ -4336,3 +4336,22 @@ input[type=number]::-webkit-outer-spin-button {
     margin-top: 0;
     padding-bottom: 0.7rem;
 }
+
+.order-info-inside{
+  .left-side{
+    float: left;
+    width: 40%;
+  }
+  .progress-bar-txt{
+    float: left;
+    width: 20%;
+  }
+  .right-side{
+    float: left;
+    width: 40%;
+
+  }
+  .center-txt{
+    text-align: center;
+  }
+}

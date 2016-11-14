@@ -53,7 +53,7 @@
                 -@order.order_comments.each_with_index do |i,index|
                   %tr{class: "cm_#{i.id}"}
                     %td=index + 1
-                    %td=i.expected_arrived.strftime("%d %b, %y")
+                    %td=i.expected_arrived.strftime("%d %b, %Y")
                     %td=i.track_status
                     %td=i.comment
                     %td

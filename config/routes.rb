@@ -69,6 +69,9 @@ Rails.application.routes.draw do
       get 'confirm'
       put 'confirmed'
     end
+    collection do 
+      post 'delete_comment'
+    end
   end
   resources :shopping_cart_items, only: [:update]
 
@@ -87,6 +90,9 @@ Rails.application.routes.draw do
       put 'save_user'
       post 'delete_user'
       get 'edit_user'
+      get 'order_mgmt'
+      get 'show_order'
+      put 'change_status'
     end
   end
 
