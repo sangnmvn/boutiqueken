@@ -1,9 +1,8 @@
 <div id="filters">
   <%group_name = ""%>
   <%sub_group_name ="" %>
+  <%@filters = @filters.select{|i| (!i.filter_product_field_name.downcase.include?("size") && !i.filter_product_field_name.downcase.include?("rating"))}%>
   <%@filters.each_with_index do |i,index|%>
-    <%if (i.filter_product_field_name.downcase.include?("size") || i.filter_product_field_name.downcase.include?("rating"))%>
-    <%else%> 
     <%if group_name != i.group_name%>
       <%if index >=1%>
         </div>
@@ -70,7 +69,6 @@
           </div>
         <%end%>
 
-    <%end%>
     <%end%>
   <%end%>
   <%if @filters.count>1%>
