@@ -192,10 +192,11 @@ ul{
 .main-navigation ul li a {
   display: block;
   font-weight: 600;
-  margin-right: 3.14rem;
+  margin-right: 3.72rem;
   padding: 1rem 0;
   text-transform: uppercase;
   text-decoration: none;
+  font-size: 1.4rem;
 }
 .main-navigation ul li:hover > a, .main-navigation ul li a:hover{
   text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
@@ -3657,9 +3658,12 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .main-navigation{
-  .menu-item{
-
+  .menu-item {
     &.last-child{
+      float: right;
+      a {
+        margin-right: 0px;
+      }
     }
   }
 
@@ -3676,9 +3680,9 @@ input[type=number]::-webkit-outer-spin-button {
     }
   }
   .gifts-menu{
-    left: -500px;
+    left: -583px;
     .triangle{
-      left: 503px !important;
+      left: 587px !important;
     }
   }
   .handbags-menu,.shoes-menu,.beaty-menu,.kids-menu,.junior-menu{
