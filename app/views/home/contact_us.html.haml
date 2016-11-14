@@ -1,0 +1,121 @@
+%section.section-signin-area
+  .container
+    .signin-inner
+      .row
+        .col-md-5
+          .contact-col.contact-col-left
+            %h1 Contact Us
+            %h3 Email
+            We are here 24 hours a day, 7 days a week
+            
+            / %form{:action => "#"}
+            = form_tag(contact_us_path, {method: :post, class: "form-horizontal validate-form", "data-parsley-validate" => true, autocomplete: "off"}) do
+              .devise-error
+                -flash.each do |name,msg|
+                  %div.notice-txt
+                    = msg
+              %label{:for => "name"} Name (Required)
+              .contact_info
+                = text_field_tag "contact[name]","" ,:required => true, autofocus: true, autocomplete: "off", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Name is required!",:id =>"name"
+              %label{:for => "email"} Email address (Required)
+              / %input#password{:type => "password"}/
+              .contact_info
+                = text_field_tag "contact[email]" ,"",:required => true, autocomplete: "off", "data-parsley-required-message" => "Oops, Email address is required!","data-parsley-trigger" => "change","data-parsley-type" =>"email",:id =>"email"
+
+              %label{:for => "topic"} Topic (Required)
+              / %input#password{:type => "password"}/
+              .contact_info
+                = select_tag "contact[topic]", options_for_select([ "Order Status", "Assistance","Product Information", "International Shipping", "Comments","Other Assistance"]),  prompt: "Select a topic",:required =>true, autocomplete: "off", "data-parsley-required-message" => "Oops, Topic is required!", "data-parsley-trigger" => "change", :id =>"topic"
+
+              %label{:for => "comment"} Enter Comments and Questions Below (Required)
+              / %input#password{:type => "password"}/
+              .contact_info
+                = text_area_tag "contact[comment]" ,"",:required => true, autocomplete: "off", "data-parsley-required-message" => "Oops, Comment is required!","data-parsley-trigger" => "change",:id =>"comments"
+              %br
+              .contact_info
+                For your protection, please do not include your credit card number when emailing adboutiqueken.com.
+              
+              = button_tag "Submit", class: "contact-button-background"
+              
+              = link_to "Cancel", root_path, class: "contact-link-to"
+        .col-md-5
+          .contact-col.contact-col-right
+            .contact-address-title Our warehouse location(s) in your City/Country
+            %br
+            %p
+              %strong Head Quarter
+              %br
+              108 Madison Ave, New York, NY 10016, USA. 1-718- 412-3932
+            %p
+              %strong Other USA Locations
+              %br
+              5800 SW 135th Ave #105, Miami, FL 33183
+              %br
+              22 N Upper Wacker Dr #4114, Chicago, IL 60606
+              %br
+              P.O 110191, Campbell, CA 95011
+            %p
+              %strong European Locations
+              %br
+              206 Ellerdine Rd, Hounslow TW3 2PZ, UK
+              %br
+              46 Goldcroft, Yeovil BA21 4DH, UK
+              %br
+              62 Chemin des Loubonnières, 06130 Grasse, France
+              %br
+              Prinzessinnenstraße 29, 10969 Berlin, Germany
+              %br
+              Lagerstrasse 38, 8004 Zürich, Switzerland
+              %br
+              Frederikssundsvej 60, Baghuset, 2400 Copenhagen N, Denmark
+              %br
+              Barbaros Bul. #72, Mutlu Apt #11, Besiktas, Istanbul, Turkey
+
+            %p
+              %strong Australian Locations
+              %br
+              Cessnock St, Cessnock NSW 2325, Australia
+              %br
+              3/26 Waratah St, Mona Vale NSW 2103, Australia
+            %p
+              %strong Asian Locations
+              %br
+              Level 22, Emaar Boulevard Tower 1, Downtown Dubai, Near Dubai Mall - Dubai – UAE
+              %br
+              2th Floor, Al Safa house, Travel City Building, CBD, Ruwi, PC 117, Muscat 655, Oman
+              %br
+              Ibrahim Al Khayyari, Al Olaya, Olaya, King Fahd Road, Behind Al-Muthana Hotel, Riyadh 12212 11564,
+              %br
+            %p
+              %strong Saudi Arabia
+              %br
+              China Hong Kong Tower, 8-12 Hennessy Rd, Wan Chai, Hong Kong
+              %br
+              A409 76 Caoyuan Hutong, Dongzhimennei Beixiaojie, Dongzhimen, Dongcheng, China, 100007
+              %br
+              220/8/334, Erbil 44003, Iraq
+              %br
+              10 Eunos Road 8, #23-09 Singapore Post Centre Singapore, Singapore 408600
+              %br
+            %p
+              %strong African Locations
+              %br
+              Cité 08 Août 1955, Bt : 6 Bloc 02, Constantine 25000, Algeria
+              %br
+              034 First floor Taqseem El-mayet, P.O. Box: 82510, Tripoli, Libya
+              %br
+
+
+
+
+
+
+
+
+
+
+
+
+
+            / %button CREATE AN ACCOUNT
+          

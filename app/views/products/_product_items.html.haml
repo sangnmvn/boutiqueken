@@ -38,12 +38,12 @@
                 -i.product_details.order("product_image asc").each_with_index do |detail,index|
                   - if detail.product_image.present?
 
-                    %img.img-responsive.has-color{:alt => "product", "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
+                    %img.img-responsive.has-color{:alt => i.short_desc, "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_url(detail.product_image)}/
                     -is_need_main = false
                 -if is_need_main == true
-                  %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
+                  %img.img-responsive.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
               -else
-                %img.img-responsive.has-color.active{:alt => "product", "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
+                %img.img-responsive.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_url(i.main_image_url)}/
             / .product-img-wrapper ends
             .product-details-info.right-content-side
               -if i.product_details.present?
@@ -58,7 +58,7 @@
                             -i.product_details.order("product_image asc").each_with_index do |detail,index|
                               %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                                 %a{:href => "javascript:;"}
-                                  %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                                  %img.img-responsive{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
                     %button.next
                       %i.fa.fa-angle-right{"aria-hidden" => "true"}
                 -else
@@ -66,7 +66,7 @@
                     -i.product_details.order("product_image asc").each_with_index do |detail,index|
                       %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                         %a{:href => "javascript:;"}
-                          %img.img-responsive{:alt => "", :src => show_image_url(detail.color_image)}/
+                          %img.img-responsive{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
                 
               %strong
                 %a{:href => product_path(i)}=i.short_desc

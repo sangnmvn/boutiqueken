@@ -7,22 +7,22 @@
         </div>
       <%end%>
       <div class="single-product-cat">
-        <strong class="trigger">
+        <h2 class="trigger">
           <%=i.group_name%>
           <span>
             <i class="fa fa-chevron-down"></i>
           </span>
           <%group_name = i.group_name%>
-        </strong>
+        </h2>
         <%if i.sub_group_name.present? && sub_group_name !=i.sub_group_name%>
           <div class="sub-group-name">
-            <strong class="trigger sub-trigger">
+            <h2 class="trigger sub-trigger">
               <%=i.sub_group_name%>
               <span>
                 <i class="fa fa-minus-square"></i>
               </span>
               <%sub_group_name = i.sub_group_name%>
-            </strong>
+            </h2>
             <ul class="max-h-200">
               <% filters = JSON.parse(i.filters) rescue []%>
               <% filters.each_with_index do |filtera,index|%>
@@ -49,13 +49,13 @@
       <%elsif i.sub_group_name.present?%>
         <%if i.sub_group_name.present? && sub_group_name !=i.sub_group_name%>
           <div class="sub-group-name">
-            <strong class="trigger sub-trigger">
+            <h2 class="trigger sub-trigger">
               <%=i.sub_group_name%>
               <span>
                 <i class="fa fa-minus-square"></i>
               </span>
               <%sub_group_name = i.sub_group_name%>
-            </strong>
+            </h2>
             <ul class="max-h-200">
               <% filters = JSON.parse(i.filters)%>
               <% filters.each_with_index do |filtera,index|%>

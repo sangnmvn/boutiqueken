@@ -76,7 +76,7 @@ class Order < ActiveRecord::Base
         detail.size = i.size
         detail.currency = i.price_currency
         detail.currency_by_user = user_currency
-        detail.product_image = product.product_image
+        detail.product_image = product_detail.product_image
         detail.save
       end
   		
