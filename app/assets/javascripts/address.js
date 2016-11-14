@@ -415,7 +415,6 @@ var Product={
     
     // $(c_element).trigger("click");
       $('.color-picking.active').removeClass("active");
-      console.log('ac');
       color_name = $(this).attr("color-name");
       $(this).addClass("active");
       $(".product-thumb-image").addClass("hide");
