@@ -1,2 +1,12 @@
-%a.item{ href: url, title: t('views.pagination.previous'),"data-remote": true,method: :get}
-  %i.left.arrow.icon
+- if params[:action] == "user_mgmt"
+  - if current_page.first?
+    %li.uk-disabled
+      %span
+        %i.uk-icon-angle-double-left
+  - else
+    %li
+      %a.item{href: url}
+        %i.uk-icon-angle-double-left
+-else
+  %a.item{ href: url, title: t('views.pagination.previous'),"data-remote": true,method: :get}
+    %i.left.arrow.icon

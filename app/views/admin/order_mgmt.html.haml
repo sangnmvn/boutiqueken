@@ -42,7 +42,7 @@
                     / %a{:href => "#", :onclick => "UIkit.modal.confirm('Are you sure to delete this user?', function(){ delete_user(#{user.id});},{labels: {'Ok': 'Yes', 'Cancel': 'No'}});", :title => "Delete User"}
                     /   %i.md-icon.material-icons.md-24 
                 - index += 1
-        = will_paginate(@orders, :renderer => PaginationListLinkRenderer)
+        = paginate @orders
 %div.modal-trackorder-container
 = csrf_meta_tag
 :javascript

@@ -72,13 +72,13 @@ class AdminController < ApplicationController
   def user_mgmt
     @current_page = [1,params[:page].to_i].max
     @per_page = 20
-    @users = User.where(is_admin: false).paginate(page: @current_page, per_page: @per_page).order('updated_at DESC')
+    @users = User.where(is_admin: false).order('updated_at DESC').page(@current_page).per(@per_page)
   end
 
   def order_mgmt
     @current_page = [1,params[:page].to_i].max
     @per_page = 20
-    @orders = Order.where("status >= 1").paginate(page: @current_page, per_page: @per_page).order('updated_at DESC')
+    @orders = Order.where("status >= 1").order('updated_at DESC').page(@current_page).per(@per_page)
   end
 
   def show_order
