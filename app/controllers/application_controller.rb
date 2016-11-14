@@ -1,3 +1,5 @@
+require "open-uri"
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -9,8 +11,10 @@ class ApplicationController < ActionController::Base
   before_filter :store_current_location, :unless => :devise_controller?
   after_filter :store_location
   before_filter :get_browser_location
-  
+  before_filter :redirect_special_link
+
   protected
+
 
   def get_browser_location
     #country_code
@@ -95,4 +99,27 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_special_link
+    # fullpath -> search key words
+    h = {
+      "/cat/beauty-chanel" => "chanel",
+      "/cat/jewelry-15830-wedding-engagement-rings" => "wedding engagement ring",
+      "/cat/women-cold-weather-style" => "cold weather style women",
+      "/cat/women-dress-codes" => "women dress  NOUVEAU ROMANCE,  COZY CHIC , CAREER DRIVEN  , BEST-DRESSED GUEST,  LIFE OF THE PARTY, VIVA LA VELVET",
+      "/cat/jewelry-style-your-ring" => "jewelry ring",
+      "/cat/women-the-coat-chronicles" => "women coat PEACOAT WRAP, WOOL & BLEND, FUR & FAUX, PACKABLE, PARKA",
+      "/cat/jewelry-15830-wedding-engagement-rings" => "wedding engagement ring",
+      "/cat/shoes-fall-boot-styles" => " booties, over the knee boots, cold weather and rain boots, tall boots",
+      "/cat/brands-chanel" => "chanel",
+      "/cat/juniors-holiday-trend-report" => "holiday",
+      "/cat/beauty-15710-chanel" => "chanel",
+      "/cat/handbags-trolls" => "handbag troll",
+      "/cat/women-holiday-style-guide" => "Merry red, sparkle and shine, va va velvet, romantic evening, bomber jacket"
+    }
+
+    if h[request.fullpath].present?
+      url = "#{request.protocol}#{request.host_with_port}/pro/search?search_txt=#{h[request.fullpath]}"
+      redirect_to URI::encode(url)
+    end
+  end
 end
