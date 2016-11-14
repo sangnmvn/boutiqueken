@@ -81,12 +81,38 @@ class AdminController < ApplicationController
     @orders = Order.where("status >= 1").paginate(page: @current_page, per_page: @per_page).order('updated_at DESC')
   end
 
+  def show_order
+    @order = Order.find(params[:order_id])
+  end
+
+  def change_status
+    @success = false;
+    @order = Order.find(params[:order_id])
+    if params[:order][:status].present?
+      if params[:order][:status].to_i < 4
+        @order.status = params[:order][:status]
+        @order.save
+        @success = true
+      else
+        if params[:order][:tracking].present? && params[:order][:comments].present? && params[:order][:arrived_date].present?
+          OrderComment.create({:order_id => @order.id, :track_status =>params[:order][:tracking], :comment =>params[:order][:comments],:user_id => current_user,:expected_arrived =>params[:order][:arrived_date]})
+          @order.status = params[:order][:status]
+          @order.save
+          @success = true
+        end
+      end
+    redirect_to order_mgmt_admin_index_path,:notice =>"The Order Status has been updated successfully. "
+    end
+  end
+
   def create_user
 
   end
   
   def edit_user
     @user = User.find(params[:user_id])
+    
+    
   end
 
   def save_user

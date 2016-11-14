@@ -1,4 +1,64 @@
 #modal_track_order.uk-modal
   .uk-modal-dialog
     %button.uk-modal-close.uk-close{:type => "button"}
-    %p Ducimus non repellat iste tenetur velit totam enim hic eaque temporibus nostrum quis aspernatur sed impedit repellat rerum non perspiciatis enim est consequatur culpa magni eos repudiandae et totam ullam debitis impedit exercitationem nihil sint aliquid repudiandae nemo ullam quae voluptatem voluptas aut rerum dolorum iusto aliquid culpa eum non ea rerum amet itaque qui perferendis assumenda placeat quam non molestiae nulla ratione molestias laudantium labore et ea labore.
+    %p
+      =form_tag(change_status_admin_index_path({:order_id =>@order.id}), {method: :put, class: "",:novalidate => true, autocomplete: "off"}) do
+        %div.left-ct
+          %b Status:
+        %div.right-ct
+
+          %select.select-order-status{:name =>"order[status]"}
+            %option{:value =>2} Processing
+            %option{:value =>3} Preparing your order
+            -if @order.status == 4
+              %option{:value =>4,"selected" => "selected"} Shipped
+            -else
+              %option{:value =>4} Shipped
+        .clear-fix
+        %div.shipped-comments{:class => @order.status == 4 ? '' : 'hide'}
+          %div.left-ct
+            %b Expected arrive
+          %div.right-ct
+            %input#kUI_datepicker_a{:name =>"order[arrived_date]",:value => "10-06-2015",:required => true}/
+          .clear-fix
+          %div.left-ct
+            %b Tracking %
+          %div.right-ct
+            %select.select-order-tracking{:name =>"order[tracking]"}
+              -(1..100).to_a.each do |i|
+                %option{:value => i}=i
+          .clear-fix  
+          %div
+            %b Comments
+          %div
+            %textarea.md-input{:cols => "30", :rows => "4",:name =>"order[comments]",:placeholder=>"Input your message",:required => true}
+        %div
+          -if @order.order_comments.count > 0
+            %table.uk-table
+              %thead
+                %tr
+                  %th No
+                  %th Expected Arrived
+                  %th Tracking
+                  %th Comment
+                  %th Action
+              %tfoot
+                %tr
+                  %td No
+                  %td Expected Arrived
+                  %td Tracking
+                  %td Comment
+                  %td Action
+              %tbody
+                -@order.order_comments.each_with_index do |i,index|
+                  %tr{class: "cm_#{i.id}"}
+                    %td=index + 1
+                    %td=i.expected_arrived.strftime("%d %b, %y")
+                    %td=i.track_status
+                    %td=i.comment
+                    %td
+                      =link_to "Delete",delete_comment_orders_path,method: :post,:confirm =>"Are you sure to delete this comment?", remote: true
+
+          .uk-modal-footer.uk-text-right
+            %button.md-btn.md-btn-flat.uk-modal-close{:type => "button"} Cancel
+            %button.md-btn.md-btn-flat.md-btn-flat-primary{:type => "submit"} Save

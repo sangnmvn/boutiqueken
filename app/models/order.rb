@@ -4,6 +4,7 @@ class Order < ActiveRecord::Base
   has_one :shipping_address, class_name: "OrderAddress"
   accepts_nested_attributes_for :billing_address, :shipping_address
   has_many :order_details
+  has_many :order_comments
   include ActionView::Helpers::NumberHelper
   include ApplicationHelper
   before_create :generate_code

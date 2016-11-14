@@ -1,5 +1,8 @@
+-flash.each do |name,msg|
+  %div.notice-txt
+    = msg
 %div{:style => "text-align: right;"}
-.md-card
+.md-card.order-mgmt
   .md-card-content
     .uk-grid{"data-uk-grid-margin" => ""}
       .uk-width-1-1
@@ -26,13 +29,13 @@
                   %td.uk-text-nowrap= order.user.last_name
                   %td.uk-text-nowrap= order.email
                   %td.uk-text-nowrap= order.show_total_price
-                  %td.uk-text-nowrap= show_order_status(order.status)
+                  %td.uk-text-nowrap= show_order_status_admin(order.status)
                   %td.uk-text-nowrap= order.updated_at.strftime("%Y-%m-%d %H:%M:%S")
                   %td.uk-text-nowrap
                     %a{:href =>""}
                       %i.md-icon.material-icons
                         &#xE8B6;
-                    %a{:href =>"javascript:;","data-uk-modal"=>"{target:'#modal_track_order'}"}
+                    %a.show-track-modal{:href =>"javascript:;","data-id" =>order.id}
                       Track this order
                     / %a{:href => "/admin/edit_user?user_id=#{user.id}", :title => "Edit User"}
                     /   %i.md-icon.material-icons.md-24 
@@ -40,7 +43,7 @@
                     /   %i.md-icon.material-icons.md-24 
                 - index += 1
         = will_paginate(@orders, :renderer => PaginationListLinkRenderer)
-=render "modal_trackorder"
+%div.modal-trackorder-container
 = csrf_meta_tag
 :javascript
   var token = '#{form_authenticity_token}';

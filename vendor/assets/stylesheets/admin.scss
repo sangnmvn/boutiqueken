@@ -2,4 +2,25 @@
  *= require bower_components/uikit/css/uikit.almost-flat.min
  *= require bower_assets/icons/flags/flags.min
  *= require bower_assets/css/main.min
+ *= require bower_components/kendo-ui/styles/kendo.common-material.min
+ *= require bower_components/kendo-ui/styles/kendo.material.min
  */
+
+.left-ct{
+  float: left;
+  width: 30%;
+}
+.right-ct{
+  float: left;
+  width: 70%;
+}
+.clear-fix{
+  clear: both;
+  height: 10px;
+}
+.hide{
+  display: none;
+}
+.notice-txt{
+  color: green;
+}

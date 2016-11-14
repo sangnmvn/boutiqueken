@@ -251,9 +251,17 @@ module ApplicationHelper
   end
 
 
-  def show_order_status(status)
-    map_k = {0=>"Init",1 =>"Confirmed"}
+  def show_order_status_admin(status)
+    map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
     return map_k[status]
+  end
+  def show_order_status(status)
+    map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
+    if status <4
+      return map_k[status]
+    else
+      
+    end
   end
 
   def determine_static_left_selected(action,controller="home")

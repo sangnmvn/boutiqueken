@@ -17,8 +17,17 @@ class OrdersController < ApplicationController
     if current_user.addresses.count ==0
       current_user.add_default_address(params[:order][:shipping_address_attributes],params[:order][:billing_address_attributes])
     end
+  end
 
+  def update
+    @success = false
 
+    
+  end
+
+  def delete_comment
+    @comment = OrderComment.find(params[:id])
+    @success = @comment.destroy
   end
 
   def show
