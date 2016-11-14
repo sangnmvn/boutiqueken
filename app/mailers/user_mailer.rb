@@ -23,7 +23,7 @@ class UserMailer < ActionMailer::Base
     address = email
     @name = name_txt
     @comments = comments
-    mail :to => "care@boutiqueken.com", :subject => subject, :from => address
+    mail :to => "care@boutiqueken.com", :subject => subject
   end
 end
  

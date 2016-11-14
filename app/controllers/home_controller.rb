@@ -1,11 +1,7 @@
 class HomeController < ApplicationController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-<<<<<<< HEAD
-=======
-
   layout :detemine_layout
->>>>>>> master
   protect_from_forgery with: :exception
   def detemine_layout
     if [:contact_us,:about_us,:faq,:domestic_shipping_return,:international_shipping_return,:privacy_policy,:safe_shopping_guarantee,:secure_shopping,:term_of_use].include?(params[:action].to_sym)
@@ -16,12 +12,11 @@ class HomeController < ApplicationController
       "application"
     end
   end
+
   def index
     # redirect_to new_user_session_path
   end
 
-<<<<<<< HEAD
-=======
   def update_country
     if params[:user][:currency].present?
       session[:currency] = params[:user][:currency]
@@ -50,13 +45,10 @@ class HomeController < ApplicationController
 
   end
 
->>>>>>> master
   def subregions
   	render partial: "addresses/state_select"
   end
   
-<<<<<<< HEAD
-=======
   def contact_us
     @seo_title = "Contact Information boutiqueken.com 25/7 & 365 DAYS"
     @seo_desc = " Free shipping BOTH ways on shoes, clothing, and more! 60-day return policy, over 1000 brands, 24/7 friendly Customer Service."
@@ -109,5 +101,4 @@ class HomeController < ApplicationController
   	
   end
 
->>>>>>> master
 end
