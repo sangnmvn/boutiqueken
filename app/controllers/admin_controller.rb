@@ -87,6 +87,13 @@ class AdminController < ApplicationController
     @order = Order.find(params[:order_id])
   end
 
+  def order_detail
+    @order = Order.find(params[:order_id])
+    if(@order)
+      @billAdrr = OrderAddress.find(@order.billing_address_id)
+    end
+  end
+
   def change_status
     @success = false;
     @order = Order.find(params[:order_id])

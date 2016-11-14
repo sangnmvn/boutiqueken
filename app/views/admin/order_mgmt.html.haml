@@ -32,7 +32,7 @@
                   %td.uk-text-nowrap= show_order_status_admin(order.status)
                   %td.uk-text-nowrap= order.updated_at.strftime("%Y-%m-%d %H:%M:%S")
                   %td.uk-text-nowrap
-                    %a{:href =>""}
+                    %a{:href =>"/admin/order_detail?order_id=#{order.id}"}
                       %i.md-icon.material-icons
                         &#xE8B6;
                     %a.show-track-modal{:href =>"javascript:;","data-id" =>order.id}

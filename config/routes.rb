@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       get 'edit_user'
       get 'order_mgmt'
       get 'show_order'
+      get 'order_detail'
       put 'change_status'
     end
   end
