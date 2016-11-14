@@ -89,9 +89,8 @@ class AdminController < ApplicationController
 
   def order_detail
     @order = Order.find(params[:order_id])
-    if(@order)
-      @billAdrr = OrderAddress.find(@order.billing_address_id)
-    end
+    @billing = @order.billing_address
+    @shipping = @order.shipping_address
   end
 
   def change_status
