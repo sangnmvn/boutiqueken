@@ -268,7 +268,8 @@ var ViewProduct ={
     product["name"] =  product_info.short_desc;
     product["macys_sale_price"] = product_info.macys_sale_price;
     product["sale_price"] = product_info.sale_price;
-    product["price_range"] = product_info.list_price_range;
+    product["price_range_min"] = product_info.price_range == null? null : product_info.price_range.split(",")[0].substr(1);
+    product["price_range_max"] = product_info.price_range == null? null : product_info.price_range.split(",")[1].slice(0,-1);
     list_views = jQuery.grep(list_views, function(obj) {
         return obj.product_id !== product_info.id;
     });
@@ -298,7 +299,8 @@ var ViewProduct ={
       jQuery.each(list_views,function(index,value){
         macys_sale_price = ViewProduct.show_price(value.macys_sale_price);
         sale_price = ViewProduct.show_price(value.sale_price);
-        price_range = ViewProduct.show_price(value.price_range);
+        price_range_min = ViewProduct.show_price(value.price_range_min);
+        price_range_max = ViewProduct.show_price(value.price_range_max);
         li = $("<li></li>");
 
         if(value.slug != null && value.slug !="undefined" && typeof(value.slug) !="undefined"){
@@ -315,8 +317,8 @@ var ViewProduct ={
         if(sale_price !=""){
           sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $" + sale_price + "</strong>").appendTo(div_single);
         }
-        else if(price_range !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $" + price_range.join(" - ") + "</strong>").appendTo(div_single);
+        else if((price_range_min !="") && (price_range_max != "")){
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $ " + price_range_min + " - " + price_range_max + "</strong>").appendTo(div_single);
         }
         else{
           $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);
