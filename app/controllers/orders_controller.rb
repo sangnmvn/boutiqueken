@@ -5,6 +5,7 @@ class OrdersController < ApplicationController
   layout "devise"
   before_filter :authenticate_user!
   before_filter :check_user_orders, only: [:show,:confirm,:confirmed,:payment]
+  after_filter :save_current_order
 
   def create
   	@success = false
@@ -21,8 +22,6 @@ class OrdersController < ApplicationController
 
   def update
     @success = false
-
-    
   end
 
   def delete_comment
@@ -37,11 +36,11 @@ class OrdersController < ApplicationController
   end
 
   def payment
-    @order = Order.find(params[:id])
+    @order = Order.find(params[:id]||session[:last_oid].to_i)
   end
   
   def confirm
-    @order = Order.find(params[:id])
+    @order = Order.find(params[:id]||session[:last_oid].to_i)
     @billing = @order.billing_address
     @shipping = @order.shipping_address
   end

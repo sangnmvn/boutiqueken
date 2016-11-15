@@ -63,7 +63,7 @@ $(function(){
     }
     $.ajax({
       method: "POST",
-      url: "/shopping_carts/",
+      url: "/secure-shopping-your-cart/",
       data: {detail_id: selected_detail_id,size: selected_size,has_color: has_color},
     }).done(function(data) {
       
