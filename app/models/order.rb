@@ -76,7 +76,9 @@ class Order < ActiveRecord::Base
         detail.size = i.size
         detail.currency = i.price_currency
         detail.currency_by_user = user_currency
-        detail.product_image = product_detail.product_image
+        url =  product_detail.product_image
+        url =  product.main_image_url if url.blank?
+        detail.product_image = url
         detail.save
       end
   		

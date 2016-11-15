@@ -224,6 +224,18 @@ module ApplicationHelper
     number_with_precision(val, :precision => 2,:delimiter => ",",:separator => ".")
   end
 
+  def show_price_range(price_range)
+    
+    txt_arr = []
+    price_range.each do |i|
+      
+      val = MoneyExchange.exchange(i,@currency)
+      txt_arr << number_with_precision(val, :precision => 2,:delimiter => ",",:separator => ".")
+    end
+    txt_arr.join(" - ")
+    
+  end
+
   def show_2digit(price)
     number_with_precision(price, :precision => 2,:delimiter => ",",:separator => ".")
   end

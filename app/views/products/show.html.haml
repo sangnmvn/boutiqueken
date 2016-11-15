@@ -33,8 +33,8 @@
               %span.cur-price.auto-width 
                 %strong Now
                 %span.auto-width 
-                  ="$"
-                  =@product.list_price_range.join(" - ")
+                  ="#{@currency} $"
+                  =show_price_range(@product.list_price_range)
         / PRODUCT DETAILS 2 TOP ENDS
         / PRODUCT DETAILS 2 MIDDLE STARTS
         .p-details-2-middle.product-panel{"data-detail-id" => @product.id}
@@ -136,7 +136,7 @@
                           %span.sale-price
                             %strong
                               ="Sale. #{@currency} $"
-                              =product.list_price_range.join(" - ")
+                              =show_price_range(product.list_price_range)
                         %br
             -if @product_related.length > 0
               %button.prev
@@ -232,7 +232,7 @@
                   %span.sale-price
                     %strong
                       ="Sale. #{@currency} $"
-                      =product.list_price_range.join(" - ")
+                      =show_price_range(product.list_price_range)
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
     .recent-view.custom-recent-view.hide

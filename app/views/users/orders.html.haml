@@ -20,7 +20,7 @@
                 -@orders.each do |i|
                   %tr
                     %td
-                      =i.id
+                      =i.code
                     %td
                       =i.order_details.sum(:quantity)
                     %td
