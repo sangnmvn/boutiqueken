@@ -143,15 +143,18 @@ class Product < ActiveRecord::Base
         end
         with(:sale_price,Range.new(min,max)) if min.present? && max.present?
       end
+      
       if params_t[:filter].present?
         filter_names.each do |i|
-          if params_t[:filter][i.to_sym].present?
-            dynamic("filters") do
-              with(i.to_sym).any_of(params_t[:filter][i.to_sym])
+          if i.include? "SIZE"
+            with(:sizes_list).any_of(params_t[:filter][i.to_sym])
+          else
+            if params_t[:filter][i.to_sym].present?
+              dynamic("filters") do
+                with(i.to_sym).any_of(params_t[:filter][i.to_sym])
+              end
             end
-            
           end
-
         end
       end
 
