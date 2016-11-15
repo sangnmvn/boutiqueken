@@ -301,7 +301,7 @@ var ViewProduct ={
         price_range = ViewProduct.show_price(value.price_range);
         li = $("<li></li>");
 
-        if(value.slug !="" && value.slug !="undefined" && typeof(value.slug) !="undefined"){
+        if(value.slug != null && value.slug !="undefined" && typeof(value.slug) !="undefined"){
           link_a = $("<a></a>").attr("href","/pro/" + value.slug);
         }else{
           link_a = $("<a></a>").attr("href","/pro/" + value.product_id);
@@ -384,7 +384,7 @@ var Product={
       this.init_events();       
       $(".price-color").on("click",function(){
         price = $(this).attr("data-price");
-        $(".cur-price span").html("$ " + price);
+        $(".cur-price span").html(txt_currency + " $ " + price);
         Product.change_color();
       })
     }
