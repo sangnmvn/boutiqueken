@@ -1,0 +1,5 @@
+var html = "<%=j render 'modal_trackorder'%>";
+$(".modal-trackorder-container").html(html);
+var modal = UIkit.modal("#modal_track_order");
+AdminOrder.init_select();
+modal.show(); 

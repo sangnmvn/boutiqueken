@@ -40,7 +40,10 @@
                   -list = available.where(:group_name =>i)
                   %ul.ul-letter-list
                     -list.each do |links|
-                      -search_key = [@category.cat_name.to_s,links.brand_name.to_s].join(" ")
+                      -if @category.cat_name.to_s != "BRANDS"
+                        -search_key = [@category.cat_name.to_s,links.brand_name.to_s].join(" ")
+                      -else
+                        -search_key = links.brand_name.to_s
                       %li
                         %a{:href => search_products_path({:search_txt =>search_key})}=links.brand_name
                   

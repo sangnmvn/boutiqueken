@@ -1,2 +1,7 @@
-.item
-  = t('views.pagination.truncate').html_safe
+- if params[:action] == "user_mgmt"
+  %li
+    %span
+      = t('&hellip').html_safe
+-else
+  .item
+    = t('views.pagination.truncate').html_safe

@@ -1,2 +1,12 @@
+- if params[:action] == "user_mgmt"
+  - if current_page.last?
+    %li.uk-disabled
+      %span
+        %i.uk-icon-angle-double-right
+  - else
+    %li
+      %a.item{href: url}
+        %i.uk-icon-angle-double-right
+-else
 %a.item{ href: url, title: t('views.pagination.next'),"data-remote": true,method: :get }
   %i.fa.fa-chevron-right.fa-p-x

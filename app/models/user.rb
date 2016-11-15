@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   has_many :orders
   after_create :send_welcome
   def confirmed_orders
-    self.orders.where(:status =>1)
+    self.orders.where("status >=1")
   end
 
   def send_welcome

@@ -12,8 +12,12 @@
       
       / DESKTOP TOP LINKS STARTS
       %ul.ul-top-navigation.ul-top-navigation-desktop.hidden-xs.pull-right
-        %li
-          %a{:href => "#"} Order Tracking
+        -if current_user.present?
+          %li
+            %a{:href => orders_user_path(current_user)} Order Tracking
+        -else
+          %li
+            %a{:href => new_user_session_path} Order Tracking
         %li
           %a{:href => country_choser_path}
             Ship To:

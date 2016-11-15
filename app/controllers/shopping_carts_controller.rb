@@ -43,7 +43,9 @@ class ShoppingCartsController < ApplicationController
           end
         else
           item = @shopping_cart.add(@product, @product.sale_price,quantity)
-          @shopping_cart.shopping_cart_items.where(:product_price_detail_id =>nil,:has_color =>true).update_all({:has_color => false})
+          item.has_color = false
+          item.save
+          #@shopping_cart.shopping_cart_items.where(:product_price_detail_id =>nil,:has_color =>true).update_all({:has_color => false})
         end
       end
     end

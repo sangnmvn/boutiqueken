@@ -1,6 +1,16 @@
-- if page.current?
-  %a.item.active{ href: url, title: t('views.pagination.page.current') + " #{page}","data-remote": true,method: :get }
-    = page
+- if params[:action] == "user_mgmt"
+  - if page.current?
+    %li.uk-active
+      %span
+        = page
+  - else
+    %li
+      %a.item{ href: url}
+        = page
 - else
-  %a.item{ href: url, title: t('views.pagination.page.goto') + " #{page}","data-remote":true,method: :get }
-    = page
+  - if page.current?
+    %a.item.active{ href: url, title: t('views.pagination.page.current') + " #{page}","data-remote": true,method: :get }
+      = page
+  - else
+    %a.item{ href: url, title: t('views.pagination.page.goto') + " #{page}","data-remote":true,method: :get }
+      = page

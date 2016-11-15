@@ -1,7 +1,6 @@
 class HomeController < ApplicationController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-
   layout :detemine_layout
   protect_from_forgery with: :exception
   def detemine_layout
@@ -13,6 +12,7 @@ class HomeController < ApplicationController
       "application"
     end
   end
+
   def index
     # redirect_to new_user_session_path
   end

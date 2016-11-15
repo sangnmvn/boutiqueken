@@ -69,8 +69,34 @@ Rails.application.routes.draw do
       get 'confirm'
       put 'confirmed'
     end
+    collection do 
+      post 'delete_comment'
+    end
   end
   resources :shopping_cart_items, only: [:update]
+
+  resources :admin do
+    collection do
+      get '' => "admin#index"
+      get 'login'
+      get 'logout'
+      post 'signin'
+      get 'index'
+      get 'scrapper'
+      get 'user_mgmt' 
+      get 'my_profile' 
+      put 'interact_with_scrapper'
+      get 'create_user'
+      put 'save_user'
+      post 'delete_user'
+      get 'edit_user'
+      get 'order_mgmt'
+      get 'show_order'
+      get 'order_detail'
+      put 'change_status'
+    end
+  end
+
   #     member do
   #       get 'short'
   #       post 'toggle'

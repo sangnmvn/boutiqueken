@@ -1,3 +1,5 @@
+require "open-uri"
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -9,23 +11,26 @@ class ApplicationController < ActionController::Base
   before_filter :store_current_location, :unless => :devise_controller?
   after_filter :store_location
   before_filter :get_browser_location
-  
+  before_filter :redirect_special_link
+
   protected
+
 
   def get_browser_location
     #country_code
     @country_code = session[:country_code].present? ? session[:country_code] : request.location.country_code
     session[:country_code] = @country_code
 
-    @currency = session[:currency].present? ? session[:currency] : "USD"
-    session[:currency] = @currency.upcase
+    
 
     #@country_code = request.location.country_code
     if @country_code == "RD" || @country_code.blank?
       @country_code = "US" 
     end
     @country = Carmen::Country.coded(@country_code)
-    MoneyExchange.get_rate("USD",@currency)
+    @currency = session[:currency].present? ? session[:currency] : @country.currency_code
+    session[:currency] = @currency.upcase
+    @rate_exchange =  MoneyExchange.get_rate("USD",@currency)
   end
 
   def store_location
@@ -43,7 +48,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    session[:previous_url] || profile_user_path(resource.id)
+    if (resource && resource.is_admin)
+      session[:previous_url] = "/admin/index"
+    else
+      session[:previous_url] || profile_user_path(resource.id)
+    end
   end
   
   def store_current_location
@@ -84,5 +93,33 @@ class ApplicationController < ActionController::Base
     @shopping_cart = session[:shopping_cart_id] ? (ShoppingCart.find(shopping_cart_id) rescue ShoppingCart.create)  : ShoppingCart.create
     session[:shopping_cart_id] = @shopping_cart.id
   end
+  
+  def admin_logged?
+    if !(current_user && current_user.is_admin==true)
+      redirect_to root_path
+    end
+  end
 
+  def redirect_special_link
+    # fullpath -> search key words
+    h = {
+      "/cat/beauty-chanel" => "chanel",
+      "/cat/women-cold-weather-style" => "cold weather style women",
+      "/cat/women-dress-codes" => "women dress  NOUVEAU ROMANCE,  COZY CHIC , CAREER DRIVEN  , BEST-DRESSED GUEST,  LIFE OF THE PARTY, VIVA LA VELVET",
+      "/cat/jewelry-style-your-ring" => "jewelry ring",
+      "/cat/women-the-coat-chronicles" => "women coat PEACOAT WRAP, WOOL & BLEND, FUR & FAUX, PACKABLE, PARKA",
+      "/cat/jewelry-15830-wedding-engagement-rings" => "wedding engagement ring",
+      "/cat/shoes-fall-boot-styles" => " booties, over the knee boots, cold weather and rain boots, tall boots",
+      "/cat/brands-chanel" => "chanel",
+      "/cat/juniors-holiday-trend-report" => "holiday",
+      "/cat/beauty-15710-chanel" => "chanel",
+      "/cat/handbags-trolls" => "handbag troll",
+      "/cat/women-holiday-style-guide" => "Merry red, sparkle and shine, va va velvet, romantic evening, bomber jacket"
+    }
+
+    if h[request.fullpath].present?
+      url = "#{request.protocol}#{request.host_with_port}/pro/search?search_txt=#{h[request.fullpath]}"
+      redirect_to URI::encode(url)
+    end
+  end
 end

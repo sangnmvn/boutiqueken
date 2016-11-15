@@ -38,16 +38,16 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  config.action_mailer.default_url_options = { :host => 'http://172.16.3.56:3002'}
+  config.action_mailer.default_url_options = { :host => 'https://www.boutiqueken.com'}
   config.action_mailer.smtp_settings = {
     :address   => "mail.boutiqueken.com",
     :port      => 587,
     #:domain    => "boutiqueken.com",
-    :user_name => "care",
-    :password  => "H'?,4|#@3c,(9S%{7369E",
+    :user_name => "boutique-ken",
+    :password  => "UcZYUKTf36eZxcbkg82rZ",
     :authentication => 'login',
     :enable_starttls_auto => true
   }
   config.action_mailer.raise_delivery_errors = true
-  config.host_app = "http://172.16.3.56:3002"
+  config.host_app = "https://www.boutiqueken.com"
 end

@@ -1,0 +1,61 @@
+<h3 class="heading_b uk-margin-bottom">New User</h3>
+
+<div class="md-card">
+    <div class="md-card-content large-padding">        
+      <% if params[:msg]%>
+       <h4 class="uk-text-danger"><%=params[:msg]%></h4>
+      <%end%>
+      <%= form_tag("save_user", method: :put, class: "uk-form-stacked", id: "form_validation") do |f| %>
+            <input type="hidden" name="page" value="create_user">
+            <div class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <label for="first_name">First Name<span class="req">*</span></label>
+                  <input type="text" name="first_name" required class="md-input" />
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <label for="middle_name">Middle Name</label>
+                  <input type="text" name="middle_name" class="md-input" />
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <label for="last_name">Last Name<span class="req">*</span></label>
+                  <input type="text" name="last_name" required class="md-input" />
+                </div>
+              </div>
+            </div>
+            <div class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="email">Email<span class="req">*</span></label>
+                  <input type="email" name="email" data-parsley-trigger="change" required  class="md-input" />
+                </div>
+              </div>
+            </div>
+            <div class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="password">Passsword<span class="req">*</span></label>
+                  <input id="password" type="password" name="password" data-parsley-minlength="6" data-parsley-trigger="change" required  class="md-input" />
+                </div>
+              </div>
+            </div>
+            <div class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                        <label for="password_confirmation">Confirm Passsword<span class="req">*</span></label>
+                        <input type="password" name="password_confirmation" data-parsley-equalto="#password" data-parsley-trigger="change" required class="md-input" />
+                    </div>
+              </div>
+            </div>
+            <div class="uk-grid">
+                <div class="uk-width-1-1">
+                    <button type="submit" class="md-btn md-btn-primary">Create User</button>
+                </div>
+            </div>
+        <%end%>
+    </div>
+</div>

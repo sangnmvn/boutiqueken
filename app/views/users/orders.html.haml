@@ -7,7 +7,7 @@
           =render "users/left_menu"
         / .col-md-3 ends
         .col-md-9.col-sm-9
-          .all-informations-wrapper
+          .all-informations-wrapper.order-info-inside
             %table.table.table-bordered
               %thead
                 %tr
@@ -20,13 +20,76 @@
                 -@orders.each do |i|
                   %tr
                     %td
-                      =i.id
+                      =i.code
                     %td
                       =i.order_details.sum(:quantity)
                     %td
-                      =show_order_status(i.status)
+                      =show_order_status(i.status,i.id)
                     %td
                       =i.currency_by_user
                       =show_2digit(i.total_by_currency)
                     %td
                       =link_to "View Detail",order_path(i)
+                  -if i.status == 4
+                    %tr.hide{:class =>"dt_#{i.id}"}
+                      %td{:colspan =>"5"}
+                        /Product side
+                        %div.left-side
+                          %table.table.table-bordered
+                            %thead
+                              %tr
+                                %th{:scope => "row"} No
+                                %th{:scope => "row"} Product Name
+                            %tbody
+                              -i.order_details.each_with_index do |detail,index|
+                                %tr
+                                  %td=index + 1
+                                  %td=detail.product_name
+                        %div.progress-bar-txt
+                          %div.center-txt
+                            %strong
+                              Shipping Status
+                          %div.center-txt
+                            %strong
+                              /=i.order_comments.last.track_status.to_s + " %" 
+                    
+                        %div.right-side
+                          %div
+                            %div
+                              %strong
+                                Shipping Address
+                            %div.c-name=i.shipping_address.full_name
+                            %div.c-street=i.shipping_address.show_address
+                            %div.c-tx=i.shipping_address.city_state
+                            / %span.c-city US
+                            %div.c-contact=i.phone
+                        .clear-fix
+                        %div#order-status-progress-bar
+                          %div#order-status-bar{:style => "width: #{i.order_comments.last.track_status}%;"} 
+                            %div#order-status-label #{i.order_comments.last.track_status}%
+                        .clear-fix{:style =>"height: 10px;"}       
+                        %div.table-comments
+                          %table.table.table-bordered
+                            %thead
+                              %tr
+                                %th{:scope => "row"} No
+                                %th{:scope => "row"} Expected Arrive Date
+                                %th{:scope => "row"} Tracking Status
+                                %th{:scope => "row"} Comment
+                            %tbody
+                              -i.order_comments.order("updated_at desc").each_with_index do |order_comment,index_a|
+                                %tr
+                                  %td
+                                    = index_a + 1
+                                  %td
+                                    =order_comment.expected_arrived.strftime("%d %b, %Y")
+                                  %td=order_comment.track_status
+                                  %td=order_comment.comment
+                           
+
+
+
+                       
+
+
+

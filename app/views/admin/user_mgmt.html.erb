@@ -1,0 +1,77 @@
+<div style="text-align: right;">
+	<a class="md-btn md-btn-primary" href="/admin/create_user" style="margin-bottom: 10px;">New User</a>
+</div>
+
+<div class="md-card">
+<div class="md-card-content">
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-1-1">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Last Sign In At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    <%
+                    	index = (@current_page - 1) * @per_page + 1
+                    	@users.each do |user|
+                	%>
+                        <tr>
+                            <td class="uk-text-nowrap"><%= index %></td>
+                            <td class="uk-text-nowrap"><%= user.first_name %></td>
+                            <td class="uk-text-nowrap"><%= user.middle_name %></td>
+                            <td class="uk-text-nowrap"><%= user.last_name %></td>
+                            <td class="uk-text-nowrap"><%= user.email %></td>
+                            <td class="uk-text-nowrap"><%= user.created_at.strftime("%Y-%m-%d %H:%M:%S") if user.created_at %></td>
+                            <td class="uk-text-nowrap"><%= user.updated_at.strftime("%Y-%m-%d %H:%M:%S") if user.updated_at %></td>
+                            <td class="uk-text-nowrap"><%= user.last_sign_in_at.strftime("%Y-%m-%d %H:%M:%S") if user.last_sign_in_at %></td>
+                            <td class="uk-text-nowrap">
+                              <a href="/admin/edit_user?user_id=<%=user.id%>" title="Edit User"><i class="md-icon material-icons md-24">&#xE150;</i></a>
+                              <a href="#"  onclick="UIkit.modal.confirm('Are you sure to delete this user?', function(){ delete_user(<%=user.id%>);},{labels: {'Ok': 'Yes', 'Cancel': 'No'}});" title="Delete User"><i class="md-icon material-icons md-24">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                    <% 
+                    	index += 1
+                     	end
+                 	%>
+                    </tbody>
+                </table>
+            </div>
+            <%= paginate @users%>
+        </div>
+    </div>
+</div>
+</div>
+
+<%= csrf_meta_tag %>
+
+<script type="text/javascript">
+	var token = '<%= form_authenticity_token %>';
+
+	function delete_user(id){
+
+		data = {};
+		data["user_id"] = id;
+		data["authenticity_token"] = token;
+
+		$.ajax({
+			url: "delete_user",
+			type: "post",
+			data: data
+		}).always(function(){
+      document.cookie = "user_deleted = true";
+			window.location.reload();
+		});
+	}
+</script>

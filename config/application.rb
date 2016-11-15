@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 require 'money'
 require 'money/bank/google_currency'
+require 'carmen-iso-4217/version'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -23,6 +24,8 @@ module Marroi
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+    config.assets.paths << Rails.root.join('vendor', 'assets')
+    config.autoload_paths += %W(#{config.root}/app/workers)
 
     config.exceptions_app = self.routes
   end

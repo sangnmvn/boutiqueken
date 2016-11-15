@@ -1,11 +1,22 @@
-= paginator.render do
-  %nav.ui.pagination.menu
-    = first_page_tag
-    = prev_page_tag unless current_page.first?
-    - each_page do |page|
-      - if page.left_outer? || page.right_outer? || page.inside_window?
-        = page_tag page
-      - elsif !page.was_truncated?
-        = gap_tag
-    = next_page_tag unless current_page.last?
-    = #last_page_tag unless current_page.last?
+- if params[:action] == "user_mgmt"
+  = paginator.render do
+    %ul.uk-pagination.uk-margin-medium-top.uk-margin-medium-bottom
+      = prev_page_tag
+      - each_page do |page|
+        - if page.left_outer? || page.right_outer? || page.inside_window?
+          = page_tag page
+        - elsif !page.was_truncated?
+          = gap_tag
+      = next_page_tag
+-else
+  = paginator.render do
+    %nav.ui.pagination.menu
+      = first_page_tag
+      = prev_page_tag unless current_page.first?
+      - each_page do |page|
+        - if page.left_outer? || page.right_outer? || page.inside_window?
+          = page_tag page
+        - elsif !page.was_truncated?
+          = gap_tag
+      = next_page_tag unless current_page.last?
+      = #last_page_tag unless current_page.last?

@@ -4,7 +4,9 @@ class Order < ActiveRecord::Base
   has_one :shipping_address, class_name: "OrderAddress"
   accepts_nested_attributes_for :billing_address, :shipping_address
   has_many :order_details
-
+  has_many :order_comments
+  include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
   before_create :generate_code
 
   def generate_code
@@ -19,7 +21,7 @@ class Order < ActiveRecord::Base
   end
 
   def show_total_price
-    [self.currency_by_user,self.total_by_currency.to_s].join(" ")
+    [self.currency_by_user,("$" + show_2digit(self.total_by_currency).to_s)].join(" ")
   end
 
   def parse_items_from_cart(shop_cart,user_currency)
@@ -74,7 +76,9 @@ class Order < ActiveRecord::Base
         detail.size = i.size
         detail.currency = i.price_currency
         detail.currency_by_user = user_currency
-        detail.product_image = product_detail.product_image
+        url =  product_detail.product_image
+        url =  product.main_image_url if url.blank?
+        detail.product_image = url
         detail.save
       end
   		

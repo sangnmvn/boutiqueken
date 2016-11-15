@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   helper :application
   #default from: "Boutiqueken <boutique-ken@boutiqueken.com>"
-  default from: "Boutiqueken <care@boutiqueken.com>"
+  default from: "Boutiqueken <boutique-ken@boutiqueken.com>"
 
   def welcome(user)
   	@user = user
@@ -20,10 +20,10 @@ class UserMailer < ActionMailer::Base
   def contact_us(topic, name_txt, email, comments)
   #def contact_us
     subject = topic
-    address = email
+    @email_address = email
     @name = name_txt
     @comments = comments
-    mail :to => "care@boutiqueken.com", :subject => subject, :from => address
+    mail :to => "care@boutiqueken.com", :subject => subject
   end
 end
  

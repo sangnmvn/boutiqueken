@@ -11,7 +11,7 @@ class Address < ActiveRecord::Base
     else 
       contry = Carmen::Country.coded("US")
     end
-    full_state_name = contry.subregions.coded(self.state)
+    full_state_name = contry.subregions.coded(self.state.to_s) rescue self.state.to_s
     [city,full_state_name,zip_code].join(" ")
   end
 

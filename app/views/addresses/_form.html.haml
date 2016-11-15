@@ -62,7 +62,7 @@
       .clear-fix
       .info-form-group
         %label{:for => "country"} Country
-        =f.country_select :country,{priority: %w(US),(f.object.country ?  f.object.country : @country_code)}
+        =f.country_select :country,{priority: %w(US),selected: (f.object.country ?  f.object.country : @country_code)}
         / = f.text_field :country,autocomplete: "off", placeholder: "Zip code",:id =>"zip-code", "data-parsley-trigger" => "change", "data-parsley-required-message" => "Oops, Zip code is required!",:required =>"required"
       
       .clear-fix

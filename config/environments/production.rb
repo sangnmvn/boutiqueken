@@ -82,8 +82,8 @@ Rails.application.configure do
     :address   => "mail.boutiqueken.com",
     :port      => 587,
     #:domain    => "spinx.com",
-    :user_name => "care",
-    :password  => "H'?,4|#@3c,(9S%{7369E",
+    :user_name => "boutique-ken",
+    :password  => "UcZYUKTf36eZxcbkg82rZ",
     :authentication => 'login',
     :enable_starttls_auto => true
   }

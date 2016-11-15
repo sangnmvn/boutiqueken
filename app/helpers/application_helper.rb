@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def admin_current_section?(section)
+    section_arr = {index:['index'],
+      scrapper:['scrapper'],
+      user_mgmt:['user_mgmt', 'create_user', 'save_user', 'edit_user', 'delete_user'],
+      my_profile:['my_profile']
+      }[section]
+    (section_arr && section_arr.include?(params[:action]))? 'class="current_section"'.html_safe : ''
+  end
+  
   def set_seo
     if params[:controller] == "devise/sessions" && params[:action] == "new"
       @seo_title = "Log In or Register for a boutiqueken.com Account | Women's Discount Shoes, Clothing, Accessories"
@@ -215,6 +224,18 @@ module ApplicationHelper
     number_with_precision(val, :precision => 2,:delimiter => ",",:separator => ".")
   end
 
+  def show_price_range(price_range)
+    
+    txt_arr = []
+    price_range.each do |i|
+      
+      val = MoneyExchange.exchange(i,@currency)
+      txt_arr << number_with_precision(val, :precision => 2,:delimiter => ",",:separator => ".")
+    end
+    txt_arr.join(" - ")
+    
+  end
+
   def show_2digit(price)
     number_with_precision(price, :precision => 2,:delimiter => ",",:separator => ".")
   end
@@ -242,9 +263,17 @@ module ApplicationHelper
   end
 
 
-  def show_order_status(status)
-    map_k = {0=>"Init",1 =>"Confirmed"}
+  def show_order_status_admin(status)
+    map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
     return map_k[status]
+  end
+  def show_order_status(status,order_id)
+    map_k = {0=>"Initial",1 =>"Confirmed",2=>"Processing",3 =>"Preparing your order",4=>"Track my order"}
+    if status <4
+      return map_k[status]
+    else
+      raw "<a href='javascript:;' class='track-order-#{order_id} t-order' data-id='#{order_id}' onclick=show_order_dt_table('.track-order-#{order_id}') >Track this order</a>"
+    end
   end
 
   def determine_static_left_selected(action,controller="home")

@@ -1,0 +1,49 @@
+-flash.each do |name,msg|
+  %div.notice-txt
+    = msg
+%div{:style => "text-align: right;"}
+.md-card.order-mgmt
+  .md-card-content
+    .uk-grid{"data-uk-grid-margin" => ""}
+      .uk-width-1-1
+        .uk-overflow-container
+          %table.uk-table.uk-table-hover
+            %thead
+              %tr
+                %th No.
+                %th Code
+                %th First Name
+                %th Last Name
+                %th Email
+                %th Total
+                %th Status
+                %th Last Updated At
+                %th Action
+            %tbody
+              - index = (@current_page - 1) * @per_page + 1
+              - @orders.each do |order|
+                %tr
+                  %td.uk-text-nowrap= index
+                  %td.uk-text-nowrap= order.code
+                  %td.uk-text-nowrap= order.user.first_name
+                  %td.uk-text-nowrap= order.user.last_name
+                  %td.uk-text-nowrap= order.email
+                  %td.uk-text-nowrap= order.show_total_price
+                  %td.uk-text-nowrap= show_order_status_admin(order.status)
+                  %td.uk-text-nowrap= order.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+                  %td.uk-text-nowrap
+                    %a{:href =>"/admin/order_detail?order_id=#{order.id}"}
+                      %i.md-icon.material-icons
+                        &#xE8B6;
+                    %a.show-track-modal{:href =>"javascript:;","data-id" =>order.id}
+                      Track this order
+                    / %a{:href => "/admin/edit_user?user_id=#{user.id}", :title => "Edit User"}
+                    /   %i.md-icon.material-icons.md-24 
+                    / %a{:href => "#", :onclick => "UIkit.modal.confirm('Are you sure to delete this user?', function(){ delete_user(#{user.id});},{labels: {'Ok': 'Yes', 'Cancel': 'No'}});", :title => "Delete User"}
+                    /   %i.md-icon.material-icons.md-24 
+                - index += 1
+        = paginate @orders
+%div.modal-trackorder-container
+= csrf_meta_tag
+:javascript
+  var token = '#{form_authenticity_token}';
