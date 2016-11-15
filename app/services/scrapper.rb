@@ -1855,7 +1855,7 @@ class Scrapper
       product.site_product_id = site_product_id
       product.short_desc = short_desc.gsub(/ï¿½/,"'")
       product.long_desc = long_desc.gsub(/ï¿½/,"'")
-      product.bullet_text = bullet_text
+      product.bullet_text = bullet_text.gsub(/ï¿½/,"'") if bullet_text.present?
       product.main_image_url = main_image_url
       product.additional_images = additional_images
       product.site_cat_id = site_cat_id
@@ -2073,7 +2073,7 @@ class Scrapper
       product.site_product_id = site_product_id
       product.short_desc = short_desc.gsub(/ï¿½/,"'")
       product.long_desc = long_desc.gsub(/ï¿½/,"'")
-      product.bullet_text = bullet_text
+      product.bullet_text = bullet_text.gsub(/ï¿½/,"'") if bullet_text.present?
       product.site_cat_id = site_cat_id
       product.video_id = video_id
       product.main_image_url = main_image_url
