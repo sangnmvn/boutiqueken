@@ -38,10 +38,10 @@ class ApplicationController < ActionController::Base
     return unless request.get? 
     if (request.path != "/secure-user-sign-in-up" &&
         request.path != "/secure-sign-up" &&
-        request.path != "/users/password/new" &&
-        request.path != "/users/password/edit" &&
-        request.path != "/users/confirmation" &&
-        request.path != "/users/sign_out" &&
+        request.path != "/secure-password/new" &&
+        request.path != "/secure-password/new" &&
+        request.path != "/confirmation" &&
+        request.path != "/sign_out" &&
         !request.xhr?) # don't store ajax calls
       session[:previous_url] = request.fullpath 
     end

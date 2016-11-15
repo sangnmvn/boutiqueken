@@ -3,18 +3,25 @@ Rails.application.routes.draw do
 
   get 'errors/internal_server_error'
   
-  devise_scope :user do
-    get "/secure-user-sign-in-up"   => "devise/sessions#new",       as: "new_user_session"
-    post "/secure-user-sign-in-up"  => "devise/sessions#create",    as: "user_session"
-    delete "/users/sign_out"        => "devise/sessions#destroy",   as: "destroy_user_session"
-    get "/secure-sign-up"           => "devise/registrations#new",  as: "new_user_registration"
-    get "/my-profile"               => "users#profile",             as: "profile_user",         format: false
+  # devise_scope :user do
+  #   # get "/secure-user-sign-in-up"   => "devise/sessions#new",       as: "new_user_session"
+  #   # post "/secure-user-sign-in-up"  => "devise/sessions#create",    as: "user_session"
+  #   # delete "/users/sign_out"        => "devise/sessions#destroy",   as: "destroy_user_session"
+  #   # get "/secure-sign-up"           => "devise/registrations#new",  as: "new_user_registration"
+  #   # post "/secure-sign-up"           => "devise/registrations#create",  as: "user_registration"
+  #   # #put "/users/password"      => "devise/passwords#update", as: "user_password"
+  #   # get "/secure-user-forgot"      => "devise/passwords#new", as: "new_user_password"
+  #   # get "/secure-user-update-pass"      => "devise/passwords#edit", as: "edit_user_password"
+  #   # post "/secure-user-forgot"      => "devise/passwords#create",as: "user_password"
+  #   # put "/secure-user-forgot"      => "devise/passwords#update",as: "update_user_password"
+
+    
+    
+  # end
+  get "/my-profile"               => "users#profile",             as: "profile_user",         format: false
     get "/my-dashboard"             => "users#dashboard",           as: "dashboard_user",       format: false
     get "/my-address-book"          => "users#address_book",        as: "address_book_user",    format: false
     get "/my-orders"                => "users#orders",              as: "orders_user",          format: false
-    
-  end
-  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -163,5 +170,5 @@ Rails.application.routes.draw do
   #   end
   
   # Below for all other routes:
-  devise_for :users, :skip => [:sessions]
+  devise_for :users, :path => '', :path_names => { :sign_in => "secure-user-sign-in-up", :sign_up => "secure-sign-up",:password =>"secure-password"},:controllers => { :passwords => "passwords" }
 end

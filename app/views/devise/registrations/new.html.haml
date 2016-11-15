@@ -44,10 +44,10 @@
             .password-input-block
               %label{:for => "password"} Password
               / %input#password{:required => "required", :type => "password"}/
-              = f.password_field :password, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password is required!","data-parsley-trigger" => "change",:id =>"password"
+              = f.password_field :password, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password is required!","data-parsley-trigger" => "change",:id =>"password","data-parsley-minlength"=>"6"
             .password-input-block
               %label{:for => "confirm-password"} Confirm Password
-              = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password Confirmation is required!","data-parsley-trigger" => "change",:id =>"password_confirmation","data-parsley-equalto"=>"#password","parsley-equalto-message" => "Password confirmation does not match"
+              = f.password_field :password_confirmation, autocomplete: "off",placeholder: "Password", :required =>"required", "data-parsley-required-message" => "Oops, Password Confirmation is required!","data-parsley-trigger" => "change",:id =>"password_confirmation","data-parsley-equalto"=>"#password","parsley-equalto-message" => "Password confirmation does not match","data-parsley-minlength"=>"6"
             / .password-input-block
             /   %label{:for => "confirm-password-2"} Confirm Password
             /   %input#confirm-password-2{:type => "password"}/
