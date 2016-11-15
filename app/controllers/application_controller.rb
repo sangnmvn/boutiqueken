@@ -104,7 +104,6 @@ class ApplicationController < ActionController::Base
     # fullpath -> search key words
     h = {
       "/cat/beauty-chanel" => "chanel",
-      "/cat/jewelry-15830-wedding-engagement-rings" => "wedding engagement ring",
       "/cat/women-cold-weather-style" => "cold weather style women",
       "/cat/women-dress-codes" => "women dress  NOUVEAU ROMANCE,  COZY CHIC , CAREER DRIVEN  , BEST-DRESSED GUEST,  LIFE OF THE PARTY, VIVA LA VELVET",
       "/cat/jewelry-style-your-ring" => "jewelry ring",
