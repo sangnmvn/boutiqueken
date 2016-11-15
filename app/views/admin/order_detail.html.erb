@@ -100,23 +100,12 @@
                               <td class="uk-text-bold uk-text-italic uk-text-small">Item Total</td>
                               <td class="uk-text-nowrap">
                                 <%="#{@order.currency_by_user} $"%>
-                                <%=show_2digit(@order.total_by_currency)%></td>
-                          </tr>
-                          <tr>
-                              <td class="uk-text-bold uk-text-italic uk-text-small">Gift Wrap</td>
-                              <td class="uk-text-nowrap"><%="#{@order.currency_by_user} $ 0.00"%></td>
+                                <%=show_2digit(@order.total_by_currency)%>
+                                                                                            <br /> (All tax included)
+                                </td>
                           </tr>
                           <tr>
                               <td class="uk-text-bold uk-text-italic uk-text-small">Estimated Shopping & Handling</td>
-                              <td class="uk-text-nowrap"><%="#{@order.currency_by_user} $ 0.00"%></td>
-                          </tr>
-                          <tr>
-                              <td class="uk-text-bold uk-text-italic uk-text-small">Total Before Tax</td>
-                              <td class="uk-text-nowrap"><%="#{@order.currency_by_user} $"%>
-                                <%=show_2digit(@order.total_by_currency)%></td>
-                          </tr>
-                          <tr>
-                              <td class="uk-text-bold uk-text-italic uk-text-small">Estimated Tax</td>
                               <td class="uk-text-nowrap"><%="#{@order.currency_by_user} $ 0.00"%></td>
                           </tr>
                           <tr>

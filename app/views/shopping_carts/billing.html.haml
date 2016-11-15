@@ -336,23 +336,11 @@
                   %td.text-right.total-txt
                     ="#{@currency} $"
                     =show_price_digit(@shopping_cart.total)
-                %tr
-                  %td
-                    %b Gift Wrap
-                  %td.text-right="#{@currency} $ 0.00"
+                    %br
+                    (All tax included)
                 %tr
                   %td
                     %b Estimated Shopping &amp; Handling
-                  %td.text-right="#{@currency} $ 0.00"
-                %tr
-                  %td
-                    %b Total Before Tax
-                  %td.text-right.total-txt
-                    ="#{@currency} $"
-                    =show_price_digit(@shopping_cart.total)
-                %tr.checkout-table-last
-                  %td
-                    %b Estimated Tax
                   %td.text-right="#{@currency} $ 0.00"
                 %tr.checkout-table-total
                   %td
