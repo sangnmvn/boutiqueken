@@ -4,10 +4,15 @@ Rails.application.routes.draw do
   get 'errors/internal_server_error'
   
   devise_scope :user do
-    get "/secure-user-sign-in-up" => "devise/sessions#new", as: "new_user_session"
-    post "/secure-user-sign-in-up" => "devise/sessions#create", as: "user_session"
-    delete "/users/sign_out" => "devise/sessions#destroy", as: "destroy_user_session"
-    get "/secure-sign-up" => "devise/registrations#new", as: "new_user_registration"
+    get "/secure-user-sign-in-up"   => "devise/sessions#new",       as: "new_user_session"
+    post "/secure-user-sign-in-up"  => "devise/sessions#create",    as: "user_session"
+    delete "/users/sign_out"        => "devise/sessions#destroy",   as: "destroy_user_session"
+    get "/secure-sign-up"           => "devise/registrations#new",  as: "new_user_registration"
+    get "/my-profile"               => "users#profile",             as: "profile_user",         format: false
+    get "/my-dashboard"             => "users#dashboard",           as: "dashboard_user",       format: false
+    get "/my-address-book"          => "users#address_book",        as: "address_book_user",    format: false
+    get "/my-orders"                => "users#orders",              as: "orders_user",          format: false
+    
   end
   
   # The priority is based upon order of creation: first created -> highest priority.
@@ -44,12 +49,12 @@ Rails.application.routes.draw do
 
 
   resources :users do
-    member do
-      get 'profile'
-      get 'dashboard' 
-      get 'address_book'
-      get 'orders' 
-    end
+    # member do
+      # get 'profile'
+      # get 'dashboard' 
+      # get 'address_book'
+      # get 'orders' 
+    # end
     resources :addresses
   end
 
@@ -63,16 +68,29 @@ Rails.application.routes.draw do
     resources :products, path: 'pro', only: [:show]
   end
 
-  resource :shopping_carts do 
-    collection do
-      get "billing"
-    end
-  end
+  get "/secure-connection/billing" => "shopping_carts#billing", as: "billing_shopping_carts"
+  post "/secure-shopping-your-cart" => "shopping_carts#create", as: "shopping_carts"
+  get "/secure-shopping-your-cart/new" => "shopping_carts#new", as: "new_shopping_carts"
+  get "/secure-shopping-your-cart/edit" => "shopping_carts#edit", as: "edit_shopping_carts"
+  get "/secure-shopping-your-cart" => "shopping_carts#show"
+  patch "/secure-shopping-your-cart" => "shopping_carts#update"
+  put "/secure-shopping-your-cart" => "shopping_carts#update"
+  delete "/secure-shopping-your-cart" => "shopping_carts#destroy"
+
+  # resource :shopping_carts do 
+    # collection do
+      # get "billing"
+    # end
+  # end
+
+
+  get "/secure-connection/payment-options" => "orders#payment", as: "payment_order",    format: false
+  get "/secure-connection/submit-final-order" => "orders#confirm", as: "confirm_order", format: false
 
   resources :orders do 
     member do
-      get 'payment'
-      get 'confirm'
+      # get 'payment'
+      # get 'confirm'
       put 'confirmed'
     end
     collection do 
