@@ -30,7 +30,9 @@
                     %td.saks-bag-item
                       .saks-bag-item-img
                         -if i.has_color
-                          %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          -url =  i.product_price_detail.product_image
+                          -url = i.product_price_detail.product.main_image_url
+                          %img{:alt => "", :src => show_image_cus_love(url)}
                         -else
                           %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
                       .product-details-info
