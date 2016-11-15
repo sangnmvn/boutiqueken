@@ -49,6 +49,8 @@ GEM
     byebug (9.0.6)
     carmen (1.0.2)
       activesupport (>= 3.0.0)
+    carmen-iso-4217 (0.0.3)
+      carmen
     carmen-rails (1.0.1)
       carmen (~> 1.0.0)
       rails
@@ -60,6 +62,8 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
+    currency_select (0.1.5)
+      money
     debug_inspector (0.0.2)
     delayed_job (4.1.2)
       activesupport (>= 3.0, < 5.1)
@@ -78,8 +82,11 @@ GEM
     execjs (2.7.0)
     friendly_id (5.1.0)
       activerecord (>= 4.0.0)
+    geocoder (1.4.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    google_currency (3.3.0)
+      money (~> 6.7)
     haml (4.0.7)
       tilt
     highline (1.7.8)
@@ -184,6 +191,8 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    sitemap_generator (5.2.0)
+      builder (~> 3.0)
     sixarm_ruby_unaccent (1.1.1)
     socksify (1.7.0)
     sprockets (3.7.0)
@@ -227,22 +236,28 @@ DEPENDENCIES
   activerecord-import
   acts_as_shopping_cart
   byebug
+  carmen-iso-4217
   carmen-rails
   coffee-rails (~> 4.1.0)
+  currency_select
   delayed_job_active_record
   devise
   friendly_id
+  geocoder
+  google_currency
   haml
   jbuilder (~> 2.0)
   jquery-rails
   kaminari
   mechanize (= 2.7.5)
+  money
   pg
   progress_bar
   pundit
   rails (= 4.2.7.1)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  sitemap_generator
   socksify
   sprockets
   sunspot_rails
@@ -251,4 +266,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.13.3
+   1.13.6
