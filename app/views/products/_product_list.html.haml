@@ -87,7 +87,7 @@
                   %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                     %strong
                       ="Sale. #{@currency} $"
-                      =i.list_price_range.join(" - ")
+                      =show_price_range(i.list_price_range)
             / .single-product ends
           / .col-md-4 ends
           / SINGLE PRODUCT ends
