@@ -3497,8 +3497,14 @@ input[type=number]::-webkit-outer-spin-button {
     .seper-small{
       height: 10px;
     }
+    .del-price{
+      .price-txt{
+        padding-left: 0px;
+      }
+    }
     .price-txt{
-      font-size: 2.5rem;
+      font-size: 2.2rem;
+      padding-left: 10px;
     }
     .btn-medium{
       width: 70%;
