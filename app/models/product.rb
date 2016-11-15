@@ -97,7 +97,8 @@ class Product < ActiveRecord::Base
   def self.search_with_params(params_t,page,per_page)
     range_price = []
 
-    keyword = params_t[:search_txt].to_s
+    keyword = params_t[:search_txt].gsub(/-/i, ' ').to_s
+    
   	list_product = Product.search do
   	  fulltext keyword
       facet :product_detail_ids, limit: 20

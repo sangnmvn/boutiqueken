@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   post "/contact-us" =>"home#submit_contact"
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
+
+  get "/brand/:search_txt" => "products#search", :as => :brand_search
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
