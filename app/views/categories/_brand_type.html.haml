@@ -45,7 +45,7 @@
                       -else
                         -search_key = links.brand_name.to_s
                       %li
-                        %a{:href => search_products_path({:search_txt =>search_key})}=links.brand_name
+                        %a{:href => brand_search_path({:search_txt =>search_key.downcase.gsub(/ /i, '-')})}=links.brand_name
                   
             
 

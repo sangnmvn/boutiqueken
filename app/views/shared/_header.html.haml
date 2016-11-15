@@ -67,7 +67,7 @@
     / MOBILE OFFER TOP TEXT STARTS
     .search-panel.search-wrapper-big-screen
       %form.pull-right.search-box{:action => search_products_path()}
-        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt]}" ,:placeholder=>"What can we can help you find?"}/
+        %input{:type => "text", name: "search_txt", value: "#{params[:search_txt].gsub(/-/i,' ')if params[:search_txt].present?}" ,:placeholder=>"What can we can help you find?"}/
         %button{:type => "submit"}
           %i.fa.fa-search
     .clear-fix
