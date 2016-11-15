@@ -49,6 +49,7 @@ class Scrapper
       @root_url = 'https://www.macys.com/'
 
       @agent = Mechanize.new
+      @agent.history.max_size = 1
 
       set_cookies(@agent)
 
@@ -1571,7 +1572,7 @@ class Scrapper
 
           scrape_products_per_subcat(site_cat_id, cat_url)
           GC.start
-          
+
           return if admin_request == STOP
         end
       end
