@@ -227,23 +227,11 @@
                               %td.text-right
                                 ="#{@order.currency_by_user} $"
                                 =show_2digit(@order.total_by_currency)
-                            %tr
-                              %td
-                                %b Gift Wrap
-                              %td.text-right="#{@order.currency_by_user} $ 0.00"
+                          %br
+                          (All tax included)
                             %tr
                               %td
                                 %b Estimated Shopping &amp; Handling
-                              %td.text-right="#{@order.currency_by_user} $ 0.00"
-                            %tr
-                              %td
-                                %b Total Before Tax
-                              %td.text-right
-                                ="#{@order.currency_by_user} $"
-                                =show_2digit(@order.total_by_currency)
-                            %tr.checkout-table-last
-                              %td
-                                %b Estimated Tax
                               %td.text-right="#{@order.currency_by_user} $ 0.00"
                             %tr.checkout-table-total
                               %td
