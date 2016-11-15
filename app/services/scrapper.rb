@@ -1401,8 +1401,12 @@ class Scrapper
             @current_file.flush unless @current_file.nil?
             @ppd_current_file.flush unless @ppd_current_file.nil?
 
+            GC.start
+
             import_crawled_products_to_db(@start_date, cat_name, @current_batch)
             import_product_price_details_to_db(@start_date, cat_name, @ppd_current_batch)
+
+            GC.start
 
             break
           end
@@ -1423,8 +1427,12 @@ class Scrapper
           @current_file.flush unless @current_file.nil?
           @ppd_current_file.flush unless @ppd_current_file.nil?
 
+          GC.start
+
           import_crawled_products_to_db(@start_date, cat_name, @current_batch)
           import_product_price_details_to_db(@start_date, cat_name, @ppd_current_batch)
+
+          GC.start
 
           @current_batch = 0
           @ppd_current_batch = 0
@@ -1526,6 +1534,7 @@ class Scrapper
               site_cat_url = cat_el.attributes["href"].text
 
               scrape_products_per_subcat(site_cat_id, site_cat_url)
+              GC.start
 
               return if admin_request == STOP
             end
@@ -1561,7 +1570,8 @@ class Scrapper
           cat_url = cat.attributes["href"].text
 
           scrape_products_per_subcat(site_cat_id, cat_url)
-
+          GC.start
+          
           return if admin_request == STOP
         end
       end
@@ -1636,6 +1646,7 @@ class Scrapper
             cat_url = cat.search("a").first.attributes["href"].text
 
             scrape_products_per_subcat(site_cat_id, cat_url)
+            GC.start
 
             return if admin_request == STOP
           end
