@@ -52,6 +52,7 @@ $(function(){
   ViewProduct.render();
   Product.init(".image-product-detail");
   Billing.init(".section-billing");
+  Promocode.apply_code();
   BrandType.init(".brand-type-page");
   $(".a-to-bag").on("click",function(){
     selected_detail_id = $(this).closest(".product-panel").find(".color-picking.active").attr("data-detail-id");
@@ -520,6 +521,15 @@ var Billing ={
         select_wrapper.load(url);
       });
     }
+  }
+}
+var Promocode = {
+  apply_code: function(){
+    $('.btn-promo-code').click(function(){
+      var promo_code = $('.promo-code').val();
+      $('.promo-message').append('<i class="fa fa-times-circle" style="font-size:15px"></i> The coupon code "' + promo_code + '" is not valid');
+      $('.promo-message').removeClass('hidden').addClass('visible');
+    });
   }
 }
 
