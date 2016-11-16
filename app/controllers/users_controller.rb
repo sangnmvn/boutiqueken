@@ -8,7 +8,6 @@ class UsersController < ApplicationController
   def index
     # redirect_to new_user_session_path
   end
-
   def update
     user = current_user
     if params[params[:user][:current_password].present?]
@@ -58,7 +57,7 @@ class UsersController < ApplicationController
   end
 
   def orders
-    @orders = current_user.confirmed_orders 
+    @orders = current_user.confirmed_orders.order("updated_at desc") 
   end
 
   protected
