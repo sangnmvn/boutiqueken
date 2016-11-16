@@ -36,12 +36,12 @@ class ApplicationController < ActionController::Base
   def store_location
     # store last url - this is needed for post-login redirect to whatever the user last visited.
     return unless request.get? 
-    if (request.path != "/users/sign_in" &&
-        request.path != "/users/sign_up" &&
-        request.path != "/users/password/new" &&
-        request.path != "/users/password/edit" &&
-        request.path != "/users/confirmation" &&
-        request.path != "/users/sign_out" &&
+    if (request.path != "/secure-user-sign-in-up" &&
+        request.path != "/secure-sign-up" &&
+        request.path != "/secure-password/new" &&
+        request.path != "/secure-password/new" &&
+        request.path != "/confirmation" &&
+        request.path != "/sign_out" &&
         !request.xhr?) # don't store ajax calls
       session[:previous_url] = request.fullpath 
     end
@@ -56,6 +56,7 @@ class ApplicationController < ActionController::Base
   end
   
   def store_current_location
+    params[:id] ||= current_user.id if current_user
     store_location_for(:user, request.url)
   end
 
@@ -121,5 +122,9 @@ class ApplicationController < ActionController::Base
       url = "#{request.protocol}#{request.host_with_port}/pro/search?search_txt=#{h[request.fullpath]}"
       redirect_to URI::encode(url)
     end
+  end
+  
+  def save_current_order
+    session[:last_oid] = @order.id if @order
   end
 end

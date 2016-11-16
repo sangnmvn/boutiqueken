@@ -151,12 +151,14 @@
                             Enter One Promo Code At A Time
                         .info-form-group.col-sm-9
                           .account-input-block
-                            %input#zip2{:type => "text"}/
+                            %input#zip2.promo-code{:type => "text"}/
                           / .account-input-block ends
                         / .info-form-group ends
                         .info-form-group.col-sm-3
-                          %a{:href => "#"} Apply
+                          %a.btn-promo-code{:href => "#"} Apply
                         / .info-form-group ends
+                        .col-sm-9{:style => "padding-top:5px"}
+                          .col-sm-12.hidden.alert.alert-danger.promo-message.info-form-group{:style => "color:red"}
                 / col ends
                 .col-xs-12.col-sm-6
                   .saks-bag-shopping

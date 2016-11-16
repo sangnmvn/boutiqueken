@@ -5,6 +5,7 @@ class OrdersController < ApplicationController
   layout "devise"
   before_filter :authenticate_user!
   before_filter :check_user_orders, only: [:show,:confirm,:confirmed,:payment]
+  after_filter :save_current_order
 
   def create
   	@success = false
@@ -17,12 +18,11 @@ class OrdersController < ApplicationController
     if current_user.addresses.count ==0
       current_user.add_default_address(params[:order][:shipping_address_attributes],params[:order][:billing_address_attributes])
     end
+    save_current_order
   end
 
   def update
     @success = false
-
-    
   end
 
   def delete_comment
@@ -37,11 +37,11 @@ class OrdersController < ApplicationController
   end
 
   def payment
-    @order = Order.find(params[:id])
+    #@order = Order.find(params[:id]||session[:last_oid].to_i)
   end
   
   def confirm
-    @order = Order.find(params[:id])
+    #@order = Order.find(params[:id]||session[:last_oid].to_i)
     @billing = @order.billing_address
     @shipping = @order.shipping_address
   end
@@ -67,7 +67,11 @@ class OrdersController < ApplicationController
   end
 
   def check_user_orders
-    existed = current_user.orders.where(:id => params[:id]).first
-    redirect_to root_path and return if existed.blank?
+    if session[:last_oid].present?
+      @order = current_user.orders.where(:id => session[:last_oid]).first
+    else
+      @order = current_user.orders.where(:id => params[:id]).first
+    end
+    redirect_to root_path and return if @order.blank?
   end
 end

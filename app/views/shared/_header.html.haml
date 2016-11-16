@@ -12,21 +12,13 @@
       
       / DESKTOP TOP LINKS STARTS
       %ul.ul-top-navigation.ul-top-navigation-desktop.hidden-xs.pull-right
-        -if current_user.present?
-          %li
-            %a{:href => orders_user_path(current_user)} Order Tracking
-        -else
-          %li
-            %a{:href => new_user_session_path} Order Tracking
+        
         %li
           %a{:href => country_choser_path}
             Ship To:
             %div{:alt => "star-icon",:src=>"", class: "flag flag-#{@country_code.downcase}"}
             
-        %li
-          %a{:href => "#"} Chat
-        %li
-          %a{:href => "#"} 1.877.551.7257
+        
         %li
           %a{:href => "#{shopping_carts_path}"}
             My Bag(

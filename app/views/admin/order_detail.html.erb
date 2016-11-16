@@ -67,7 +67,7 @@
                               <% @order.order_details.each do |i| %>
                                   <tr>
                                     <td><img class="img_thumb" src="<%=
-                                      (i.product_price_detail_id.present?)? show_image_cus_love(i.product_price_detail.product_image): show_image_cus_love(i.product.main_image_url)%>" alt=""></td>
+                                      (i.product_price_detail_id.present?)? show_image_cus_love(i.product_image): show_image_cus_love(i.product_image)%>" alt=""></td>
                                     <td class="uk-text-large uk-text-nowrap"><a href=""><%=i.product_name%></a></td>
                                     <td class="uk-text-nowrap"><%=i.size%></td>
                                     <td class="uk-text-nowrap"><%="#{i.currency_by_user} $"%> <%=show_2digit(i.price_by_currency)%></td>
@@ -82,7 +82,7 @@
       
                     <div class="md-list-content">
                       <span class="md-list-heading">Shipping Method</span>
-                      <span class="uk-text-small uk-text-muted">Standard (est. delivery 10/ 07 16)</span>
+                      <span class="uk-text-small uk-text-muted">Standard</span>
                     </div>
                 </div>
               </div>
@@ -101,6 +101,7 @@
                               <td class="uk-text-nowrap">
                                 <%="#{@order.currency_by_user} $"%>
                                 <%=show_2digit(@order.total_by_currency)%>
+                                <br /> (All tax included)
                                 </td>
                           </tr>
                           <tr>
