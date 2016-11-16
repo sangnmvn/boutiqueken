@@ -402,7 +402,6 @@ var Product={
       $('.size-picking.active').removeClass("active");
 
       $(this).addClass("active");
-      Product.change_color();
     });
 
     $(".color-picking").on("click",function(){
