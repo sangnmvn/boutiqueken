@@ -71,7 +71,6 @@ class Scrapper
       FileUtils.mkdir_p("./tmp/#{@start_date}")
       @current_cat_name = ""
 
-      @scrapped_site_cat_ids = {}
       @existing_products = {}
 
       @scrapped_products = {}
@@ -261,7 +260,6 @@ class Scrapper
   def scrape_left_nav_details(root_cat, url)
     begin
       full_url = get_full_url(url)
-
 
       key = "#{root_cat.id}\tn\t#{extract_id_from_url(full_url)}"
 
@@ -1387,7 +1385,7 @@ class Scrapper
 
         @logger.info "Scrapping #{cat_name} products"
 
-        if !scrape_cat_name.nil?
+        if scrape_cat_name.present?
           if cat_name == scrape_cat_name
             scrape_others_cat_products(cat_id, @root_url)
 
@@ -1414,12 +1412,13 @@ class Scrapper
           update_scrapping_progress(current_percentage, "Scrapping #{cat_name} products")
 
           scrape_others_cat_products(cat_id, @root_url)
-
+        
           break if admin_request == STOP
 
           if cat_name == "GIFS"
             scrape_products_for_left_cat_gifts(cat_url)
-          else
+          elsif cat_name != "BED & BATH"
+            # Ignore bed & bath left-nav because it was included in HOME menu
             scrape_products_for_left_cat(cat_url)
           end
 
@@ -1513,12 +1512,14 @@ class Scrapper
 
   def scrape_others_cat_products(site_root_cat_id, url)
     begin
-      return if @existing_urls[url].present?
-      @existing_urls[url] = url
+      full_url = get_full_url(url)
 
-      @logger.info url
+      return if @existing_urls[full_url].present?
+      @existing_urls[full_url] = full_url
 
-      page = @agent.get(url)
+      @logger.info full_url
+
+      page = @agent.get(full_url)
 
       sub_menu_id = "#Flyout_#{site_root_cat_id}"
 
@@ -1551,8 +1552,10 @@ class Scrapper
 
   def scrape_products_for_left_cat(url, current_cat_name=nil)
     begin
-      return if @existing_urls[url].present?
-      @existing_urls[url] = url
+      full_url = get_full_url(url)
+
+      return if @existing_urls[full_url].present?
+      @existing_urls[full_url] = full_url
 
       if current_cat_name.present?
         @current_cat_name = current_cat_name
@@ -1565,7 +1568,7 @@ class Scrapper
 
       set_cookies(agent)
 
-      page = agent.get(url)
+      page = agent.get(full_url)
 
       nav = page.search("#firstNavSubCat").search(".//li[@class='nav_cat_item_bold']")
 
@@ -1667,10 +1670,10 @@ class Scrapper
 
   def scrape_products_per_subcat(site_cat_id, url)
     begin
-      return if @existing_urls[url].present?
-      @existing_urls[url] = url
-
       full_url = get_full_url(url)
+
+      return if @existing_urls[full_url].present?
+      @existing_urls[full_url] = full_url
 
       @logger.info "\nScrapping products from #{full_url}"
 
@@ -1764,7 +1767,6 @@ class Scrapper
         end
       end
 
-      @scrapped_site_cat_ids[site_cat_id] = site_cat_id
     rescue Exception => e
       @logger.error(e.message)
       @logger.error(e.backtrace.join("\n"))
@@ -2613,7 +2615,7 @@ class Scrapper
       full_url = url
     end
 
-    return full_url
+    return full_url.gsub("com//","com/")
   end
 
   def extract_id_from_url(url)
