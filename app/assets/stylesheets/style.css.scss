@@ -4311,6 +4311,10 @@ input[type=number]::-webkit-outer-spin-button {
       margin: 0px;
       font-weight: normal;
       display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 88%;
     }
   }
 }
