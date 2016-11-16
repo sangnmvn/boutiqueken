@@ -101,6 +101,7 @@ class Product < ActiveRecord::Base
     
   	list_product = Product.search do
   	  fulltext keyword
+      group :site_product_id
       facet :product_detail_ids, limit: 20
       facet :brand_names, limit: -1,:distinct =>true
       with(:brand_names,params_t[:brand_selected]) if params_t[:brand_selected].present?
@@ -117,7 +118,7 @@ class Product < ActiveRecord::Base
 
       paginate :page => page, :per_page => per_page
   	end
-    return list_product
+    return list_product.group(:site_product_id).groups,list_product
   end
 
 

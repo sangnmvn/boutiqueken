@@ -1,6 +1,7 @@
 var html = "<%= j render :partial =>'product_items',locals: {:product_ls => @products}%>";
 $("html, body").animate({ scrollTop: 0 }, "slow");
 $(".product-list").html(html);
+ProductList.reinit_carousel();
 var productColorImg = $('.product-details-info').find('.coloring-ul').find('li'),
       productLargeImg = $('.product-img-wrapper').find('img');
 

@@ -23,12 +23,19 @@ class ProductsController < ApplicationController
     @seo_keywords = ""
     @page = params[:page] || 1
     @per_page = params[:per_page] || 100
-    @search = Product.search_with_params(params,@page,@per_page)
-    @products = @search.results
-    @product_prices = ProductPriceDetail.where(:id =>@search.facet(:product_detail_ids).rows.map!{|col| col.value})
+    @search,@orginal = Product.search_with_params(params,@page,@per_page)
+    @results =[]
+    @brands = []
+    @search.each do |group|
+      @results +=group.results
+      #@brands +=group.facet(:brand_names).rows.map!{|col| col.value}.map{|x| [x,false]}
+    end
+    @products = @results
+    #@product_prices = ProductPriceDetail.where(:id =>@search.facet(:product_detail_ids).rows.map!{|col| col.value})
     # @color_names = @product_prices.map{|x| [x.color_name,x.color_image,x.id,false]}
     @color_names = [["Red",false],["Silver",false],["Yellow",false],["Black",false],["Blue",false],["Brown",false],["Gold",false],["Ivory",false],["Gray",false],["Green",false],["Orange",false],["Pink",false],["White",false],["Multi",false]]
-    @brands =@search.facet(:brand_names).rows.map!{|col| col.value}.map{|x| [x,false]}
+    #@brands =[]
+    @brands =@orginal.facet(:brand_names).rows.map!{|col| col.value}.map{|x| [x,false]}
     # @brands = @search.results.map{|x| [x.brand_name,false]}.uniq
   end
 

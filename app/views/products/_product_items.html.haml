@@ -6,19 +6,19 @@
     .single-view-option.items
       %a{:href => "#"}
         %span
-          =@products.total_count
+          =@search.total_count
         items
     / .single-view-option.view-number.hidden-xs
     /   %a.per-page{:href => "#","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
     /   %a.per-page{:href => "#", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
     /     %span 180
     .single-view-option.view-pagi.hidden-xs
-      %span.current=perpage_item_of(@products.total_count,@products.current_page,@per_page)
+      %span.current=perpage_item_of(@search.total_count,@search.current_page,@per_page)
       of
-      %span.total=@products.total_count
+      %span.total=@search.total_count
     .single-view-option.pagi
       .kaminari-paging
-        = paginate @products, remote: true
+        = paginate @search, remote: true
     / .single-view-option.pagi ends
   / .sort-right ends
 / .sort-by-area ends
@@ -94,16 +94,16 @@
     .sort-right.sort-right-bottom
       .single-view-option.items
         %a{:href => "#"}
-          %span=product_ls.total_count
+          %span=@search.total_count
           items
       .single-view-option.view-number.hidden-xs
         / %a.per-page{:href => "javascript:;","data-length" => 60,:class =>determine_per_page_select(60,@per_page)} View 60
         / %a.per-page{:href => "javascript:;", "data-length" => 180,:class =>determine_per_page_select(180,@per_page)}
         /   %span 180
       .single-view-option.view-pagi.hidden-xs
-        %span.current=product_ls.current_page * @per_page.to_i
+        %span.current=@search.current_page * @per_page.to_i
         of
-        %span.total=product_ls.total_count
+        %span.total=@search.total_count
       .single-view-option.pagi
         .kaminari-paging
-          = paginate product_ls, remote: true
+          = paginate @search, remote: true
