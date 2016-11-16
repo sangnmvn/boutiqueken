@@ -859,7 +859,6 @@ class Scrapper
 
   def scrape_filters_for_subcat(site_cat_id, url, cat_name, group_name)
     begin
-
       @logger.info "Scrapping filters in #{url}"
 
       full_url = get_full_url(url)
@@ -1376,7 +1375,6 @@ class Scrapper
       end
 
       menu.search("li").each do |mnu_item|
-
         break if admin_request == STOP
 
         cat_id = mnu_item.attributes["id"].value.split("_").last
@@ -1515,6 +1513,9 @@ class Scrapper
 
   def scrape_others_cat_products(site_root_cat_id, url)
     begin
+      return if @existing_urls[url].present?
+      @existing_urls[url] = url
+
       @logger.info url
 
       page = @agent.get(url)
@@ -1550,6 +1551,9 @@ class Scrapper
 
   def scrape_products_for_left_cat(url, current_cat_name=nil)
     begin
+      return if @existing_urls[url].present?
+      @existing_urls[url] = url
+
       if current_cat_name.present?
         @current_cat_name = current_cat_name
       end
@@ -1663,10 +1667,8 @@ class Scrapper
 
   def scrape_products_per_subcat(site_cat_id, url)
     begin
-      if site_cat_id != 0 && @scrapped_site_cat_ids[site_cat_id].present?
-        @logger.info "We scrapped products of this site_cat_id #{site_cat_id} - url #{url}"
-        return
-      end
+      return if @existing_urls[url].present?
+      @existing_urls[url] = url
 
       full_url = get_full_url(url)
 
