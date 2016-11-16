@@ -125,7 +125,7 @@ class ApplicationController < ActionController::Base
       "/cat/brands-puma" => "puma",
       "/cat/brands-sports-fan-shop-by-lids" => "sports fan shop by lids",
       "/cat/brands-15952-the-north-face" => "the north face",
-      "/cat/men-under-armour" => "under armour",
+      "/cat/brands-under-armour" => "under armour",
       "/cat/brands-sperry-top-sider" => "sperry"
     }
 
