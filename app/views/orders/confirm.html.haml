@@ -178,9 +178,9 @@
                     %td.saks-bag-item
                       .saks-bag-item-img
                         -if i.product_price_detail_id.present?
-                          %img{:alt => "", :src => show_image_cus_love(i.product_price_detail.product_image)}
+                          %img{:alt => "", :src => show_image_cus_love(i.product_image)}
                         -else
-                          %img{:alt => "", :src => show_image_cus_love(i.product.main_image_url)}
+                          %img{:alt => "", :src => show_image_cus_love(i.product_image)}
                       .product-details-info
                         %strong=i.product_name
                         %p.pp-size
