@@ -18,6 +18,9 @@ class ProductsController < ApplicationController
   end
 
   def search
+    @seo_title = [params[:search_txt].to_s,"Boutiqueken"].join(" | ")
+    @seo_desc = "Free shipping. Free returns. All the time. Shop #{params[:search_txt].to_s}"
+    @seo_keywords = ""
     @page = params[:page] || 1
     @per_page = params[:per_page] || 100
     @search = Product.search_with_params(params,@page,@per_page)
