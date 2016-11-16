@@ -41,7 +41,7 @@
                   %ul.ul-letter-list
                     -list.each do |links|
                       -if @category.cat_name.to_s != "BRANDS"
-                        -search_key = [@category.cat_name.to_s,links.brand_name.to_s].join(" ")
+                        -search_key = [@category.cat_name.to_s,links.brand_name.to_s].join(" ").split(" ").collect{|w| !["all","brands"].include?(w.downcase) ? w.downcase : ''}.join(" ").strip.gsub(" ","-")
                       -else
                         -search_key = links.brand_name.to_s
                       %li

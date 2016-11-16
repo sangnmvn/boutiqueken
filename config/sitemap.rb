@@ -45,9 +45,9 @@ SitemapGenerator::Sitemap.create do
   LeftNav.where(parent_id: main_id).find_each do |cat|
     Brand.where(category_id: cat.category_id).find_each do |brand|
       if cat.cat_name.upcase == "ALL BRANDS"
-        add brand_search_path(brand.brand_name.downcase.gsub(" ","-"))
+        add brand_search_path(brand.brand_name.split(" ").collect{|w| !["all","brands"].include?(w.downcase) ? w.downcase : ''}.join(" ").strip.gsub(" ","-"))
       else
-        add brand_search_path("#{cat.cat_name}#{brand.brand_name}".downcase.gsub(" ","-"))
+        add brand_search_path("#{cat.cat_name} #{brand.brand_name}".split(" ").collect{|w| !["all","brands"].include?(w.downcase) ? w.downcase : ''}.join(" ").strip.gsub(" ","-"))
       end
     end
   end

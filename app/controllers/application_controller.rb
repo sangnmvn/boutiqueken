@@ -115,8 +115,20 @@ class ApplicationController < ActionController::Base
       "/cat/juniors-holiday-trend-report" => "holiday",
       "/cat/beauty-15710-chanel" => "chanel",
       "/cat/handbags-trolls" => "handbag troll",
-      "/cat/women-holiday-style-guide" => "Merry red, sparkle and shine, va va velvet, romantic evening, bomber jacket"
+      "/cat/women-holiday-style-guide" => "Merry red, sparkle and shine, va va velvet, romantic evening, bomber jacket",
+      "/cat/brands-adidas" => "adidas",
+      "/cat/brands-champion" => "champion",
+      "/cat/brands-finish-line-athletic-shoes" => "finish line athletic shoes",
+      "/cat/brands-fitbit" => "fitbit",
+      "/cat/brands-ideology" => "ideology",
+      "/cat/brands-15949-nike" => "nike",
+      "/cat/brands-puma" => "puma",
+      "/cat/brands-sports-fan-shop-by-lids" => "sports fan shop by lids",
+      "/cat/brands-15952-the-north-face" => "the north face",
+      "/cat/men-under-armour" => "under armour",
+      "/cat/brands-sperry-top-sider" => "sperry"
     }
+
 
     if h[request.fullpath].present?
       url = "#{request.protocol}#{request.host_with_port}/pro/search?search_txt=#{h[request.fullpath]}"
