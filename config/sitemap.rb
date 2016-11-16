@@ -39,4 +39,16 @@ SitemapGenerator::Sitemap.create do
   Category.find_each do |cate|
     add category_path(cate.to_friend_or_id), :lastmod => cate.updated_at
   end
+
+  main_id = Category.where(cat_name: "BRANDS", parent_id: nil).first.id
+
+  LeftNav.where(parent_id: main_id).find_each do |cat|
+    Brand.where(category_id: cat.category_id).find_each do |brand|
+      if cat.cat_name.upcase == "ALL BRANDS"
+        add brand_search_path(brand.brand_name.downcase.gsub(" ","-"))
+      else
+        add brand_search_path("#{cat.cat_name}#{brand.brand_name}".downcase.gsub(" ","-"))
+      end
+    end
+  end
 end
