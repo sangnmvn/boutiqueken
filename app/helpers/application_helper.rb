@@ -3,6 +3,7 @@ module ApplicationHelper
     section_arr = {index:['index'],
       scrapper:['scrapper'],
       user_mgmt:['user_mgmt', 'create_user', 'save_user', 'edit_user', 'delete_user'],
+      order_mgmt:['order_mgmt', 'show_order', 'order_detail'],
       my_profile:['my_profile']
       }[section]
     (section_arr && section_arr.include?(params[:action]))? 'class="current_section"'.html_safe : ''

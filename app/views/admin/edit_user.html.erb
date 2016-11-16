@@ -33,22 +33,11 @@
                 </div>
               </div>
             </div>
-            <div class="uk-grid" data-uk-grid-margin>
-              <div class="uk-width-medium-1-2">
-                <div class="parsley-row">
-                  <label for="password">Passsword<span class="req">*</span></label>
-                  <input id="password" type="password" name="password" data-parsley-minlength="6" data-parsley-trigger="change" required  class="md-input" />
-                </div>
-              </div>
+            <div class="uk-margin-top uk-margin-bottom">
+              <input type="checkbox" data-switchery data-switchery-color="#1e88e5" id="switch_change_password" />
+              <label for="switch_demo_primary" class="inline-label">Change Password</label>
             </div>
-            <div class="uk-grid" data-uk-grid-margin>
-              <div class="uk-width-medium-1-2">
-                    <div class="parsley-row">
-                        <label for="password_confirmation">Confirm Passsword<span class="req">*</span></label>
-                        <input type="password" name="password_confirmation" data-parsley-equalto="#password" data-parsley-trigger="change" required class="md-input" />
-                    </div>
-              </div>
-            </div>
+            <div class="uk-margin-top uk-margin-bottom" id="input_password"></div>
             <div class="uk-grid">
                 <div class="uk-width-1-1">
                     <button type="submit" class="md-btn md-btn-primary">Update</button>
@@ -57,3 +46,4 @@
         <%end%>
     </div>
 </div>
+

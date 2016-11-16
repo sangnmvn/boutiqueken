@@ -109,7 +109,8 @@ class AdminController < ApplicationController
           @success = true
         end
       end
-    redirect_to order_mgmt_admin_index_path,:notice =>"The Order Status has been updated successfully. "
+    flash[:msg] = {status: "success", message: "<center>The Order Status has been updated successfully.</center>"}
+    redirect_to order_mgmt_admin_index_path
     end
   end
 
@@ -126,12 +127,14 @@ class AdminController < ApplicationController
   def save_user
     if params[:page] == "edit_user"
       user = User.find(params[:user_id])
-      if params[:password] != params[:password_confirmation]
-        flash[:msg] = {status: "danger", message: "<center>Password and Confirm Password are not the same.</center>"}
-        redirect_to action: :edit_user, user_id: params[:user_id]
-        return
-      else
-        user.password = params[:password]
+      if params[:password]
+        if params[:password] != params[:password_confirmation]
+          flash[:msg] = {status: "danger", message: "<center>Password and Confirm Password are not the same.</center>"}
+          redirect_to action: :edit_user, user_id: params[:user_id]
+          return
+        else
+          user.password = params[:password]
+        end
       end
       flash[:msg] = {status: "success", message: "<center>User's info has been updated successfully.</center>"}
     else

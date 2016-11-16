@@ -200,6 +200,33 @@
     </div>
 
     <script>
+      <% if params[:action] == 'edit_user'%>
+        $('#switch_change_password').change(
+          function(){
+            if ($(this).is(':checked')) {
+              $('#input_password').html('\
+              <div class="uk-grid" data-uk-grid-margin>\
+                <div class="uk-width-medium-1-2">\
+                  <div class="parsley-row">\
+                    <label for="password">Passsword<span class="req">*</span></label>\
+                    <input id="password" type="password" name="password" data-parsley-minlength="6" data-parsley-trigger="change" required  class="md-input" />\
+                  </div>\
+                </div>\
+              </div>\
+              <div class="uk-grid" data-uk-grid-margin>\
+                <div class="uk-width-medium-1-2">\
+                      <div class="parsley-row">\
+                          <label for="password_confirmation">Confirm Passsword<span class="req">*</span></label>\
+                          <input type="password" name="password_confirmation" data-parsley-equalto="#password" data-parsley-trigger="change" required class="md-input" />\
+                      </div>\
+                </div>\
+              </div>');
+            }else{
+              $('#input_password').html('');
+            }
+        });
+      <% end %>
+      
         $(function() {
             var $switcher = $('#style_switcher'),
                 $switcher_toggle = $('#style_switcher_toggle'),
