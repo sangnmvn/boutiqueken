@@ -1454,14 +1454,17 @@ class Scrapper
         update_product_price_details_after_import
       end
 
-      # stop the monitoring admin action thread
-      t.exit unless t.nil?
+      if admin_request != STOP
+        Product.where(slug: nil).find_each(&:save)
+      end
 
       @logger.info "[END] Scrapping products finished in #{Time.now - start_time}"
     rescue Exception => e 
       @logger.error(e.message)
       @logger.error(e.backtrace.join("\n"))
     ensure
+      # stop the monitoring admin action thread
+      t.exit unless t.nil?
       update_scrapping_progress(100, "Finished scrapping products", STOP)
     end
   end
