@@ -29,7 +29,11 @@ class CategoriesController < ApplicationController
 
   protected
   def get_category
-  	@category = Category.find(params[:id])
+    @category = Category.find(params[:id])
+    if params[:id].to_i == @category.id && params[:id].to_s.length == @category.id.to_s.length
+      redirect_to category_path(@category.to_friend_or_id) and return
+    end
+  	#@category = Category.find(params[:id])
     
   end
 end

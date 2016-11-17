@@ -199,7 +199,8 @@ class Product < ActiveRecord::Base
     if self.friendly_id? || self.slug.present?
       self.friendly_id
     else
-      self.id
+      self.save
+      self.friendly_id
     end
   end
 end

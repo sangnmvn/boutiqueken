@@ -258,7 +258,8 @@ module ApplicationHelper
     if obj.friendly_id? || obj.slug.present?
       obj.friendly_id
     else
-      obj.id
+      obj.save
+      obj.friendly_id
     end
   end
 

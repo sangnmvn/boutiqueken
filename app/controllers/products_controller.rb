@@ -42,5 +42,17 @@ class ProductsController < ApplicationController
   protected
   def get_product
   	@product = Product.find(params[:id])
+    if params[:category_id].present?
+      @category = Category.find(params[:category_id])
+      
+      if (params[:category_id].to_i == @category.id && params[:category_id].to_s.length == @category.id.to_s.length) || (params[:id].to_i == @product.id && params[:id].to_s.length == @product.id.to_s.length)
+        redirect_to category_product_path({:category_id => @category.to_friend_or_id,:id =>@product.to_friend_or_id}) and return
+      end
+
+    else
+      if params[:id].to_i == @product.id && params[:id].to_s.length == @product.id.to_s.length
+        redirect_to product_path(@product.to_friend_or_id) and return
+      end
+    end
   end
 end
