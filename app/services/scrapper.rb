@@ -2447,6 +2447,13 @@ class Scrapper
 
         SELECT site_product_id, price, color_name, color_image, product_image, site_cat_id 
         FROM product_price_details);
+
+        UPDATE product_price_details ppd
+        SET 
+        product_id = p.id
+        FROM products p
+        WHERE ppd.site_cat_id = p.site_cat_id and ppd.site_product_id = p.site_product_id
+        and p.site_cat_id != 0 and ppd.product_id is null;
       STR
 
       puts "sql: #{sql.inspect}"
