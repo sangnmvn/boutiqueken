@@ -288,4 +288,40 @@ module ApplicationHelper
   def full_image_link(img_link)
     Rails.application.config.host_app.to_s + asset_path(img_link)
   end
+
+  def render_google_gallery_product(item)
+    {
+      "@context" => "http://schema.org/",
+      "@type"=> "Product",
+      "name" => item.short_desc,
+      "image" => show_image_url(item.main_image_url),
+      "description" => item.seo_desc,
+      "brand" => {
+        "@type" => "Thing",
+        "name" => item.brand_name
+      },
+      "aggregateRating" => {
+        "@type" => "AggregateRating",
+        
+        "ratingValue" => 4.5 + rand(5)/10.0,
+
+        "reviewCount" => 90 + rand(385 - 90)
+      },
+      "offers" => {
+        "@type" => "Offer",
+        "priceCurrency" => "USD",
+        "price" => item.sale_price,
+        "priceValidUntil" => "2016-12-20",
+        "itemCondition" => "http://schema.org/NewCondition",
+        "availability" => "http://schema.org/InStock",
+        "seller" => {
+          "@type" => "Organization",
+          "name" => "boutiquename"
+        }
+      }
+    }.to_json
+
+  end
+
+
 end
