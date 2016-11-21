@@ -38,14 +38,26 @@
       / MOBILE TOP LINKS STARTS
       %ul.ul-top-navigation.ul-top-navigation-mobile.hidden-lg.hidden-md.hidden-sm.pull-right
         %li
-          %a{:href => "#"}
-            %i.fa.fa-comment{"aria-hidden" => "true"}
+          %a{:href => country_choser_path}
+            Ship To:
+            %div{:alt => "star-icon",:src=>"", class: "flag flag-#{@country_code.downcase}"}
+            
+        
         %li
-          %a{:href => "#"}
-            %i.fa.fa-phone-square{"aria-hidden" => "true"}
-        %li
-          %a{:href => "#"}
-            %i.fa.fa-shopping-cart{"aria-hidden" => "true"}
+          %a{:href => "#{shopping_carts_path}"}
+            My Bag(
+            %span.bag-count=@shopping_cart.shopping_cart_items.count
+            )
+        -if current_user.present?
+          %li
+            =link_to current_user.full_name,profile_user_path(current_user)
+          %li
+            = link_to "Log out", destroy_user_session_path,method: :delete
+        -else
+          %li
+            =link_to "Sign In",new_user_session_path
+          %li
+            = link_to "Sign Up", new_user_registration_path
         / %li.m-trigger
         /   %a{:href => "#"}
         /     %i.fa.fa-bars{"aria-hidden" => "true"}
