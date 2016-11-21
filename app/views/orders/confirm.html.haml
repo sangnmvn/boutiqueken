@@ -90,11 +90,11 @@
                   %strong Shopping Method
                   / .radio-input-block
                   /   %label.control.control--radio{:for => "no"}
-                  /     ="Standard #{@currency} $0.00"
+                  /     ="Standard #{@currency} 0.00"
                   /     %input#no{:checked => "checked", :name => "radio", :type => "radio"}/
                   /     %span.control__indicator
                   /   %label.control.control--radio{:for => "yes"}
-                  /     ="Standard #{@currency} $15.00"
+                  /     ="Standard #{@currency} 15.00"
                   /     %input#yes{:checked => "checked", :name => "radio", :type => "radio"}/
                   /     %span.control__indicator
               / COL ENDS
@@ -161,10 +161,10 @@
                         / .saks-bag-item-qnt-text
                       %td In Stock
                       %td
-                        ="#{@currency} $"
+                        ="#{@currency}"
                         =show_price_digit(i.price)
                       %td
-                        ="#{@currency} $"
+                        ="#{@currency}"
                         =show_price_digit(i.sub_total)
               / DESKTOP TABLE MARKUP ENDS
               %p.about-table-p.hidden-xs
@@ -219,12 +219,12 @@
                   %tr
                     %th{:scope => "row"} Unit Price
                     %td
-                      ="#{@currency} $"
+                      ="#{@currency}"
                       =show_price_digit(i.price)
                   %tr
                     %th{:scope => "row"} Subtotal
                     %td
-                      ="#{@currency} $"
+                      ="#{@currency}"
                       =show_price_digit(i.sub_total)
               / MOBILE TABLE MARKUP ENDS
               %p.about-table-p.visible-xs
@@ -245,20 +245,20 @@
                         %td
                           %b Item Total
                         %td.text-right
-                          ="#{@currency} $"
+                          ="#{@currency}"
                           =show_price_digit(@order.total)
                           %br
                           (All tax included)
                       %tr
                         %td
                           %b Estimated Shopping &amp; Handling
-                        %td.text-right="#{@currency} $0.00"
+                        %td.text-right="#{@currency} 0.00"
                       %tr.checkout-table-total
                         %td
                           %b Estimated Total
                         %td.text-right
                           %b
-                            ="#{@currency} $"
+                            ="#{@currency}"
                             =show_price_digit(@order.total)
                     / CHECKOUT TABLE ENDS
                   .check-outing.text-right

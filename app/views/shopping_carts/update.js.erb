@@ -3,6 +3,6 @@ $(".td_<%=@item.id%> .pp-edit").show();
 $(".td_<%=@item.id%> .saks-bag-item-qnt").show();
 $(".td_<%=@item.id%> .saks-bag-item-qnt span").html("<%=@item.quantity%>");
 $(".td_<%=@item.id%> .form-edit").addClass("hide");
-$(".subtotal_<%=@item.id%>").html("<%=@currency%> $<%= show_price_digit(@item.price * @item.quantity.to_i)%>")
-$(".total-txt").html("<%=@currency%> $<%= show_price_digit(@shopping_cart.total) %>")
+$(".subtotal_<%=@item.id%>").html("<%=@currency%> <%= show_price_digit(@item.price * @item.quantity.to_i)%>")
+$(".total-txt").html("<%=@currency%> <%= show_price_digit(@shopping_cart.total) %>")
 <%end%>

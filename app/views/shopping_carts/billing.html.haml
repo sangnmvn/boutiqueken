@@ -254,7 +254,7 @@
                             %i.fa.fa-times{"aria-hidden" => "true"}
                             =link_to "Remove", shopping_carts_path({:item_id => i.id}), remote: true, method: :delete,data: { confirm: "Are you want to delete this item?" }
                         %td{:class =>"subtotal_#{i.id}"}
-                          ="#{@currency} $"
+                          ="#{@currency}"
                           =show_price_digit(i.price * i.quantity.to_i)
               / DESKTOP TABLE MARKUP ENDS
               / MOBILE TABLE MARKUP
@@ -308,7 +308,7 @@
                     %tr
                       %th{:scope => "row"} Subtotal
                       %td{:class =>"subtotal_#{i.id}"}
-                        ="#{@currency} $"
+                        ="#{@currency}"
                         =show_price_digit(i.price * i.quantity.to_i)
               / MOBILE TABLE MARKUP ENDS
               .table-btm-qt
@@ -334,20 +334,20 @@
                   %td
                     %b Item Total
                   %td.text-right.total-txt
-                    ="#{@currency} $"
+                    ="#{@currency}"
                     =show_price_digit(@shopping_cart.total)
                     %br
                     (All tax included)
                 %tr
                   %td
                     %b Estimated Shopping &amp; Handling
-                  %td.text-right="#{@currency} $ 0.00"
+                  %td.text-right="#{@currency} 0.00"
                 %tr.checkout-table-total
                   %td
                     %b Estimated Total
                   %td.text-right
                     %b.total-txt
-                      ="#{@currency} $"
+                      ="#{@currency}"
                       =show_price_digit(@shopping_cart.total)
               / CHECKOUT TABLE ENDS
             / LONG TABLE ENDS

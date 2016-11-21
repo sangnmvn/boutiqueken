@@ -23,20 +23,20 @@
                 %strong Was
                 %span
                   %del 
-                    ="#{@currency} $"
+                    ="#{@currency}"
                     =show_price_digit(@product.macys_sale_price)
 
             -if @product.sale_price.present?
               %span.cur-price
                 %strong Now
                 %span
-                  ="#{@currency} $"
+                  ="#{@currency} "
                   =show_price_digit(@product.sale_price)
             -elsif @product.list_price_range.present?
               %span.cur-price.auto-width 
                 %strong Now
                 %span.auto-width 
-                  ="#{@currency} $"
+                  ="#{@currency} "
                   =show_price_range(@product.list_price_range)
         / PRODUCT DETAILS 2 TOP ENDS
         / PRODUCT DETAILS 2 MIDDLE STARTS
@@ -61,7 +61,7 @@
                     .seper-small
                     %div
                       %strong
-                        ="#{@currency} $"
+                        ="#{@currency}"
                         = show_price_digit(i.price)
                         -group_price = i.price
                     .seper-small
@@ -134,17 +134,17 @@
                         -if product.macys_sale_price.present?
                           %span.reg-price
                             %strong
-                              ="Reg. #{@currency} $"
+                              ="Reg. #{@currency}"
                               =show_price_digit(product.macys_sale_price)
                         -if product.sale_price.present?
                           %span.sale-price
                             %strong
-                              ="Sale. #{@currency} $"
+                              ="Sale. #{@currency}"
                               =show_price_digit(product.sale_price)
                         -if product.list_price_range.present?
                           %span.sale-price
                             %strong
-                              ="Sale. #{@currency} $"
+                              ="Sale. #{@currency}"
                               =show_price_range(product.list_price_range)
                         %br
             -if @product_related.length > 0
@@ -194,11 +194,11 @@
                     %span.del-price
                       %span
                         %del.price-txt 
-                          ="#{@currency} $"
+                          ="#{@currency}"
                           =show_price_digit(child.macys_sale_price)
                   -if child.sale_price.present? && child.sale_price > 0
                     %span.price-txt 
-                      ="#{@currency} $"
+                      ="#{@currency}"
                       =show_price_digit(child.sale_price)
                 .col-md-12.col-sm-12.col-xs-12
                   %p.sizing
@@ -229,18 +229,18 @@
                 -if product.macys_sale_price.present?
                   %span.reg-price
                     %strong
-                      ="Reg. #{@currency} $"
+                      ="Reg. #{@currency}"
                       =show_price_digit(product.macys_sale_price)
                 -if product.sale_price.present?
                   %span.sale-price
                     %strong 
-                      ="Sale. #{@currency} $"
+                      ="Sale. #{@currency}"
                       =show_price_digit(product.sale_price)
 
                 -elsif product.list_price_range.present?
                   %span.sale-price
                     %strong
-                      ="Sale. #{@currency} $"
+                      ="Sale. #{@currency}"
                       =show_price_range(product.list_price_range)
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS
