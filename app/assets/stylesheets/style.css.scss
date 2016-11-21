@@ -3725,13 +3725,19 @@ input[type=number]::-webkit-outer-spin-button {
 .min-261{
   min-height: 251px;
 }
-
+#loading-pnel{
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  position: fixed;
+  z-index: 99999999;
+  top: 0;
+  opacity: 0.65;
+}
 #loading-indicator {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  margin-left: -32px;
-  margin-top: -32px;
+  left: 40%;
+  top: 40%;
 }
 
 .single-product{

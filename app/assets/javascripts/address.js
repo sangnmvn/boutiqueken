@@ -1,9 +1,9 @@
 $(document).ajaxSend(function(event, request, settings) {
-    $('#loading-indicator').show();
+    $('#loading-pnel').show();
 });
 
 $(document).ajaxComplete(function(event, request, settings) {
-    $('#loading-indicator').hide();
+    $('#loading-pnel').hide();
 });
 
 var CountryChooser ={
