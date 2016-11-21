@@ -19,7 +19,7 @@
                 %ul.treeview-menu
                   - main_subs[key].each do |t|
                     %li
-                      %a{href: category_path(t.id)}=t.cat_name.capitalize
+                      %a{href: category_path(f_id(t))}=t.cat_name.capitalize
       
         
 / MOBILE NAVIGATION ENDS

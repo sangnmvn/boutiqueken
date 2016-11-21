@@ -3,8 +3,8 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  has_many :addresses
-  has_many :orders
+  has_many :addresses,dependent: :destroy
+  has_many :orders,dependent: :destroy
   after_create :send_welcome
   def confirmed_orders
     self.orders.where("status >=1")

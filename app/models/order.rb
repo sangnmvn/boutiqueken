@@ -1,10 +1,10 @@
 class Order < ActiveRecord::Base
   belongs_to :user
-  has_one :billing_address, class_name: "OrderAddress"
-  has_one :shipping_address, class_name: "OrderAddress"
+  has_one :billing_address, class_name: "OrderAddress",dependent: :destroy
+  has_one :shipping_address, class_name: "OrderAddress",dependent: :destroy
   accepts_nested_attributes_for :billing_address, :shipping_address
-  has_many :order_details
-  has_many :order_comments
+  has_many :order_details,dependent: :destroy
+  has_many :order_comments,dependent: :destroy
   include ActionView::Helpers::NumberHelper
   include ApplicationHelper
   before_create :generate_code
