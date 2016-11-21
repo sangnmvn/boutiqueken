@@ -108,10 +108,10 @@
               %i.fa.fa-plus.pull-right{"aria-hidden" => "true"}
             %dd
               -if @country_code == "US"
-                %a.pull-left{:href =>domestic_shipping_and_return_path}
+                %a.pull-left{:href =>domestic_shipping_and_return_path, :target => "_blank"}
                   Free Shipping and Free Duties on all Orders
               -else
-                %a.pull-left{:href =>international_shipping_and_return_path}
+                %a.pull-left{:href =>international_shipping_and_return_path, :target => "_blank"}
                   ="Free Shipping and Free Duties on all Orders to #{@country}"
               .clear-fix{:style =>"height: 10px;"}
         / PRODUCT DETAILS 2 LAST STARTS
