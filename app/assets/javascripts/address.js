@@ -465,7 +465,7 @@ var Product={
         vertical: true,
         start: 0,
         visible: 3,
-        circular: false,
+        circular: true,
     });
     },500)
     

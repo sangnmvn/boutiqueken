@@ -38,18 +38,19 @@
           .col-md-3.col-sm-4
             / .single-product{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
             .single-product
-              .product-img-wrapper.left-content-side{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
-                -if i.product_details.present?
-                  -is_need_main = true
-                  -i.product_details.order("product_image asc").each_with_index do |detail,index|
-                    - if detail.product_image.present?
+              .product-img-wrapper.left-content-side
+                %a{:target => '_blank', :href => category_product_path(@category,f_id(i))}
+                  -if i.product_details.present?
+                    -is_need_main = true
+                    -i.product_details.order("product_image asc").each_with_index do |detail,index|
+                      - if detail.product_image.present?
 
-                      %img.has-color{:alt => i.short_desc, "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_product_list(detail.product_image)}/
-                      -is_need_main = false
-                  -if is_need_main == true
+                        %img.has-color{:alt => i.short_desc, "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_product_list(detail.product_image)}/
+                        -is_need_main = false
+                    -if is_need_main == true
+                      %img.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
+                  -else
                     %img.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
-                -else
-                  %img.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
               / .product-img-wrapper ends
               .product-details-info.right-content-side
                 -if i.product_details.present?
