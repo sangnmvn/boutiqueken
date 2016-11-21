@@ -36,7 +36,7 @@
             /.single-product{:onclick => "window.location = '#{product_path(i.friendly_id)}'"}
             .single-product
               .product-img-wrapper.left-content-side
-                %a{:target => '_blank', :href => product_path(f_id(i))}
+                %a{:href => product_path(f_id(i))}
                   -if i.product_details.present?
                     -is_need_main = true
                     -i.product_details.order("product_image asc").each_with_index do |detail,index|
