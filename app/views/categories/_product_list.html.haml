@@ -39,7 +39,7 @@
             / .single-product{:onclick => "window.location = '#{category_product_path(@category,i.friendly_id)}'"}
             .single-product
               .product-img-wrapper.left-content-side
-                %a{:target => '_blank', :href => category_product_path(@category,f_id(i))}
+                %a{:href => category_product_path(@category,f_id(i))}
                   -if i.product_details.present?
                     -is_need_main = true
                     -i.product_details.sort_by(&:product_image).each_with_index do |detail,index|
