@@ -11,7 +11,7 @@ class Category < ActiveRecord::Base
 
 
   def self.main_menus
-    Category.where(:parent_id =>nil).order("pos asc")
+    Category.includes(:children).where(:parent_id =>nil).order("pos asc")
   end
 
   def slug_candidates
