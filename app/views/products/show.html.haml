@@ -84,7 +84,7 @@
             .sep-ad-tobag
             .alert-chosing-size.hide{class: "product_need_#{@product.id}"}
               Please select product size.  
-            %button.a-to-bag{class: "product_#{@product.id}"} ADD TO BAG
+            %button.a-to-bag{class: "product_#{@product.id}", :title => "Opps! We are not accepting any new order this moment due to previously placed bulk orders. We will open to accept all new order from 25 November. Sorry for any inconvenience.", "data-placement"=>"top" } ADD TO BAG
             =#link_to "ADD TO BAG",shopping_carts_path,class: "a-to-bag",remote: true,:method =>"POST"
         / PRODUCT DETAILS 2 MIDDLE ENDS
         / PRODUCT DETAILS 2 LAST STARTS
@@ -207,7 +207,7 @@
                   .sep-ad-tobag
                   .alert-chosing-size.hide{class: "product_need_#{@product.id}"}
                     Please select product size.  
-                  %button.a-to-b.btn-medium.a-to-bag{class: "product_#{child.id}"} ADD TO BAG
+                  %button.a-to-b.btn-medium.a-to-bag{class: "product_#{child.id}", :title => "Opps! We are not accepting any new order this moment due to previously placed bulk orders. We will open to accept all new order from 25 November. Sorry for any inconvenience." } ADD TO BAG
           .clear-fix
           -if @product_childrens.length >1
             .dot-sperate
