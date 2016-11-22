@@ -62,13 +62,17 @@ $(function(){
       has_color = false;
       selected_detail_id = $(this).closest(".product-panel").attr("data-detail-id");
     }
-    $.ajax({
-      method: "POST",
-      url: "/secure-shopping-your-cart/",
-      data: {detail_id: selected_detail_id,size: selected_size,has_color: has_color},
-    }).done(function(data) {
+    setTimeout( function () { $('.a-to-bag').tooltip('hide') }, 4000);
+    // $.ajax({
+    //   method: "POST",
+    //   url: "/secure-shopping-your-cart/",
+    //   data: {detail_id: selected_detail_id,size: selected_size,has_color: has_color},
+    // }).done(function(data) {
       
-    });
+    // });
+  });
+  $('.a-to-bag').tooltip({
+    trigger: 'click',
   });
 
 
