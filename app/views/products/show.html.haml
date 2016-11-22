@@ -65,8 +65,7 @@
                   %li{"data-color" => i.color_name}
                     %a.color-picking.price-color{"data-price" => "#{i.price}",:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
                       %img.img-responsive{:alt => @product.short_desc, :src => show_image_url(i.color_image)}/
-              .seper-small
-              
+              .seper-small 
           -if @product.list_sizes.present?
             %p.sizing
               %strong Size
@@ -252,6 +251,14 @@
 =render "modal_size_chart"
 .div-for-shop
   =render "shopping_carts/modal_item"
+#modal-large-img.modal.fade{:role => "dialog", :tabindex => "-1"}
+  .modal-dialog{:role => "document", :style => "margin:0; padding:0;height:100%"}
+    .modal-content{:style => "border-radius: 0;border: none;height:100%"}
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button", :style => "float:left"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body.modal-container
+        %img.large-img.img-responsive{:src => ""}
 :javascript
   var product_info = #{@product.to_json};
   $(document).ready(function(){

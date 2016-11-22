@@ -62,7 +62,7 @@ $(function(){
       has_color = false;
       selected_detail_id = $(this).closest(".product-panel").attr("data-detail-id");
     }
-    setTimeout( function () { $('.a-to-bag').tooltip('hide') }, 4000);
+    setTimeout( function () { $('.a-to-bag').tooltip('hide') }, 6000);
     // $.ajax({
     //   method: "POST",
     //   url: "/secure-shopping-your-cart/",
@@ -380,21 +380,30 @@ var ViewProduct ={
 
 var Product={
   init: function(selector){
-    if($(selector).length >0){
-      $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active"}); 
-      // $("#zoom_03").bind("click", function(e) {  
-      //   var ez =   $('#zoom_03').data('elevateZoom');
-      //   ez.closeAll(); //NEW: This function force hides the lens, tint and window 
-      //   $.fancybox(ez.getGalleryList());
-      //   return false;
-      // });
-      this.init_events();       
-      $(".price-color").on("click",function(){
-        price = $(this).attr("data-price");
-        $(".cur-price span").html(txt_currency + " $ " + price);
-        Product.change_color();
-      })
-    }
+      var is_mobile = true;
+      if(is_mobile == false){
+          if($(selector).length >0){
+            $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active"}); 
+            // $("#zoom_03").bind("click", function(e) {  
+            //   var ez =   $('#zoom_03').data('elevateZoom');
+            //   ez.closeAll(); //NEW: This function force hides the lens, tint and window 
+            //   $.fancybox(ez.getGalleryList());
+            //   return false;
+            // });
+            this.init_events();       
+            $(".price-color").on("click",function(){
+              price = $(this).attr("data-price");
+              $(".cur-price span").html(txt_currency + " $ " + price);
+              Product.change_color();
+            })
+          }
+      }else{
+          $("#zoom_03").on('click', function(){
+              var img_src = $(this).attr('src');
+              $('#modal-large-img').modal('show');
+              $('.modal-container .large-img').attr('src', img_src);
+          });
+      }
   },
 
   init_events: function(){
