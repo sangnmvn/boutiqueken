@@ -30,5 +30,5 @@
 
 
 :javascript
-  var category_path = "#{category_path(@category.id, format: 'js')}"
+  var category_path = "#{category_path(f_id(@category), format: 'js')}"
   var filter_names = #{@filter_names.to_json};
