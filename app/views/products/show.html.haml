@@ -139,12 +139,12 @@
                         -if product.sale_price.present?
                           %span.sale-price
                             %strong
-                              ="Sale. #{@currency}"
+                              ="Sale #{@currency}"
                               =show_price_digit(product.sale_price)
                         -if product.list_price_range.present?
                           %span.sale-price
                             %strong
-                              ="Sale. #{@currency}"
+                              ="Sale #{@currency}"
                               =show_price_range(product.list_price_range)
                         %br
             -if @product_related.length > 0
@@ -234,13 +234,13 @@
                 -if product.sale_price.present?
                   %span.sale-price
                     %strong 
-                      ="Sale. #{@currency}"
+                      ="Sale #{@currency}"
                       =show_price_digit(product.sale_price)
 
                 -elsif product.list_price_range.present?
                   %span.sale-price
                     %strong
-                      ="Sale. #{@currency}"
+                      ="Sale #{@currency}"
                       =show_price_range(product.list_price_range)
     / RECENT VIEW STARTS
     / RECENT VIEW STARTS

@@ -313,13 +313,13 @@ var ViewProduct ={
         image = $("<img></img>").attr("src",value.main_image_url+"?wid=126&hei=154").appendTo(div_single);
         title = $("<p></p>").html(value.name).appendTo(div_single);
         if(macys_sale_price !=""){
-          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. "+ txt_currency + " $" + macys_sale_price + "</strong>").appendTo(div_single);
+          reg_price = $("<span></span>").addClass("reg-price").html("<strong> Reg. "+ txt_currency + " " + macys_sale_price + "</strong>").appendTo(div_single);
         }
         if(sale_price !=""){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $" + sale_price + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale "+ txt_currency + " " + sale_price + "</strong>").appendTo(div_single);
         }
         else if((price_range_min !="") && (price_range_max != "")){
-          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale. "+ txt_currency + " $ " + price_range_min + " - " + price_range_max + "</strong>").appendTo(div_single);
+          sale_price = $("<span></span>").addClass("sale-price").html("<strong> Sale "+ txt_currency + " " + price_range_min + " - " + price_range_max + "</strong>").appendTo(div_single);
         }
         else{
           $("<span></span>").addClass("reg-price").html("<strong>&nbsp;</strong>").appendTo(div_single);

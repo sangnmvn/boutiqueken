@@ -79,12 +79,12 @@
               -if i.sale_price.present?
                 %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong
-                    ="Sale. #{@currency}"
+                    ="Sale #{@currency}"
                     =show_price_digit(i.sale_price)
               -elsif i.list_price_range.present?
                 %span.sale-price{:onclick => "window.location = '#{product_path(f_id(i))}'"}
                   %strong
-                    ="Sale. #{@currency}"
+                    ="Sale #{@currency}"
                     =show_price_range(i.list_price_range)
           / .single-product ends
         / .col-md-4 ends

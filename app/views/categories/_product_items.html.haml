@@ -82,12 +82,12 @@
               -if i.sale_price.present?
                 %span.sale-price{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
                   %strong
-                    ="Sale. #{@currency.upcase}"
+                    ="Sale #{@currency.upcase}"
                     =show_price_digit(i.sale_price)
               -elsif i.list_price_range.present?
                 %span.sale-price{:onclick => "window.location = '#{category_product_path(@category,f_id(i))}'"}
                   %strong
-                    ="Sale. #{@currency.upcase}"
+                    ="Sale #{@currency.upcase}"
                     =show_price_range(i.list_price_range)
           / .single-product ends
         / .col-md-4 ends
