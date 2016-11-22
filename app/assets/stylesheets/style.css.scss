@@ -2845,7 +2845,7 @@ input[type=number]::-webkit-outer-spin-button {
   text-decoration: none;
 }
 .sale-price {
-  color: red;
+  color: #c00;
   display: block;
 }
 .featured-product-area .img-responsive {
@@ -2921,6 +2921,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .del-price {
   color: gray;
+}
+.cur-price {
+  color: #c00;
 }
 .p-details-2-top {
   border-bottom: 0.1rem solid #ddd;
