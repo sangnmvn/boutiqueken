@@ -48,9 +48,11 @@ class OrdersController < ApplicationController
 
   def confirmed
     @order = Order.find(params[:id])
-    @order.update_attributes({:status =>1})
-    @shopping_cart.clear
-    UserMailer.order_confirmation(@order,current_user).deliver
+    if @order.status.to_i <1
+      @order.update_attributes({:status =>1})
+      @shopping_cart.clear
+      UserMailer.order_confirmation(@order,current_user).deliver
+    end
     redirect_to orders_user_path(current_user)
   end
 
