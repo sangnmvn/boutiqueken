@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
     @currency = session[:currency].present? ? session[:currency] : @country.currency_code
     session[:currency] = @currency.upcase
     @rate_exchange =  MoneyExchange.get_rate("USD",@currency)
+    @is_mobile = browser.device.mobile?
   end
 
   def store_location

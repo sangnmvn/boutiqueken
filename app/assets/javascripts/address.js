@@ -380,7 +380,7 @@ var ViewProduct ={
 
 var Product={
   init: function(selector){
-      var is_mobile = true;
+      
       if(is_mobile == false){
           if($(selector).length >0){
             $("#zoom_03").elevateZoom({gallery:'gallery_01', cursor: 'pointer', galleryActiveClass: "active"}); 
