@@ -17,7 +17,8 @@
 		$(".modal-shopping-item .modal-dialog").css("margin-left", left_modal);
 	});
 
-	$(".modal-shopping-item").modal("show");
+	//$(".modal-shopping-item").modal("show");
+	$(".modal-shopping-item").modal("show").delay(4000).fadeOut(1000);
 	$(".modal-shopping-item .modal-body").slideDown(1000)
 <%else%>
 	<%if params[:has_color].present? && (params[:has_color] == true || params[:has_color] == "true")%>
