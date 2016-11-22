@@ -20,7 +20,7 @@
           %h2.details-2-price
             -if @product.macys_sale_price.present?
               %span.del-price
-                %strong Was
+                %strong Reg.
                 %span
                   %del 
                     ="#{@currency}"
@@ -28,13 +28,13 @@
 
             -if @product.sale_price.present?
               %span.cur-price
-                %strong Now
+                %strong Sale
                 %span
                   ="#{@currency} "
                   =show_price_digit(@product.sale_price)
             -elsif @product.list_price_range.present?
               %span.cur-price.auto-width 
-                %strong Now
+                %strong Sale
                 %span.auto-width 
                   ="#{@currency} "
                   =show_price_range(@product.list_price_range)
