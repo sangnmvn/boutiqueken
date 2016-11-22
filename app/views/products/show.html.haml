@@ -51,7 +51,7 @@
                 -@product.product_details.order("product_image asc").each_with_index do |i,index|
                   %li{"data-color" => i.color_name}
                     %a.color-picking.tt{:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,class: index==0 ? 'active' : '', "data-detail-id": i.id}
-                      %img.img-responsive{:alt => @product.short_desc, :src => show_image_url(i.color_image)}/
+                      %img.img-responsive{:alt => i.color_name, :src => show_image_url(i.color_image)}/
             -else
               %ul.coloring-ul
                 -group_price = 0
@@ -67,7 +67,7 @@
                     .seper-small
                   %li{"data-color" => i.color_name}
                     %a.color-picking.price-color{"data-price" => "#{i.price}",:href => "javascript:;","product-image" =>show_image_url(i.product_image),"product-large-image" =>show_large_image_url(i.product_image),"color-name" => i.color_name,"data-detail-id": i.id,class: index==0 ? 'active' : '',}
-                      %img.img-responsive{:alt => @product.short_desc, :src => show_image_url(i.color_image)}/
+                      %img.img-responsive{:alt => i.color_name, :src => show_image_url(i.color_image)}/
               .seper-small
               
           -if @product.list_sizes.present?
