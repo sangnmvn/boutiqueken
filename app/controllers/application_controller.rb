@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
     @currency = session[:currency].present? ? session[:currency] : @country.currency_code
     session[:currency] = @currency.upcase
     @rate_exchange =  MoneyExchange.get_rate("USD",@currency)
+    @is_mobile = browser.device.mobile?
   end
 
   def store_location
@@ -104,6 +105,7 @@ class ApplicationController < ActionController::Base
   def redirect_special_link
     # fullpath -> search key words
     h = {
+          "/cat/women-all-contemporary-clothing" => "women contemporary cloth",
           "/cat/16373-sunglasses" => "Sunglasses",
           "/cat/16481-levi-s" => "Levi's",
           "/cat/16526-ideology" => "Ideology",

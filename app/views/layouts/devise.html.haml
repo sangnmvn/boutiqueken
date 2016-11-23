@@ -68,3 +68,4 @@
 :javascript
   var rate_exchange = #{@rate_exchange.to_json};
   var txt_currency = #{@currency.to_json};
+  var is_mobile = #{@is_mobile.present? ? true.to_json : false.to_json};
