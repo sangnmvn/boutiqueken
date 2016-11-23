@@ -18,6 +18,8 @@
       %title=@product.seo_title
       %meta{:content => @product.seo_desc, :name => "description"}/
       %meta{:content => @product.seo_keywords, :name => "keywords"}/
+      %script{:type => 'application/ld+json'}
+        
     -elsif @seo_title.present?
       %title=@seo_title
       %meta{:content => @seo_desc, :name => "description"}/
