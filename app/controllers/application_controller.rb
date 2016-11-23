@@ -105,6 +105,7 @@ class ApplicationController < ActionController::Base
   def redirect_special_link
     # fullpath -> search key words
     h = {
+          "/cat/women-all-contemporary-clothing" => "women contemporary cloth",
           "/cat/16373-sunglasses" => "Sunglasses",
           "/cat/16481-levi-s" => "Levi's",
           "/cat/16526-ideology" => "Ideology",

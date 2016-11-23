@@ -44,12 +44,12 @@
                     -is_need_main = true
                     -i.product_details.sort_by{|x| x.product_image.to_s}.reverse.each_with_index do |detail,index|
                       - if detail.product_image.present?
-                        %img.has-color{:alt => i.short_desc, "data-img" => "p-#{index}",:class=> index==0 ? "active" : "", :src => show_image_product_list(detail.product_image)}/
+                        %img.has-color{:alt => i.short_desc, "data-img" => "p-#{index}",:class=> index==0 ? "active lazy-load" : "", :src => show_image_product_list(detail.product_image),"data-original"=>show_image_product_list(i.main_image_url),:width=>"224",:height=> "275"}/
                         -is_need_main = false
                     -if is_need_main == true
-                      %img.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
+                      %img.has-color.active.lazy-load{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url),"data-original"=>show_image_product_list(i.main_image_url),:width=>"224",:height=> "275"}/
                   -else
-                    %img.has-color.active{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url)}/
+                    %img.has-color.active.lazy-load{:alt => i.short_desc, "data-img" => "p-1", :src => show_image_product_list(i.main_image_url),"data-original"=>show_image_product_list(i.main_image_url),:width=>"224",:height=> "275"}/
               / .product-img-wrapper ends
               .product-details-info.right-content-side
                 -if i.product_details.present?

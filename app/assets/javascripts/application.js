@@ -28,3 +28,4 @@
 //= require jquery.elevatezoom
 //= require search
 //= require sidebar-menu.js
+//= require jquery.lazyload.min

@@ -91,6 +91,8 @@ $(function(){
   });
   CountryChooser.init(".contain-div-gray");
   WelcomeView.init();
+
+  $("img.lazy-load").lazyload({effect : "fadeIn"});
 });
 
 

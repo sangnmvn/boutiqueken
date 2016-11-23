@@ -3072,10 +3072,10 @@ input[type=number]::-webkit-outer-spin-button {
   margin-top: 0;
 }
 .product-img-wrapper .has-color{
-  display: none;
+  display: none !important;
 }
 .product-img-wrapper .has-color.active{
-  display: block;
+  display: block !important;
 }
 /* ==========================================================================
    Helper classes
