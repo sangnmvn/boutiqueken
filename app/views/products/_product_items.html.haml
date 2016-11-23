@@ -59,7 +59,7 @@
                             -i.product_details.order("product_image asc").each_with_index do |detail,index|
                               %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                                 %a{:href => "javascript:;"}
-                                  %img.img-responsive{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
+                                  %img.img-responsive.lazy-load{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
                     %button.next
                       %i.fa.fa-angle-right{"aria-hidden" => "true"}
                 -else
@@ -67,7 +67,7 @@
                     -i.product_details.order("product_image asc").each_with_index do |detail,index|
                       %li{"data-color" => "Black", "data-img" => "p-#{index}",:class=> index==0 ? "active" : ""}
                         %a{:href => "javascript:;"}
-                          %img.img-responsive{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
+                          %img.img-responsive.lazy-load{:alt => i.short_desc, :src => show_image_url(detail.color_image)}/
                 
               %strong
                 %a{:href => product_path(i)}=i.short_desc

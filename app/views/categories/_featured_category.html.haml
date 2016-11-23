@@ -25,12 +25,12 @@
             -cat = Category.find(i.category_id) rescue nil
             -if cat.present?
               %a{:href => category_path(f_id(cat))}
-                %img.img-responsive{:alt => i.try(:cat_name), :src => i.image_url}/
+                %img.img-responsive.lazy-load{:alt => i.try(:cat_name), :src => i.image_url}/
               %a{:href => category_path(f_id(cat))}
                 %h4=i.try(:cat_name)
             -else
               %a{:href => category_path(i.category_id)}
-                %img.img-responsive{:alt => i.try(:cat_name), :src => i.image_url}/
+                %img.img-responsive.lazy-load{:alt => i.try(:cat_name), :src => i.image_url}/
               %a{:href => category_path(i.category_id)}
                 %h4=i.try(:cat_name)
       / featured item ends
